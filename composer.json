@@ -2,8 +2,8 @@
 	"name": "paul999/2fa",
 	"type": "phpbb-extension",
 	"description": "",
-	"homepage": "https://www.phpbb-2fa.com",
-	"version": "1.0.1",
+	"homepage": "http://www.phpbb-2fa.com",
+	"version": "0.0.1",
 	"keywords": [],
 	"license": "GPL-2.0",
 	"authors": [
@@ -23,7 +23,7 @@
 		"phpbb/epv": "dev-master"
 	},
 	"extra": {
-		"display-name": "phpBB Two Factor Auth",
+		"display-name": "phpBB Two Factor Authentication",
 		"soft-require": {
 			"phpbb/phpbb": ">=3.1.0,<3.2.0@dev"
 		}
