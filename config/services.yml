@@ -1,0 +1,9 @@
+imports:
+    - { resource: tables.yml }
+
+services:
+    paul999.tfa.listener:
+        class: paul999\tfa\event\listener
+        tags:
+            - { name: event.listener }
+
