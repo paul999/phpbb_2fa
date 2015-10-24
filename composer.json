@@ -1,7 +1,7 @@
 {
-	"name": "paul999/2fa",
+	"name": "paul999/tfa",
 	"type": "phpbb-extension",
-	"description": "",
+	"description": "This extension adds support for the U2F two factor authentication standard into your phpBB board. ",
 	"homepage": "http://www.phpbb-2fa.com",
 	"version": "0.0.1",
 	"keywords": [],
@@ -16,11 +16,13 @@
 	],
 	"require": {
 		"php": ">=5.3.3",
-		"composer/installers": "~1.0"
+		"composer/installers": "~1.0",
+	    "yubico/u2flib-server": "dev-master"
 	},
 	"require-dev": {
 		"phing/phing": "2.4.*",
-		"phpbb/epv": "dev-master"
+		"phpbb/epv": "dev-master",
+        "phpbb/phpbb": "~3.1"
 	},
 	"extra": {
 		"display-name": "phpBB Two Factor Authentication",
