@@ -1,0 +1,31 @@
+{
+	"name": "paul999/2fa",
+	"type": "phpbb-extension",
+	"description": "",
+	"homepage": "https://www.phpbb-2fa.com",
+	"version": "1.0.1",
+	"keywords": [],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Paul Sohier",
+			"email": "paul@phpbb.com",
+			"homepage": "http://www.paulsohier.nl",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.3.3",
+		"composer/installers": "~1.0"
+	},
+	"require-dev": {
+		"phing/phing": "2.4.*",
+		"phpbb/epv": "dev-master"
+	},
+	"extra": {
+		"display-name": "phpBB Two Factor Auth",
+		"soft-require": {
+			"phpbb/phpbb": ">=3.1.0,<3.2.0@dev"
+		}
+	}
+}
