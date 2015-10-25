@@ -8,7 +8,7 @@
 *
 */
 
-namespace paul999\tfa\event;
+namespace paul999\tfa\controller;
 
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
