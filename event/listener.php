@@ -84,7 +84,15 @@ class listener implements EventSubscriberInterface
 		return array(
 			'core.auth_login_session_create_before'		=> 'auth_login_session_create_before',
 			'core.user_setup_after'						=> 'user_setup_after',
+			'core.permissions'			        		=> 'add_permission',
 		);
+	}
+
+	public function add_permission($event)
+	{
+		$permissions = $event['permissions'];
+		$permissions['a_tfa'] = array('lang' => 'ACL_A_TFA', 'cat' => 'misc');
+		$event['permissions'] = $permissions;
 	}
 
 	public function user_setup_after($event)
