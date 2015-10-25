@@ -28,7 +28,7 @@ class initial_schema extends \phpbb\db\migration\migration
 					),
 					'PRIMARY_KEY'	=> 'registration_id',
 					'KEYS'			=> array(
-						'type'		=> array('INDEX', array('user_id')),
+						'user_id'		=> array('INDEX', array('user_id')),
 					),
 				),
 			),

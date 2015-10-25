@@ -18,6 +18,7 @@ class version_001 extends \phpbb\db\migration\migration
 		return array(
 			'\phpbb\db\migration\data\v310\gold',
 			'\paul999\tfa\migrations\initial_schema',
+			'\paul999\tfa\migrations\update_sessions',
 		);
 	}
 }

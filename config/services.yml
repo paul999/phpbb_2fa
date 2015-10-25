@@ -2,8 +2,20 @@ imports:
     - { resource: tables.yml }
 
 services:
+    paul999.tfa.sessionHelper:
+        class: paul999\tfa\helper\sessionHelper
+
+    paul999.tfa.controller:
+        class: paul999\tfa\controller\main_controller
+
     paul999.tfa.listener:
         class: paul999\tfa\event\listener
+        arguments:
+            - @paul999.tfa.sessionHelper
+            - @dbal.conn
+            - @template
+            - %tables.users%
+            - %paul999.2fa.tables.tfa_registration%
         tags:
             - { name: event.listener }
 

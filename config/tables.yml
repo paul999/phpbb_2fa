@@ -1,2 +1,2 @@
 parameters:
-    paul999.2fa.tables.tfa_: %core.table_prefix%tfa_registration
+    paul999.2fa.tables.tfa_registration: %core.table_prefix%tfa_registration
