@@ -12,10 +12,152 @@ namespace paul999\tfa\acp;
 
 class tfa_module
 {
+	/** @var  string */
 	public $u_action;
 
-	public function main($id, $mode)
-	{
+	/** @var array  */
+	public $new_config = array();
 
+	/** @var   */
+	public $page_title;
+
+	/** @var   */
+	public $tpl_name;
+
+	function main($id, $mode)
+	{
+		global $user, $template, $request;
+		global $config, $phpbb_dispatcher, $phpbb_log;
+
+		$user->add_lang_ext("paul999/tfa", "acp_tfa");
+		$user->add_lang('acp/board');
+
+		$submit = $request->is_set('submit');
+
+		$form_key = 'acp_tfa';
+		add_form_key($form_key);
+
+		$display_vars = array(
+			'title'	=> 'ACP_TFA_SETTINGS',
+			'vars'	=> array(
+
+				'legend4'				=> 'ACP_SUBMIT_CHANGES',
+			)
+		);
+
+
+		/**
+		 * Event to add and/or modify acp_board configurations
+		 *
+		 * @event paul999.tfa.tfa_config_edit_add
+		 * @var	array	display_vars	Array of config values to display and process
+		 * @var	string	mode			Mode of the config page we are displaying
+		 * @var	boolean	submit			Do we display the form or process the submission
+		 * @since 1.0.0-b2
+		 */
+		$vars = array('display_vars', 'mode', 'submit');
+		extract($phpbb_dispatcher->trigger_event('paul999.tfa.tfa_config_edit_add', compact($vars)));
+
+		$this->new_config = $config;
+		// Copied from acp_board.php
+		$cfg_array = (isset($_REQUEST['config'])) ? utf8_normalize_nfc($request->variable('config', array('' => ''), true)) : $this->new_config;
+		$error = array();
+
+		// We validate the complete config if wished
+		validate_config_vars($display_vars['vars'], $cfg_array, $error);
+
+		if ($submit && !check_form_key($form_key))
+		{
+			$error[] = $user->lang['FORM_INVALID'];
+		}
+		// Do not write values if there is an error
+		if (sizeof($error))
+		{
+			$submit = false;
+		}
+
+		// We go through the display_vars to make sure no one is trying to set variables he/she is not allowed to...
+		foreach ($display_vars['vars'] as $config_name => $null)
+		{
+			if (!isset($cfg_array[$config_name]) || strpos($config_name, 'legend') !== false)
+			{
+				continue;
+			}
+
+			$this->new_config[$config_name] = $config_value = $cfg_array[$config_name];
+
+			if ($submit)
+			{
+				$config->set($config_name, $config_value);
+			}
+		}
+
+		if ($submit)
+		{
+			$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_TFA_CONFIG_' . strtoupper($mode));
+
+			$message = $user->lang('CONFIG_UPDATED');
+			$message_type = E_USER_NOTICE;
+
+			trigger_error($message . adm_back_link($this->u_action), $message_type);
+		}
+
+		$this->tpl_name = 'acp_board';
+		$this->page_title = $display_vars['title'];
+
+		$template->assign_vars(array(
+			'L_TITLE'			=> $user->lang[$display_vars['title']],
+			'L_TITLE_EXPLAIN'	=> $user->lang[$display_vars['title'] . '_EXPLAIN'],
+
+			'S_ERROR'			=> (sizeof($error)) ? true : false,
+			'ERROR_MSG'			=> implode('<br />', $error),
+
+			'U_ACTION'			=> $this->u_action,
+		));
+
+		// Output relevant page
+		foreach ($display_vars['vars'] as $config_key => $vars)
+		{
+			if (!is_array($vars) && strpos($config_key, 'legend') === false)
+			{
+				continue;
+			}
+
+			if (strpos($config_key, 'legend') !== false)
+			{
+				$template->assign_block_vars('options', array(
+						'S_LEGEND'		=> true,
+						'LEGEND'		=> (isset($user->lang[$vars])) ? $user->lang[$vars] : $vars)
+				);
+
+				continue;
+			}
+
+			$type = explode(':', $vars['type']);
+
+			$l_explain = '';
+			if ($vars['explain'] && isset($user->lang[$vars['lang'] . '_EXPLAIN']))
+			{
+				$l_explain =  $user->lang[$vars['lang'] . '_EXPLAIN'];
+			}
+
+			$content = build_cfg_template($type, $config_key, $this->new_config, $config_key, $vars);
+
+			if (empty($content))
+			{
+				continue;
+			}
+
+			$template->assign_block_vars('options', array(
+				'KEY'			=> $config_key,
+				'TITLE'			=> (isset($user->lang[$vars['lang']])) ? $user->lang[$vars['lang']] : $vars['lang'],
+				'S_EXPLAIN'		=> $vars['explain'],
+				'TITLE_EXPLAIN'	=> $l_explain,
+				'CONTENT'		=> $content,
+
+			));
+
+			unset($display_vars['vars'][$config_key]);
+		}
 	}
 }

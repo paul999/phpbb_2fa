@@ -39,10 +39,6 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge(
 	$lang, array(
-		'ACP_TFA'			=> 'Two factor authentication',
-		'ACP_TFA_MANAGE'	=> 'Two factor authentication',
-
-		'LOG_TFA_CONFIG_MANAGE'	=> 'Two factor authentication settings updated',
-
+		'ACP_TFA_SETTINGS'		=> 'Two factor authentication settings'
 	)
 );
