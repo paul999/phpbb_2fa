@@ -12,6 +12,7 @@ namespace paul999\tfa\event;
 
 use paul999\tfa\helper\sessionHelperInterface;
 use phpbb\controller\helper;
+use phpbb\request\request_interface;
 use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -36,16 +37,39 @@ class listener implements EventSubscriberInterface
 	private $user;
 
 	/**
+	 * @var request_interface
+	 */
+	private $request;
+
+	/**
+	 * @var string
+	 */
+	private $php_ext;
+
+	/**
+	 * @var string
+	 */
+	private $root_path;
+
+	/**
 	 * Constructor
 	 *
 	 * @access public
 	 * @param sessionHelperInterface $helper
+	 * @param helper $controller_helper
+	 * @param user $user
+	 * @param request_interface $request
+	 * @param string $php_ext
+	 * @param string $root_path
 	 */
-	public function __construct(sessionHelperInterface $helper, helper $controller_helper, user $user)
+	public function __construct(sessionHelperInterface $helper, helper $controller_helper, user $user, request_interface $request, $php_ext, $root_path)
 	{
 		$this->helper				= $helper;
 		$this->controller_helper 	= $controller_helper;
 		$this->user					= $user;
+		$this->request				= $request;
+		$this->php_ext				= $php_ext;
+		$this->root_path			= $root_path;
 	}
 
 	/**
@@ -67,9 +91,14 @@ class listener implements EventSubscriberInterface
 	{
 		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS)
 		{
+			$ucp_mode = '';
+			if ($this->user->page['page_name'] == 'ucp.' . $this->php_ext && $this->request->variable('i', '') == $ucp_mode)
+			{
+				return; // We are at our UCP page, so skip any other checks. This page is always available
+			}
 			if ($this->helper->isTfaRequired($this->user->data['user_id']))
 			{
-				$url = '';
+				$url = append_sid("{$this->root_path}ucp.{$this->php_ext}", "i={$ucp_mode}");
 				trigger_error($this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>'), E_USER_WARNING);
 			}
 		}
