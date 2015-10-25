@@ -1,8 +1,9 @@
 <!-- INCLUDE overall_header.html -->
-<!-- INCLUDE_JS @paul999_tfa/js/u2f-api.js -->
+<!-- INCLUDEJS @paul999_tfa/js/u2f-api.js -->
 <script>
     (function($) {
         var req = {U2F_REQ};
+        console.log("Loading with " + req);
         $(document).ready(function() {
             console.log("Loading U2F signing");
             u2f.sign(req, function(data) {
