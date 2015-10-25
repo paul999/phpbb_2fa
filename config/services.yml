@@ -12,6 +12,7 @@ services:
             - @dbal.conn
             - @template
             - @user
+            - @request
             - %tables.users%
             - %paul999.2fa.tables.tfa_registration%
 
