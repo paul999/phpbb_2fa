@@ -1,0 +1,41 @@
+<!-- INCLUDE ucp_header.html -->
+
+<!-- Based on ucp_profile_autologin_keys -->
+<form id="ucp" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
+
+    <h2>{L_TITLE}</h2>
+    <div class="panel">
+        <div class="inner">
+            <p>{L_TFA_KEYS}</p>
+            <!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+            <table class="table1">
+                <thead>
+                <tr>
+                    <th class="name">{L_ID}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- BEGIN keys -->
+                <!-- IF keys.S_ROW_COUNT is even --><tr class="bg1"><!-- ELSE --><tr class="bg2"><!-- ENDIF -->
+                    <td>{keys.ID}</td>
+                    <td class="center mark"><input type="checkbox" name="keys[]" value="{keys.KEY}" id="{keys.KEY}" /></td>
+                </tr>
+                <!-- BEGINELSE -->
+                <tr><td colspan="4" class="bg1" style="text-align: center">{L_TFA_NO_KEYS}</td></tr>
+                <!-- END keys -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- IF .keys -->
+    <fieldset class="display-actions">
+        {S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_DELETE_MARKED}" class="button2" />
+        <div><a href="#" onclick="$('#ucp input:checkbox').prop('checked', true); return false;">{L_MARK_ALL}</a> &bull; <a href="#" onclick="$('#ucp input:checkbox').prop('checked', false); return false;">{L_UNMARK_ALL}</a></div>
+        {S_FORM_TOKEN}
+    </fieldset>
+    <!-- ENDIF -->
+
+</form>
+
+<!-- INCLUDE ucp_footer.html -->
