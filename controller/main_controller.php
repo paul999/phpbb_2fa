@@ -195,7 +195,7 @@ class main_controller
 	public function submit($user_id, $admin, $auto_login, $viewonline)
 	{
 		$this->user->add_lang_ext('paul999/tfa', 'common');
-		
+
 		$sql = 'SELECT u2f_request FROM ' . SESSIONS_TABLE . ' WHERE
 			session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
   			session_user_id = ' . (int)$this->user->data['user_id'];
@@ -299,7 +299,7 @@ class main_controller
 
 				/** Error old OpenSSL version */
 				case ERR_OLD_OPENSSL:
-					throw new BadRequestHttpException('ERR_OLD_OPENSSL', $error);
+					throw new BadRequestHttpException(sprintf('ERR_OLD_OPENSSL', OPENSSL_VERSION_TEXT), $error);
 
 				default:
 					throw new BadRequestHttpException('UNKNOWN_ERROR', $error);
@@ -307,7 +307,7 @@ class main_controller
 		}
 		catch (\InvalidArgumentException $invalid)
 		{
-			throw new BadRequestHttpException('TFA_SOMETHING_WENT_WRONG', $invalid); // TODO: Language
+			throw new BadRequestHttpException('TFA_SOMETHING_WENT_WRONG', $invalid);
 		}
 
 	}
