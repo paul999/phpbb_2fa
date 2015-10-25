@@ -4,6 +4,11 @@
     console.log("Loading with ", req);
     $(document).ready(function() {
         console.log("Loading U2F signing");
+
+        if(!(bowser.chrome && bowser.version >= 41)) {
+            $("#browser_supported").show();
+        }
+
         u2f.sign(req, function(data) {
             $("#authenticate").value = JSON.stringify(data);
             $("submit_auth").submit();
