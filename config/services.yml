@@ -28,6 +28,7 @@ services:
             - @paul999.tfa.sessionHelper
             - @controller.helper
             - @user
+            - @request
             - %core.php_ext%
             - %core.root_path%
         tags:
