@@ -26,7 +26,7 @@ class update_sessions extends \phpbb\db\migration\migration
 		return array(
 			'add_columns'        => array(
 				$this->table_prefix . 'sessions'        => array(
-					'u2f_request'    => array('TEXT', ''),
+					'u2f_request'    => array('TEXT', '', null),
 				),
 			),
 		);
