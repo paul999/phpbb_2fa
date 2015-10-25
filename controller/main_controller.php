@@ -123,7 +123,8 @@ class main_controller
 		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET u2f_request = \'' . $this->db->sql_escape($registrations) . '\'
 					WHERE
 						session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-						user_id = ' . (int)$this->user->data['user_id'];
+						session_user_id = ' . (int)$this->user->data['user_id'];
+		$this->db->sql_query($sql);
 		$count = $this->db->sql_affectedrows();
 
 		if ($count != 1)
