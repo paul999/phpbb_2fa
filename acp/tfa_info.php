@@ -20,7 +20,7 @@ class tfa_info
 			'modes'		=> array(
 				'manage'	=> array(
 					'title'	=> 'ACP_TFA_MANAGE',
-//					'auth'	=> 'ext_paul999/tfa && acl_a_tfa',
+					'auth'	=> 'ext_paul999/tfa && acl_a_tfa',
 					'cat'	=> array('ACP_TFA')),
 			),
 		);
