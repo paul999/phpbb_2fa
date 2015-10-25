@@ -13,6 +13,8 @@ services:
             - @template
             - @user
             - @request
+            - %core.root_path%
+            - %core.php_ext%
             - %tables.users%
             - %paul999.2fa.tables.tfa_registration%
 
