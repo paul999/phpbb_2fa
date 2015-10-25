@@ -14,13 +14,13 @@ class tfa_module
 {
 	function main($id, $mode)
 	{
-		global $cache, $config, $db, $user, $auth, $template, $phpbb_root_path, $phpEx;
-		global $request, $phpbb_container, $phpbb_dispatcher;
+		global $db, $user, $template;
+		global $request, $phpbb_container;
 
 		$user->add_lang('posting');
 		$user->add_lang_ext('paul999/tfa', 'ucp_tfa');
 
-		$registration_table = $phpbb_container->get('%paul999.2fa.tables.tfa_registration%');
+		$registration_table = $phpbb_container->getParameter('paul999.2fa.tables.tfa_registration');
 
 		$preview	= $request->variable('preview', false, false, \phpbb\request\request_interface::POST);
 		$submit		= $request->variable('submit', false, false, \phpbb\request\request_interface::POST);
