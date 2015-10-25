@@ -35,4 +35,16 @@ class sessionHelper implements sessionHelperInterface
 		// TODO: Implement isTfaRequired() method.
 		return true;
 	}
+
+	/**
+	 * Check if the user has two factor authentication added to his account.
+	 *
+	 * @param array $user_row
+	 * @return bool
+	 */
+	public function isTfaRegistered($user_row)
+	{
+		// TODO: Implement isTfaRegistered() method.
+		return true;
+	}
 }
