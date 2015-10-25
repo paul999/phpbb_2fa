@@ -1,13 +1,17 @@
 <!-- IF U2F_REQ -->
 <script>
     var req = {U2F_REQ};
-    console.log("Loading with " + req);
+    console.log("Loading with ", req);
     $(document).ready(function() {
         console.log("Loading U2F signing");
         u2f.sign(req, function(data) {
             $("#authenticate").value = JSON.stringify(data);
             $("submit_auth").submit();
         });
+
+        setTimeout(function(){
+            $("#no_response").show();
+        }, 5000);
     });
 </script>
 <!-- ENDIF -->
