@@ -70,7 +70,7 @@ class listener implements EventSubscriberInterface
 			if ($this->helper->isTfaRequired($this->user->data['user_id']))
 			{
 				$url = '';
-				trigger_error($this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>'), E_USER_ERROR);
+				trigger_error($this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>'), E_USER_WARNING);
 			}
 		}
 	}
