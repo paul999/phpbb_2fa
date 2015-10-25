@@ -75,9 +75,9 @@ class listener implements EventSubscriberInterface
 				else
 				{
 					redirect($this->controller_helper->route('paul999_tfa_read_controller', array(
-						'user_id'		=> $event['login']['user_row']['user_id'],
-						'admin'			=> $event['admin'],
-						'auto_login'	=> $event['auto_login'],
+						'user_id'		=> (int)$event['login']['user_row']['user_id'],
+						'admin'			=> (int)$event['admin'],
+						'auto_login'	=> (int)$event['auto_login'],
 						'viewonline'	=> 0,
 					)));
 				}
