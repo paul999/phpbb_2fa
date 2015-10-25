@@ -28,7 +28,7 @@ class initial_module extends \phpbb\db\migration\migration
 					'modes'				=> array('manage'),
 				),
 			)),
-			array('module.add', array('ucp', 'UCP_MAIN', 'UCP_TFA')),
+			array('module.add', array('ucp', '', 'UCP_TFA')),
 			array('module.add', array(
 				'ucp', 'UCP_TFA', array(
 					'module_basename'	=> '\paul999\tfa\ucp\tfa_module',

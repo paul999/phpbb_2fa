@@ -16,10 +16,10 @@ class tfa_info
 	{
 		return array(
 			'filename'	=> '\paul999\tfa\ucp\tfa_module',
-			'title'		=> 'UCP_TFA',
+			'title'		=> 'UCP_TFA_SETTINGS',
 			'modes'		=> array(
 				'manage'	=> array(
-					'title'	=> 'ACP_TFA_MANAGE',
+					'title'	=> 'UCP_TFA_MANAGE',
 					'auth'	=> 'ext_paul999/tfa',
 					'cat'	=> array('UCP_TFA')),
 			),
