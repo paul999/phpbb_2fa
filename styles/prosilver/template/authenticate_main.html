@@ -1,19 +1,5 @@
 <!-- INCLUDE overall_header.html -->
 <!-- INCLUDEJS @paul999_tfa/js/u2f-api.js -->
-<script>
-    (function($) {
-        var req = {U2F_REQ};
-        console.log("Loading with " + req);
-        $(document).ready(function() {
-            console.log("Loading U2F signing");
-            u2f.sign(req, function(data) {
-                $("#authenticate").value = JSON.stringify(data);
-                $("submit_auth").submit();
-            });
-        });
-
-    });
-</script>
 
 <form action="{U_SUBMIT_AUTH}" id="submit_auth">
     <input type="hidden" name="authenticate" id="authenticate" />
