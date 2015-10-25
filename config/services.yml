@@ -4,6 +4,10 @@ imports:
 services:
     paul999.tfa.sessionHelper:
         class: paul999\tfa\helper\sessionHelper
+        arguments:
+            - @dbal.conn
+            - @config
+            - %paul999.2fa.tables.tfa_registration%
 
     paul999.tfa.controller:
         class: paul999\tfa\controller\main_controller
@@ -23,6 +27,7 @@ services:
         arguments:
             - @paul999.tfa.sessionHelper
             - @controller.helper
+            - @user
         tags:
             - { name: event.listener }
 

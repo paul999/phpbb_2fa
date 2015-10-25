@@ -12,6 +12,7 @@ namespace paul999\tfa\event;
 
 use paul999\tfa\helper\sessionHelperInterface;
 use phpbb\controller\helper;
+use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -30,15 +31,21 @@ class listener implements EventSubscriberInterface
 	private $controller_helper;
 
 	/**
+	 * @var user
+	 */
+	private $user;
+
+	/**
 	 * Constructor
 	 *
 	 * @access public
 	 * @param sessionHelperInterface $helper
 	 */
-	public function __construct(sessionHelperInterface $helper, helper $controller_helper)
+	public function __construct(sessionHelperInterface $helper, helper $controller_helper, user $user)
 	{
-		$this->helper = $helper;
-		$this->controller_helper = $controller_helper;
+		$this->helper				= $helper;
+		$this->controller_helper 	= $controller_helper;
+		$this->user					= $user;
 	}
 
 	/**
@@ -52,7 +59,20 @@ class listener implements EventSubscriberInterface
 	{
 		return array(
 			'core.auth_login_session_create_before'		=> 'auth_login_session_create_before',
+			'core.user_setup_after'						=> 'user_setup_after',
 		);
+	}
+
+	public function user_setup_after($event)
+	{
+		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS)
+		{
+			if ($this->helper->isTfaRequired($this->user->data['user_id']))
+			{
+				$url = '';
+				trigger_error($this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>'), E_USER_ERROR);
+			}
+		}
 	}
 
 	/**
