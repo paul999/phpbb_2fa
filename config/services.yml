@@ -11,6 +11,7 @@ services:
             - @controller.helper
             - @dbal.conn
             - @template
+            - @user
             - %tables.users%
             - %paul999.2fa.tables.tfa_registration%
 
