@@ -8,11 +8,8 @@
  *
  */
 
-namespace paul999\fta\migrations;
+namespace paul999\tfa\migrations;
 
-/**
-* Migration stage 6: Initial module
-*/
 class initial_module extends \phpbb\db\migration\migration
 {
 	/**
@@ -24,17 +21,17 @@ class initial_module extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'ACP_F2A')),
+			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'ACP_TFA')),
 			array('module.add', array(
-				'acp', 'ACP_F2A_MANAGE', array(
-					'module_basename'	=> '\paul999\fta\acp\f2a_module',
+				'acp', 'ACP_TFA_MANAGE', array(
+					'module_basename'	=> '\paul999\tfa\acp\tfa_module',
 					'modes'				=> array('manage'),
 				),
 			)),
-			array('module.add', array('ucp', 'UCP_MAIN', 'UCP_F2A')),
+			array('module.add', array('ucp', 'UCP_MAIN', 'UCP_TFA')),
 			array('module.add', array(
-				'ucp', 'UCP_F2A_MANAGE', array(
-					'module_basename'	=> '\paul999\fta\ucp\f2a_module',
+				'ucp', 'UCP_TFA_MANAGE', array(
+					'module_basename'	=> '\paul999\tfa\ucp\tfa_module',
 					'modes'				=> array('manage'),
 				),
 			)),

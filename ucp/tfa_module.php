@@ -8,9 +8,9 @@
  *
  */
 
-namespace paul999\fta\ucp;
+namespace paul999\tfa\ucp;
 
-class f2a_module
+class tfa_module
 {
 	public $u_action;
 

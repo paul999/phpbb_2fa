@@ -8,20 +8,20 @@
  *
  */
 
-namespace paul999\f2a\ucp;
+namespace paul999\tfa\acp;
 
-class f2a_info
+class tfa_info
 {
 	public function module()
 	{
 		return array(
-			'filename'	=> '\paul999\f2a\ucp\f2a_module',
-			'title'		=> 'UCP_F2A_MANAGE',
+			'filename'	=> '\paul999\tfa\acp\tfa_module',
+			'title'		=> 'TFA',
 			'modes'		=> array(
 				'manage'	=> array(
-					'title'	=> 'ACP_F2A_MANAGE',
-					'auth'	=> 'ext_paul999/f2a',
-					'cat'	=> array('UCP_F2A')),
+					'title'	=> 'ACP_TFA_MANAGE',
+					'auth'	=> 'ext_paul999/tfa && acl_a_tfa',
+					'cat'	=> array('ACP_TFA')),
 			),
 		);
 	}
