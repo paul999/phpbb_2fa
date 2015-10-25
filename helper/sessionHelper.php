@@ -33,5 +33,6 @@ class sessionHelper implements sessionHelperInterface
 	public function isTfaRequired($user_row)
 	{
 		// TODO: Implement isTfaRequired() method.
+		return true;
 	}
 }
