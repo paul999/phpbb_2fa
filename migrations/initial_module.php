@@ -23,14 +23,14 @@ class initial_module extends \phpbb\db\migration\migration
 		return array(
 			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'ACP_TFA')),
 			array('module.add', array(
-				'acp', 'ACP_TFA_MANAGE', array(
+				'acp', 'ACP_TFA', array(
 					'module_basename'	=> '\paul999\tfa\acp\tfa_module',
 					'modes'				=> array('manage'),
 				),
 			)),
 			array('module.add', array('ucp', 'UCP_MAIN', 'UCP_TFA')),
 			array('module.add', array(
-				'ucp', 'UCP_TFA_MANAGE', array(
+				'ucp', 'UCP_TFA', array(
 					'module_basename'	=> '\paul999\tfa\ucp\tfa_module',
 					'modes'				=> array('manage'),
 				),
