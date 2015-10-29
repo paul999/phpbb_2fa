@@ -64,12 +64,12 @@ class sessionHelper implements sessionHelperInterface
 	 */
 	public function isTfaRegistered($user_id)
 	{
-		$sql = 'SELECT COUNT(registration_id) FROM ' . $this->registration_table . ' WHERE user_id = ' . (int)$user_id;
+		$sql = 'SELECT COUNT(registration_id) as reg_id FROM ' . $this->registration_table . ' WHERE user_id = ' . (int)$user_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		if ($row)
+		if ($row && $row['reg_id'] > 0)
 		{
 			return true;
 		}
