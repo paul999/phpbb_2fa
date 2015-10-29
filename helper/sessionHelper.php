@@ -33,6 +33,8 @@ class sessionHelper implements sessionHelperInterface
 	 *
 	 * @access public
 	 * @param driver_interface $db
+	 * @param config $config
+	 * @param $registration_table
 	 */
 	public function __construct(driver_interface $db, config $config, $registration_table)
 	{
@@ -63,7 +65,7 @@ class sessionHelper implements sessionHelperInterface
 	public function isTfaRegistered($user_id)
 	{
 		$sql = 'SELECT COUNT(registration_id) FROM ' . $this->registration_table . ' WHERE user_id = ' . (int)$user_id;
-		$result = $this->sql_query($sql);
+		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
