@@ -3,9 +3,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file or at
 // https://developers.google.com/open-source/licenses/bsd
-//
-// Source modified by Paul Sohier to be able to intergrate
-// into phpBB
 
 /**
  * @fileoverview The U2F api.

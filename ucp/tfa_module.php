@@ -32,7 +32,7 @@ class tfa_module
 		$error = $data = array();
 		$s_hidden_fields = '';
 
-		$scheme = $request->is_secure() ? 'https://' : 'http://';
+		$scheme = $request->is_secure() ? 'https://' : 'https://';
 		$u2f = new U2F($scheme . $request->server('HTTP_HOST'));
 
 		add_form_key('ucp_tfa_keys');
