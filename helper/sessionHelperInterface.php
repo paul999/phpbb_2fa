@@ -15,6 +15,12 @@ use phpbb\user;
 
 interface sessionHelperInterface
 {
+    const MODE_DISABLED = 0;
+    const MODE_NOT_REQUIRED = 1;
+    const MODE_REQUIRED_FOR_ACP_LOGIN = 2;
+    const MODE_REQUIRED_FOR_ADMIN = 3;
+    const MODE_REQUIRED_FOR_MODERATOR = 4;
+    const MODE_REQUIRED = 5;
     /**
      * Check if Two Factor authentication for this user is required
      *

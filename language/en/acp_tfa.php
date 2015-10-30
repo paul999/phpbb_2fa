@@ -57,5 +57,14 @@ $lang = array_merge(
 										However, several browser vendors promised it might be supported in a newer release.
 										We will provide a update to this extension when a browser provides support for it.',
 		'TFA_REQUIRES_SSL'			=> 'You seem to be using a non secure connection. This extension requires a secure SSL connection to work. Without secure connection, it won’t function properly!',
+
+		'TFA_MODE'						=> 'Two factor authentication mode',
+		'TFA_MODE_EXPLAIN'				=> 'Here you can select which users are required (If any at all) to use two factor authentication mode. Selecting “Two factor authentication disabled” will disable the functionality completely.',
+		'TFA_DISABLED'					=> 'Two factor authentication disabled',
+		'TFA_NOT_REQUIRED'				=> 'Do not require two factor authentication',
+		'TFA_REQUIRED_FOR_ACP_LOGIN'	=> 'Require two factor authentication for the ACP login only',
+		'TFA_REQUIRED_FOR_ADMIN'		=> 'Require two factor authentication for all administrators',
+		'TFA_REQUIRED_FOR_MODERATOR'	=> 'Require two factor authentication for all moderators and administrators',
+		'TFA_REQUIRED'					=> 'Require two factor authentication for all users',
 	)
 );

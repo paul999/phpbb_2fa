@@ -22,6 +22,7 @@ class version_001 extends \phpbb\db\migration\migration
 			'\paul999\tfa\migrations\initial_module',
 			'\paul999\tfa\migrations\initial_permissions',
 			'\paul999\tfa\migrations\set_role_data',
+			'\paul999\tfa\migrations\initial_config',
 		);
 	}
 }

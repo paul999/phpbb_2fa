@@ -20,7 +20,7 @@ class tfa_info
 			'modes'		=> array(
 				'manage'	=> array(
 					'title'	=> 'UCP_TFA_MANAGE',
-					'auth'	=> 'ext_paul999/tfa',
+					'auth'	=> 'ext_paul999/tfa && cfg_tfa_mode',
 					'cat'	=> array('UCP_TFA')),
 			),
 		);

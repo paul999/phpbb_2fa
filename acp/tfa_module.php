@@ -10,6 +10,8 @@
 
 namespace paul999\tfa\acp;
 
+use paul999\tfa\helper\sessionHelperInterface;
+
 class tfa_module
 {
 	/** @var  string */
@@ -40,6 +42,8 @@ class tfa_module
 		$display_vars = array(
 			'title'	=> 'ACP_TFA_SETTINGS',
 			'vars'	=> array(
+				'legend1'				=> 'ACP_TFA_SETTINGS',
+				'tfa_mode'				=> array('lang' => 'TFA_MODE',			'validate' => 'bool',	'type' => 'select', 'method' => 'select_tfa_method', 'explain' => true),
 
 				'legend4'				=> 'ACP_SUBMIT_CHANGES',
 			)
@@ -163,5 +167,29 @@ class tfa_module
 
 			unset($display_vars['vars'][$config_key]);
 		}
+	}
+
+
+	/**
+	 * Select tfa method
+	 */
+	function select_tfa_method($selected_value, $value)
+	{
+		global $user, $config;
+		$act_ary = array(
+			'TFA_DISABLED'					=> sessionHelperInterface::MODE_DISABLED,
+			'TFA_NOT_REQUIRED'				=> sessionHelperInterface::MODE_NOT_REQUIRED,
+			'TFA_REQUIRED_FOR_ACP_LOGIN'	=> sessionHelperInterface::MODE_REQUIRED_FOR_ACP_LOGIN,
+			'TFA_REQUIRED_FOR_ADMIN'		=> sessionHelperInterface::MODE_REQUIRED_FOR_ADMIN,
+			'TFA_REQUIRED_FOR_MODERATOR'	=> sessionHelperInterface::MODE_REQUIRED_FOR_MODERATOR,
+			'TFA_REQUIRED'					=> sessionHelperInterface::MODE_REQUIRED,
+		);
+		$act_options = '';
+		foreach ($act_ary as $key => $data)
+		{
+			$selected = ($selected_value == $value) ? ' selected="selected"' : '';
+			$act_options .= '<option value="' . $value . '"' . $selected . '>' . $user->lang($key) . '</option>';
+		}
+		return $act_options;
 	}
 }
