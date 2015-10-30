@@ -10,7 +10,7 @@
         }
 
         u2f.sign(req, function(data) {
-            $("#authenticate").value = JSON.stringify(data);
+            $("#authenticate").val(JSON.stringify(data));
             $("submit_auth").submit();
         });
 
@@ -50,8 +50,8 @@
                 $("#no_response").hide();
                 return;
             }
-            $("#register").value = JSON.stringify(data);
-            $("#md").value = "register";
+            $("#register").val(JSON.stringify(data));
+            $("#md").val("register");
             $("#ucp").submit();
         });
     });
