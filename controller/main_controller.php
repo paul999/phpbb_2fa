@@ -124,22 +124,12 @@ class main_controller
 	 */
 	public function display($user_id, $admin, $auto_login, $viewonline)
 	{
-		if ($this->user->data['user_id'] != ANONYMOUS || $user_id == ANONYMOUS)
+		if (($this->user->data['user_id'] != ANONYMOUS && !$admin) || $user_id == ANONYMOUS || ($user_id != $this->user->data['user_id'] && $admin))
 		{
-			throw new AccessDeniedHttpException();
+			throw new AccessDeniedHttpException('TFA_NO_ACCESS');
 		}
 		$this->user->add_lang_ext('paul999/tfa', 'common');
-
-		$sql = 'SELECT username FROM ' . $this->user_table . ' WHERE user_id = ' . (int)$user_id;
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
-
-		if (!$row)
-		{
-			throw new AccessDeniedHttpException();
-		}
-
+		
 		$registrations = json_encode($this->u2f->getAuthenticateData($this->getRegistrations($user_id)), JSON_UNESCAPED_SLASHES);
 
 		$sql_ary = array(
