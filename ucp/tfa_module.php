@@ -94,7 +94,7 @@ class tfa_module
 							'key_handle'	=> $reg->keyHandle,
 							'public_key'	=> $reg->publicKey,
 							'certificate'	=> $reg->certificate,
-							'counter'		=> $reg->counter,
+							'counter'		=> ($reg->counter > 0 ) ? $reg->counter : 0,
 						);
 
 						$sql = 'INSERT INTO ' . $registration_table . ' ' . $db->sql_build_array('INSERT', $sql_ary);
