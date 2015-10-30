@@ -115,9 +115,9 @@ class tfa_module
 						trigger_error($message);
 
 					}
-					catch (Error $error)
+					catch (Error $err)
 					{
-						switch ($error->getCode()) {
+						switch ($err->getCode()) {
 							/** Error for the authentication message not matching any outstanding
 							 * authentication request */
 							case ERR_NO_MATCHING_REQUEST:
