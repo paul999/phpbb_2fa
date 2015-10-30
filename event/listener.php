@@ -116,6 +116,8 @@ class listener implements EventSubscriberInterface
 				$allowed_i[] = $row['module_id'];
 			}
 			$this->db->sql_freeresult($result);
+			$ucp_mode = "-paul999-tfa-ucp-tfa_module";
+			$allowed_i[] = $ucp_mode;
 
 			if ($this->user->page['page_name'] == 'ucp.' . $this->php_ext && in_array($this->request->variable('i', ''), $allowed_i))
 			{
