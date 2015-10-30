@@ -140,7 +140,7 @@ class tfa_module
 			'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 			'S_UCP_ACTION'		=> $this->u_action,
 			'U2F_REG'			=> true,
-			'U2F_SIGN_REQUEST'	=> json_encode($data[0]),
+			'U2F_SIGN_REQUEST'	=> $data[0],
 			'U2F_SIGN'			=> json_encode($data[1]),
 		));
 
