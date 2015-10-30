@@ -29,6 +29,7 @@ services:
             - @controller.helper
             - @user
             - @request
+            - @dbal.conn
             - %core.php_ext%
             - %core.root_path%
         tags:
