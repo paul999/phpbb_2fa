@@ -175,7 +175,7 @@ class tfa_module
 	 */
 	function select_tfa_method($selected_value, $value)
 	{
-		global $user, $config;
+		global $user;
 		$act_ary = array(
 			'TFA_DISABLED'					=> sessionHelperInterface::MODE_DISABLED,
 			'TFA_NOT_REQUIRED'				=> sessionHelperInterface::MODE_NOT_REQUIRED,
@@ -187,8 +187,8 @@ class tfa_module
 		$act_options = '';
 		foreach ($act_ary as $key => $data)
 		{
-			$selected = ($selected_value == $value) ? ' selected="selected"' : '';
-			$act_options .= '<option value="' . $value . '"' . $selected . '>' . $user->lang($key) . '</option>';
+			$selected = ($data == $selected_value) ? ' selected="selected"' : '';
+			$act_options .= '<option value="' . $data . '"' . $selected . '>' . $user->lang($key) . '</option>';
 		}
 		return $act_options;
 	}
