@@ -28,6 +28,8 @@ class sessionHelper implements sessionHelperInterface
 
 	private $registration_table;
 
+	private $user_array = array();
+
 	/**
 	 * Constructor
 	 *
@@ -52,27 +54,31 @@ class sessionHelper implements sessionHelperInterface
 	 */
 	public function isTfaRequired($user_id, $admin = false, $userdata = array(), $try = false)
 	{
-		// TODO: Implement isTfaRequired() method.
-		return true;
+		if ($this->isTfaRegistered($user_id))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**
 	 * Check if the user has two factor authentication added to his account.
 	 *
-	 * @param array $user_id
+	 * @param int $user_id
 	 * @return bool
 	 */
 	public function isTfaRegistered($user_id)
 	{
+		if (isset($this->user_array[$user_id]))
+		{
+			return $this->user_array[$user_id];
+		}
 		$sql = 'SELECT COUNT(registration_id) as reg_id FROM ' . $this->registration_table . ' WHERE user_id = ' . (int)$user_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		if ($row && $row['reg_id'] > 0)
-		{
-			return true;
-		}
-		return false;
+		$this->user_array[$user_id] = $row && $row['reg_id'] > 0;
+		return $this->user_array[$user_id];
 	}
 }
