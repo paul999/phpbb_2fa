@@ -25,8 +25,8 @@ class initial_schema extends \phpbb\db\migration\migration
 						'public_key'			=> array('VCHAR:255', ''),
 						'certificate'			=> array('TEXT', ''),
 						'counter'				=> array('UINT', 0),
-						'last_used'				=> array('UINT', 0),
-						'registered'			=> array('UINT', 0),
+						'last_used'				=> array('TIMESTAMP', 0),
+						'registered'			=> array('TIMESTAMP', 0),
 					),
 					'PRIMARY_KEY'	=> 'registration_id',
 					'KEYS'			=> array(
