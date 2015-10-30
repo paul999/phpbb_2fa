@@ -55,7 +55,7 @@ class tfa_module
 
 		if ($submit)
 		{
-			$mode = $request->variable('mode', '');
+			$mode = $request->variable('md', '');
 			if (!check_form_key('ucp_tfa_keys'))
 			{
 				$error[] = 'FORM_INVALID';
