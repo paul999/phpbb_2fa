@@ -15,7 +15,7 @@ use u2flib_server\U2F;
 
 class tfa_module
 {
-	private $u_action;
+	public $u_action;
 
 	function main($id, $mode)
 	{
