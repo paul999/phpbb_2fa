@@ -33,7 +33,7 @@ class tfa_module
 	/**
 	 * @param $id
 	 * @param $mode
-     */
+	 */
 	function main($id, $mode)
 	{
 		global $db, $user, $template;
@@ -86,88 +86,98 @@ class tfa_module
 					}
 					break;
 				case 'register':
-						try {
-							$reg = $u2f->doRegister(json_decode($_SESSION['regReq']), json_decode($_POST['register2']));
+					try {
+						$reg = $u2f->doRegister(json_decode($user->data['u2f_request']), json_decode($request->variable('register', '')));
 
-							$sql_ary = array(
-								'user_id'		=> $user->data['user_id'],
-								'key_handle'	=> $reg->keyHandle,
-								'public_key'	=> $reg->publicKey,
-								'certificate'	=> $reg->certificate,
-								'counter'		=> $reg->counter,
-							);
+						$sql_ary = array(
+							'user_id'		=> $user->data['user_id'],
+							'key_handle'	=> $reg->keyHandle,
+							'public_key'	=> $reg->publicKey,
+							'certificate'	=> $reg->certificate,
+							'counter'		=> $reg->counter,
+						);
 
-							$sql = 'INSERT INTO ' . $registration_table . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-							$db->sql_query($sql);
+						$sql = 'INSERT INTO ' . $registration_table . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+						$db->sql_query($sql);
 
-							meta_refresh(3, $this->u_action);
-							$message = $user->lang['TFA_KEY_ADDED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
-							trigger_error($message);
+						$sql_ary = array(
+							'u2f_request'	=> json_encode($data[0], JSON_UNESCAPED_SLASHES),
+						);
 
+						$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+									WHERE
+										session_id = \'' . $db->sql_escape($user->data['session_id']) . '\' AND
+										session_user_id = ' . (int)$user->data['user_id'];
+						$db->sql_query($sql);
+
+						meta_refresh(3, $this->u_action);
+						$message = $user->lang['TFA_KEY_ADDED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+						trigger_error($message);
+
+					}
+					catch (Error $error)
+					{
+						switch ($error->getCode()) {
+							/** Error for the authentication message not matching any outstanding
+							 * authentication request */
+							case ERR_NO_MATCHING_REQUEST:
+								$error[] = 'ERR_NO_MATCHING_REQUEST';
+								break;
+							/** Error for the authentication message not matching any registration */
+							case ERR_NO_MATCHING_REGISTRATION:
+								$error[] = 'ERR_NO_MATCHING_REGISTRATION';
+								break;
+							/** Error for the signature on the authentication message not verifying with
+							 * the correct key */
+							case ERR_AUTHENTICATION_FAILURE:
+								$error[] = 'ERR_AUTHENTICATION_FAILURE';
+								break;
+							/** Error for the challenge in the registration message not matching the
+							 * registration challenge */
+							case ERR_UNMATCHED_CHALLENGE:
+								$error[] = 'ERR_UNMATCHED_CHALLENGE';
+								break;
+							/** Error for the attestation signature on the registration message not
+							 * verifying */
+							case ERR_ATTESTATION_SIGNATURE:
+								$error[] = 'ERR_ATTESTATION_SIGNATURE';
+								break;
+							/** Error for the attestation verification not verifying */
+							case ERR_ATTESTATION_VERIFICATION:
+								$error[] = 'ERR_ATTESTATION_VERIFICATION';
+								break;
+							/** Error for not getting good random from the system */
+							case ERR_BAD_RANDOM:
+								$error[] = 'ERR_BAD_RANDOM';
+								break;
+							/** Error when the counter is lower than expected */
+							case ERR_COUNTER_TOO_LOW:
+								$error[] = 'ERR_COUNTER_TOO_LOW';
+								break;
+							/** Error decoding public key */
+							case ERR_PUBKEY_DECODE:
+								$error[] = 'ERR_PUBKEY_DECODE';
+								break;
+							/** Error user-agent returned error */
+							case ERR_BAD_UA_RETURNING:
+								$error[] = 'ERR_BAD_UA_RETURNING';
+								break;
+							/** Error old OpenSSL version */
+							case ERR_OLD_OPENSSL:
+								$error[] = sprintf('ERR_OLD_OPENSSL', OPENSSL_VERSION_TEXT);
+								break;
+							default:
+								$error[] = 'UNKNOWN_ERROR';
 						}
-						catch (Error $error)
-						{
-							switch ($error->getCode()) {
-								/** Error for the authentication message not matching any outstanding
-								 * authentication request */
-								case ERR_NO_MATCHING_REQUEST:
-									$error[] = 'ERR_NO_MATCHING_REQUEST';
-									break;
-								/** Error for the authentication message not matching any registration */
-								case ERR_NO_MATCHING_REGISTRATION:
-									$error[] = 'ERR_NO_MATCHING_REGISTRATION';
-									break;
-								/** Error for the signature on the authentication message not verifying with
-								 * the correct key */
-								case ERR_AUTHENTICATION_FAILURE:
-									$error[] = 'ERR_AUTHENTICATION_FAILURE';
-									break;
-								/** Error for the challenge in the registration message not matching the
-								 * registration challenge */
-								case ERR_UNMATCHED_CHALLENGE:
-									$error[] = 'ERR_UNMATCHED_CHALLENGE';
-									break;
-								/** Error for the attestation signature on the registration message not
-								 * verifying */
-								case ERR_ATTESTATION_SIGNATURE:
-									$error[] = 'ERR_ATTESTATION_SIGNATURE';
-									break;
-								/** Error for the attestation verification not verifying */
-								case ERR_ATTESTATION_VERIFICATION:
-									$error[] = 'ERR_ATTESTATION_VERIFICATION';
-									break;
-								/** Error for not getting good random from the system */
-								case ERR_BAD_RANDOM:
-									$error[] = 'ERR_BAD_RANDOM';
-									break;
-								/** Error when the counter is lower than expected */
-								case ERR_COUNTER_TOO_LOW:
-									$error[] = 'ERR_COUNTER_TOO_LOW';
-									break;
-								/** Error decoding public key */
-								case ERR_PUBKEY_DECODE:
-									$error[] = 'ERR_PUBKEY_DECODE';
-									break;
-								/** Error user-agent returned error */
-								case ERR_BAD_UA_RETURNING:
-									$error[] = 'ERR_BAD_UA_RETURNING';
-									break;
-								/** Error old OpenSSL version */
-								case ERR_OLD_OPENSSL:
-									$error[] = sprintf('ERR_OLD_OPENSSL', OPENSSL_VERSION_TEXT);
-									break;
-								default:
-									$error[] = 'UNKNOWN_ERROR';
-							}
-						}
-						catch( InvalidArgumentException $e ) {
-							$error[] = $e->getMessage();
- 						}
+					}
+					catch( InvalidArgumentException $e ) {
+						$error[] = $e->getMessage();
+					}
 					break;
 
 				default:
 					$error[] = 'TFA_NO_MODE';
- 			}
+			}
 
 			// Replace "error" strings with their real, localised form
 			$error = array_map(array($user, 'lang'), $error);
