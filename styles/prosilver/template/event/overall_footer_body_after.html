@@ -10,8 +10,9 @@
         }
 
         u2f.sign(req, function(data) {
+            console.log("Received sign response");
             $("#authenticate").val(JSON.stringify(data));
-            $("submit_auth").submit();
+            $("#submit_auth").submit();
         });
 
         setTimeout(function(){

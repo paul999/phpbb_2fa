@@ -330,7 +330,7 @@ class main_controller
 			$reg->certificate	= $row['certificate'];
 			$reg->keyHandle		= $row['key_handle'];
 			$reg->publicKey 	= $row['public_key'];
-			$reg->id 			= $row['id'];
+			$reg->id 			= $row['registration_id'];
 			$rows[] 			= $reg;
 		}
 
