@@ -11,6 +11,7 @@
 namespace paul999\tfa\event;
 
 use paul999\tfa\helper\sessionHelperInterface;
+use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\request\request_interface;
@@ -48,6 +49,11 @@ class listener implements EventSubscriberInterface
 	private $db;
 
 	/**
+	 * @var config
+	 */
+	private $config;
+
+	/**
 	 * @var string
 	 */
 	private $php_ext;
@@ -68,12 +74,13 @@ class listener implements EventSubscriberInterface
 	 * @param string $php_ext
 	 * @param string $root_path
 	 */
-	public function __construct(sessionHelperInterface $helper, helper $controller_helper, user $user, request_interface $request, driver_interface $db, $php_ext, $root_path)
+	public function __construct(sessionHelperInterface $helper, helper $controller_helper, user $user, request_interface $request, driver_interface $db, config $config, $php_ext, $root_path)
 	{
 		$this->helper				= $helper;
 		$this->controller_helper 	= $controller_helper;
 		$this->user					= $user;
 		$this->request				= $request;
+		$this->config				= $config;
 		$this->db					= $db;
 		$this->php_ext				= $php_ext;
 		$this->root_path			= $root_path;
@@ -104,6 +111,10 @@ class listener implements EventSubscriberInterface
 
 	public function user_setup_after($event)
 	{
+		if ($this->config['tfa_mode'] == sessionHelperInterface::MODE_DISABLED)
+		{
+			return;
+		}
 		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS)
 		{
 			$ucp_mode = '';
@@ -137,6 +148,10 @@ class listener implements EventSubscriberInterface
 	 */
 	public function auth_login_session_create_before($event)
 	{
+		if ($this->config['tfa_mode'] == sessionHelperInterface::MODE_DISABLED)
+		{
+			return;
+		}
 		if (isset($event['login']) && isset($event['login']['status']) && $event['login']['status'] == LOGIN_SUCCESS)
 		{
 			// We have a LOGIN_SUCESS result.

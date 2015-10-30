@@ -64,6 +64,7 @@ $lang = array_merge(
 		'FTA_INSERT_KEY_EXPLAIN'            => 'Insert your security key into your computer and press the button on the key.',
 		'TFA_NO_ACCESS'						=> 'It seems you have no access to this page?',
 		'UNABLE_TO_UPDATE_SESSION'			=> 'Unable to update session. Please contact the board administrator',
+		'TFA_DISABLED'						=> 'Two factor authentication has been disabled',
 
 	)
 );

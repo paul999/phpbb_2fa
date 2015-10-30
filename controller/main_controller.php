@@ -10,6 +10,8 @@
 
 namespace paul999\tfa\controller;
 
+use paul999\tfa\helper\sessionHelperInterface;
+use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\request\request_interface;
@@ -63,6 +65,11 @@ class main_controller
 	private $request;
 
 	/**
+	 * @var config
+	 */
+	private $config;
+
+	/**
 	 * @var string
 	 */
 	private $root_path;
@@ -100,13 +107,14 @@ class main_controller
 	 * @param string $user_table
 	 * @param string $registration_table
 	 */
-	public function __construct(helper $controller_helper, driver_interface $db, template $template, user $user, request_interface $request, $root_path, $php_ext, $user_table, $registration_table)
+	public function __construct(helper $controller_helper, driver_interface $db, template $template, user $user, request_interface $request, config $config, $root_path, $php_ext, $user_table, $registration_table)
 	{
 		$this->controller_helper 	= $controller_helper;
 		$this->template 			= $template;
 		$this->db					= $db;
 		$this->user					= $user;
 		$this->request				= $request;
+		$this->config				= $config;
 		$this->root_path			= $root_path;
 		$this->php_ext				= $php_ext;
 		$this->user_table			= $user_table;
@@ -124,11 +132,16 @@ class main_controller
 	 */
 	public function display($user_id, $admin, $auto_login, $viewonline)
 	{
+		$this->user->add_lang_ext('paul999/tfa', 'common');
+
+		if ($this->config['tfa_mode'] == sessionHelperInterface::MODE_DISABLED)
+		{
+			throw new AccessDeniedHttpException('TFA_DISABLED');
+		}
 		if (($this->user->data['user_id'] != ANONYMOUS && !$admin) || $user_id == ANONYMOUS || ($user_id != $this->user->data['user_id'] && $admin))
 		{
 			throw new AccessDeniedHttpException('TFA_NO_ACCESS');
 		}
-		$this->user->add_lang_ext('paul999/tfa', 'common');
 
 		$registrations = json_encode($this->u2f->getAuthenticateData($this->getRegistrations($user_id)), JSON_UNESCAPED_SLASHES);
 

@@ -8,6 +8,7 @@ services:
             - @dbal.conn
             - @config
             - %paul999.2fa.tables.tfa_registration%
+            - %tables.users%
 
     paul999.tfa.controller:
         class: paul999\tfa\controller\main_controller
@@ -17,6 +18,7 @@ services:
             - @template
             - @user
             - @request
+            - @config
             - %core.root_path%
             - %core.php_ext%
             - %tables.users%
@@ -30,6 +32,7 @@ services:
             - @user
             - @request
             - @dbal.conn
+            - @config
             - %core.php_ext%
             - %core.root_path%
         tags:
