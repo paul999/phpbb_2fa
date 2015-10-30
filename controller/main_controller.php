@@ -160,6 +160,7 @@ class main_controller
 
 		$this->template->assign_vars(array(
 			'U2F_REQ'		=> $registrations,
+			'REDIRECT'		=> $this->request->variable('redirect', ''),
 			'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
 				'user_id'		=> $user_id,
 				'admin'			=> $admin,
