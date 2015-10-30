@@ -129,7 +129,7 @@ class main_controller
 			throw new AccessDeniedHttpException('TFA_NO_ACCESS');
 		}
 		$this->user->add_lang_ext('paul999/tfa', 'common');
-		
+
 		$registrations = json_encode($this->u2f->getAuthenticateData($this->getRegistrations($user_id)), JSON_UNESCAPED_SLASHES);
 
 		$sql_ary = array(
@@ -159,7 +159,6 @@ class main_controller
 		}
 
 		$this->template->assign_vars(array(
-			'USERNAME'		=> $row['username'],
 			'U2F_REQ'		=> $registrations,
 			'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
 				'user_id'		=> $user_id,
