@@ -209,7 +209,7 @@ class main_controller
 
 		try {
 			/** @var \paul999\tfa\helper\registrationHelper $reg */
-			$reg = $this->u2f->doAuthenticate(json_decode($row['u2f_request']), $this->getRegistrations($user_id), htmlspecialchars_decode(json_decode($this->request->variable('authenticate', ''))));
+			$reg = $this->u2f->doAuthenticate(json_decode($row['u2f_request']), $this->getRegistrations($user_id), json_decode(htmlspecialchars_decode($this->request->variable('authenticate', ''))));
 			$sql_ary = array(
 				'counter'	=> $reg->counter,
 			);
