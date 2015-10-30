@@ -22,7 +22,7 @@
 <!-- ENDIF -->
 <!-- IF U2F_REG -->
 <script>
-    var req = {U2F_SIGN_REQUEST};
+    var req = {{ U2F_SIGN_REQUEST|json_encode|raw }};
     var sigs = {U2F_SIGN};
 
     if(!(bowser.chrome && bowser.version >= 41)) {
