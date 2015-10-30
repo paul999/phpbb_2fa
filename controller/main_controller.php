@@ -231,10 +231,8 @@ class main_controller
 
 					redirect(append_sid("{$this->root_path}adm/index.{$this->php_ext}", false, true, $this->user->data['session_id']));
 				}
-				/**
-				 * TODO: Find some proper way for redirect!
-				 */
-				redirect(append_sid("{$this->root_path}/index.{$this->php_ext}", false, true, $this->user->data['session_id']));
+				$redirect = $this->request->variable('redirect', "{$this->root_path}/index.{$this->php_ext}");
+				redirect(append_sid($redirect, false, true, $this->user->data['session_id']));
 			}
 			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
 		}
