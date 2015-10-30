@@ -1,5 +1,8 @@
 <!-- INCLUDE ucp_header.html -->
 
+<!-- INCLUDEJS @paul999_tfa/js/u2f-api.js -->
+<!-- INCLUDEJS @paul999_tfa/js/bowser.js -->
+
 <!-- Based on ucp_profile_autologin_keys -->
 <form id="ucp" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
 
@@ -28,13 +31,27 @@
         </div>
     </div>
 
-    <!-- IF .keys -->
+    <div class="rules" id="browser_supported" style="display: none">
+        <div class="inner">
+
+            <strong>{L_FTA_NOT_SUPPORTED}</strong><br />
+            {L_FTA_BROWSER_SEEMS_NOT_SUPPORTED}
+
+        </div>
+    </div>
+
     <fieldset class="display-actions">
-        {S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_DELETE_MARKED}" class="button2" />
+        {S_HIDDEN_FIELDS}
+        <input type="button" name="add_key" id="add_key" value="{L_ADD_KEY}" class="button1"  />
+        <input type="hidden" name="register" value="" />
+        <input type="hidden" name="mode" value="delete" />
+        <!-- IF .keys -->
+        <input type="submit" name="submit" value="{L_DELETE_MARKED}" class="button2" />
         <div><a href="#" onclick="$('#ucp input:checkbox').prop('checked', true); return false;">{L_MARK_ALL}</a> &bull; <a href="#" onclick="$('#ucp input:checkbox').prop('checked', false); return false;">{L_UNMARK_ALL}</a></div>
+        <!-- ENDIF -->
         {S_FORM_TOKEN}
     </fieldset>
-    <!-- ENDIF -->
+
 
 </form>
 

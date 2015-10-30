@@ -20,3 +20,28 @@
     });
 </script>
 <!-- ENDIF -->
+<!-- IF U2F_REG -->
+<script>
+    var req = {U2F_SIGN_REQUEST};
+    var sigs = {U2F_SIGN};
+
+    if(!(bowser.chrome && bowser.version >= 41)) {
+        $("#browser_supported").show();
+        $("#add_key").hide();
+    }
+
+    $("add_key").click(function() {
+        u2f.register([req], sigs, function(data) {
+
+            console.log("Register callback", data);
+            if(data.errorCode) {
+                phpbb.alert("{LA_TFA_ERROR}", "{LA_TFA_REG_FAILED}" + data.errorCode);
+                return;
+            }
+            $("#register").value = JSON.stringify(data);
+            $("#mode").value = "register";
+            $("#ucp").submit();
+        });
+    });
+</script>
+<!-- ENDIF -->

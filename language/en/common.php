@@ -62,6 +62,7 @@ $lang = array_merge(
 		'FTA_BROWSER_SEEMS_NOT_SUPPORTED'   => 'Sorry, currently only Google Chrome is supported.',
 		'FTA_INSERT_KEY'                    => 'Insert your security key',
 		'FTA_INSERT_KEY_EXPLAIN'            => 'Insert your security key into your browser and press the button on the key.',
+		'UNABLE_TO_UPDATE_SESSION'			=> 'Unable to update session. Please contact the board administrator',
 
 	)
 );

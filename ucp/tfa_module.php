@@ -10,8 +10,13 @@
 
 namespace paul999\tfa\ucp;
 
+use paul999\tfa\helper\registrationHelper;
+use u2flib_server\U2F;
+
 class tfa_module
 {
+	private $u_action;
+
 	function main($id, $mode)
 	{
 		global $db, $user, $template;
@@ -19,47 +24,58 @@ class tfa_module
 
 		$user->add_lang('posting');
 		$user->add_lang_ext('paul999/tfa', 'ucp_tfa');
+		$user->add_lang_ext('paul999/tfa', 'common');
 
 		$registration_table = $phpbb_container->getParameter('paul999.2fa.tables.tfa_registration');
 
-		$preview	= $request->variable('preview', false, false, \phpbb\request\request_interface::POST);
 		$submit		= $request->variable('submit', false, false, \phpbb\request\request_interface::POST);
-		$delete		= $request->variable('delete', false, false, \phpbb\request\request_interface::POST);
 		$error = $data = array();
 		$s_hidden_fields = '';
 
+		$scheme = $request->is_secure() ? 'https://' : 'http://';
+		$u2f = new U2F($scheme . $request->server('HTTP_HOST'));
 
 		add_form_key('ucp_tfa_keys');
 
 		if ($submit)
 		{
-			$keys = $request->variable('keys', array(''));
+			$mode = $request->variable('mode', '');
 
 			if (!check_form_key('ucp_tfa_keys'))
 			{
 				$error[] = 'FORM_INVALID';
 			}
 
-			if (!sizeof($error))
-			{
-				if (!empty($keys))
-				{
-					foreach ($keys as $key => $id)
+			switch ($mode) {
+				case 'delete':
+					if (!sizeof($error))
 					{
-						$keys[$key] = $db->sql_like_expression($id . $db->get_any_char());
+						$keys = $request->variable('keys', array(''));
+						if (!empty($keys))
+						{
+							foreach ($keys as $key => $id)
+							{
+								$keys[$key] = $db->sql_like_expression($id . $db->get_any_char());
+							}
+							$sql_where = '(registration_key ' . implode(' OR registration_key ', $keys) . ')';
+							$sql = 'DELETE FROM ' . $registration_table . '
+										WHERE user_id = ' . (int) $user->data['user_id'] . '
+										AND ' . $sql_where ;
+
+							$db->sql_query($sql);
+
+							meta_refresh(3, $this->u_action);
+							$message = $user->lang['TFA_KEYS_DELETED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+							trigger_error($message);
+						}
 					}
-					$sql_where = '(registration_key ' . implode(' OR registration_key ', $keys) . ')';
-					$sql = 'DELETE FROM ' . $registration_table . '
-						WHERE user_id = ' . (int) $user->data['user_id'] . '
-						AND ' . $sql_where ;
+					break;
+				case 'register':
+					break;
 
-					$db->sql_query($sql);
-
-					meta_refresh(3, $this->u_action);
-					$message = $user->lang['TFA_KEYS_DELETED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
-					trigger_error($message);
-				}
-			}
+				default:
+					$error[] = 'U2F_NO_MODE';
+ 			}
 
 			// Replace "error" strings with their real, localised form
 			$error = array_map(array($user, 'lang'), $error);
@@ -71,24 +87,62 @@ class tfa_module
 			ORDER BY registration_id ASC';
 
 		$result = $db->sql_query($sql);
+		$rows = array();
 
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$template->assign_block_vars('keys', array(
 			));
+
+			$reg 				= new registrationHelper();
+			$reg->counter 		= $row['counter'];
+			$reg->certificate	= $row['certificate'];
+			$reg->keyHandle		= $row['key_handle'];
+			$reg->publicKey 	= $row['public_key'];
+			$reg->id 			= $row['id'];
+			$rows[] 			= $reg;
+		}
+		$data = $u2f->getRegisterData($rows);
+
+		$sql_ary = array(
+			'u2f_request'	=> json_encode($data[0]),
+		);
+
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+					WHERE
+						session_id = \'' . $db->sql_escape($user->data['session_id']) . '\' AND
+						session_user_id = ' . (int)$user->data['user_id'];
+		$db->sql_query($sql);
+		$count = $db->sql_affectedrows();
+
+		if ($count != 1)
+		{
+			if ($count > 1)
+			{
+				// Reset sessions table. We had multiple sessions with same ID!!!
+				$sql_ary['u2f_request'] = '';
+				$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+							WHERE
+								session_id = \'' . $db->sql_escape($user->data['session_id']) . '\' AND
+								user_id = ' . (int)$user->data['user_id'];
+				$db->sql_query($sql);
+			}
+			trigger_error('UNABLE_TO_UPDATE_SESSION');
 		}
 
 		$db->sql_freeresult($result);
 
-
 		$template->assign_vars(array(
-				'ERROR'		=> (sizeof($error)) ? implode('<br />', $error) : '',
+			'ERROR'		=> (sizeof($error)) ? implode('<br />', $error) : '',
 
-				'L_TITLE'	=> $user->lang['UCP_TFA'],
+			'L_TITLE'	=> $user->lang['UCP_TFA'],
 
-				'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
-				'S_UCP_ACTION'		=> $this->u_action)
-		);
+			'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
+			'S_UCP_ACTION'		=> $this->u_action,
+			'U2F_REG'			=> true,
+			'U2F_SIGN_REQUEST'	=> json_encode($data[0]),
+			'U2F_SIGN'			=> json_encode($data[1]),
+		));
 
 		// Set desired template
 		$this->tpl_name = 'ucp_tfa';

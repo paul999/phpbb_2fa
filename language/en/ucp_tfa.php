@@ -39,12 +39,16 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge(
 	$lang, array(
-		'TFA_NO_KEYS'			=> 'No two factor authentication keys found. You can add one below.',
-		'TFA_KEYS'				=> 'On this page you can manage your two factor authentication keys.
-									You can add multiple keys to your account.
-									If you loose your keys, make sure to remove them from your account!
-									<br /><br />
-									Depending on the configuration choosen by the forum administrator,
-									you might be required to add a security key before accessing the forum.'
+		'TFA_NO_KEYS'				=> 'No two factor authentication keys found. You can add one below.',
+		'TFA_KEYS'					=> 'On this page you can manage your two factor authentication keys.
+										You can add multiple keys to your account.
+											If you loose your keys, make sure to remove them from your account!
+										<br /><br />
+										Depending on the configuration choosen by the forum administrator,
+										you might be required to add a security key before accessing the forum.',
+		'U2F_NO_MODE'				=> 'No Mode',
+		'TFA_KEYS_DELETED'			=> 'Selected keys removed.',
+		'TFA_ERROR'					=> 'It seems something went wrong...',
+		'TFA_REGISTRATION_FAILED'	=> 'Registration failed with error: ',
 	)
 );
