@@ -46,7 +46,7 @@ class tfa_module
 		$registration_table = $phpbb_container->getParameter('paul999.2fa.tables.tfa_registration');
 
 		$submit		= $request->variable('md', false, false, \phpbb\request\request_interface::POST);
-		$error = $data = array();
+		$error = array();
 		$s_hidden_fields = '';
 
 		$u2f = new U2F('https://' . $request->server('HTTP_HOST'));

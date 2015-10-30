@@ -93,7 +93,7 @@ class listener implements EventSubscriberInterface
 	 * @static
 	 * @access public
 	 */
-	static public function getSubscribedEvents()
+	public static function getSubscribedEvents()
 	{
 		return array(
 			'core.auth_login_session_create_before'		=> 'auth_login_session_create_before',
@@ -117,7 +117,6 @@ class listener implements EventSubscriberInterface
 		}
 		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS)
 		{
-			$ucp_mode = '';
 			$sql = 'SELECT module_id FROM ' . MODULES_TABLE . ' WHERE module_langname = \'UCP_TFA\' OR module_langname = \'UCP_TFA_MANAGE\'';
 			$result = $this->db->sql_query($sql);
 			$allowed_i = array();
