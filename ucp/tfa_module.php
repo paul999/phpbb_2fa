@@ -68,7 +68,7 @@ class tfa_module
 						$keys = $request->variable('keys', array(0));
 						if (!empty($keys))
 						{
-							$sql_where = $db->sql_in_set('registration_key', $keys);
+							$sql_where = $db->sql_in_set('registration_id', $keys);
 							$sql = 'DELETE FROM ' . $registration_table . '
 										WHERE user_id = ' . (int) $user->data['user_id'] . '
 										AND ' . $sql_where ;
