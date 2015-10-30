@@ -56,5 +56,6 @@ $lang = array_merge(
 										</ul>
 										However, several browser vendors promised it might be supported in a newer release.
 										We will provide a update to this extension when a browser provides support for it.',
+		'TFA_REQUIRES_SSL'			=> 'You seem to be using a non secure connection. This extension requires a secure SSL connection to work. Without secure connection, it won’t function properly!',
 	)
 );

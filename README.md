@@ -29,6 +29,10 @@ Not supported:
 
 You will need a U2F capable security key for this to work. [Yubico](https://www.yubico.com/) (and others) does provide them.
 
+##Important:##
+This extenion requires that your board runs under SSL. Without SSL this extension won't work, and you will receive a error 2 when trying to use it!
+This is a limitation from U2F.
+
 Installation
 ============
 Download the latest release and and extract the download to ext/paul999/tfa/ and enable it

@@ -112,8 +112,7 @@ class main_controller
 		$this->user_table			= $user_table;
 		$this->registration_table	= $registration_table;
 
-		$scheme = $this->request->is_secure() ? 'https://' : 'http://';
-		$this->u2f = new U2F($scheme . $this->request->server('HTTP_HOST'));
+		$this->u2f = new U2F('https://' . $this->request->server('HTTP_HOST'));
 	}
 
 	/**

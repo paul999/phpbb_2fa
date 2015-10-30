@@ -102,6 +102,11 @@ class tfa_module
 			trigger_error($message . adm_back_link($this->u_action), $message_type);
 		}
 
+		if (!$request->is_secure())
+		{
+			$error[] = $user->lang['TFA_REQUIRES_SSL'];
+		}
+
 		$this->tpl_name = 'acp_board';
 		$this->page_title = $display_vars['title'];
 
@@ -154,7 +159,6 @@ class tfa_module
 				'S_EXPLAIN'		=> $vars['explain'],
 				'TITLE_EXPLAIN'	=> $l_explain,
 				'CONTENT'		=> $content,
-
 			));
 
 			unset($display_vars['vars'][$config_key]);

@@ -35,7 +35,7 @@
         $("#tfa_insert_key").show();
         $("#add_key").hide();
 
-        setTimeout(function(){
+        var tm = setTimeout(function(){
             $("#no_response").show();
         }, 10000);
 
@@ -43,13 +43,15 @@
 
             console.log("Register callback", data);
             if(data.errorCode) {
-                phpbb.alert("{LA_TFA_ERROR}", "{LA_TFA_REG_FAILED}" + data.errorMessage);
+                phpbb.alert("{LA_TFA_ERROR}", "{LA_TFA_REG_FAILED}" + data.errorCode + "," + data.errorMessage);
                 $("#tfa_insert_key").hide();
                 $("#add_key").show();
+                clearTimeout(tm);
+                $("#no_response").hide();
                 return;
             }
             $("#register").value = JSON.stringify(data);
-            $("#mode").value = "register";
+            $("#md").value = "register";
             $("#ucp").submit();
         });
     });
