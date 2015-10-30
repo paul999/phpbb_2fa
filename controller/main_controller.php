@@ -204,7 +204,7 @@ class main_controller
 
 		if (!$row)
 		{
-			throw new AccessDeniedHttpException();
+			throw new AccessDeniedHttpException($this->user->lang('TFA_NO_ACCESS'));
 		}
 
 		try {
