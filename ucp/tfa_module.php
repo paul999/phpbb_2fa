@@ -45,7 +45,7 @@ class tfa_module
 
 		$registration_table = $phpbb_container->getParameter('paul999.2fa.tables.tfa_registration');
 
-		$submit		= $request->variable('submit', false, false, \phpbb\request\request_interface::POST);
+		$submit		= $request->variable('md', false, false, \phpbb\request\request_interface::POST);
 		$error = $data = array();
 		$s_hidden_fields = '';
 
@@ -55,8 +55,7 @@ class tfa_module
 
 		if ($submit)
 		{
-			$mode = $request->variable('md', '');
-
+			$mode = $request->variable('mode', '');
 			if (!check_form_key('ucp_tfa_keys'))
 			{
 				$error[] = 'FORM_INVALID';
