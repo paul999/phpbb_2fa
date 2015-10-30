@@ -105,7 +105,7 @@ class tfa_module
 		$data = $u2f->getRegisterData($rows);
 
 		$sql_ary = array(
-			'u2f_request'	=> json_encode($data[0]),
+			'u2f_request'	=> json_encode($data[0], JSON_UNESCAPED_SLASHES),
 		);
 
 		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
@@ -140,8 +140,8 @@ class tfa_module
 			'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 			'S_UCP_ACTION'		=> $this->u_action,
 			'U2F_REG'			=> true,
-			'U2F_SIGN_REQUEST'	=> $data[0],
-			'U2F_SIGN'			=> json_encode($data[1]),
+			'U2F_SIGN_REQUEST'	=> json_encode($data[0], JSON_UNESCAPED_SLASHES),
+			'U2F_SIGN'			=> json_encode($data[1], JSON_UNESCAPED_SLASHES),
 		));
 
 		// Set desired template

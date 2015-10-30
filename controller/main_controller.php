@@ -141,7 +141,7 @@ class main_controller
 			throw new AccessDeniedHttpException();
 		}
 
-		$registrations = json_encode($this->u2f->getAuthenticateData($this->getRegistrations($user_id)));
+		$registrations = json_encode($this->u2f->getAuthenticateData($this->getRegistrations($user_id)), JSON_UNESCAPED_SLASHES);
 
 		$sql_ary = array(
 			'u2f_request'	=> $registrations
