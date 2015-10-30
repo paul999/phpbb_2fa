@@ -191,7 +191,7 @@ class main_controller
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		if (!$row)
+		if (!$row || empty($row['u2f_request']))
 		{
 			throw new AccessDeniedHttpException($this->user->lang('TFA_NO_ACCESS'));
 		}
