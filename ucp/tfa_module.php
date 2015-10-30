@@ -65,14 +65,10 @@ class tfa_module
 				case 'delete':
 					if (!sizeof($error))
 					{
-						$keys = $request->variable('keys', array(''));
+						$keys = $request->variable('keys', array(0));
 						if (!empty($keys))
 						{
-							foreach ($keys as $key => $id)
-							{
-								$keys[$key] = $db->sql_like_expression($id . $db->get_any_char());
-							}
-							$sql_where = '(registration_key ' . implode(' OR registration_key ', $keys) . ')';
+							$sql_where = '(registration_key ' . implode(' OR registration_id ', $keys) . ')';
 							$sql = 'DELETE FROM ' . $registration_table . '
 										WHERE user_id = ' . (int) $user->data['user_id'] . '
 										AND ' . $sql_where ;
