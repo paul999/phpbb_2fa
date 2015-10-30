@@ -140,9 +140,9 @@ class listener implements EventSubscriberInterface
 		if (isset($event['login']) && isset($event['login']['status']) && $event['login']['status'] == LOGIN_SUCCESS)
 		{
 			// We have a LOGIN_SUCESS result.
-			if ($this->helper->isTfaRequired($event['login']['user_row']))
+			if ($this->helper->isTfaRequired($event['login']['user_row']['user_id'], $event['admin'], $event['user_row']))
 			{
-				if (!$this->helper->isTfaRegistered($event['login']['user_row']))
+				if (!$this->helper->isTfaRegistered($event['login']['user_row']['user_id']))
 				{
 					// While 2FA is enabled, the user has no methods added.
 					// We simply return and continue the login procedure (The normal way :)),
