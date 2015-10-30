@@ -87,7 +87,7 @@ class tfa_module
 					break;
 				case 'register':
 					try {
-						$reg = $u2f->doRegister(json_decode($user->data['u2f_request']), json_decode($request->variable('register', '')));
+						$reg = $u2f->doRegister(json_decode($user->data['u2f_request']), json_decode(htmlspecialchars_decode($request->variable('register', ''))));
 
 						$sql_ary = array(
 							'user_id'		=> $user->data['user_id'],
