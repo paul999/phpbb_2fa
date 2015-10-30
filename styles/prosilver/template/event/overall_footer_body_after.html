@@ -43,7 +43,7 @@
 
             console.log("Register callback", data);
             if(data.errorCode) {
-                phpbb.alert("{LA_TFA_ERROR}", "{LA_TFA_REG_FAILED}" + data.errorCode);
+                phpbb.alert("{LA_TFA_ERROR}", "{LA_TFA_REG_FAILED}" + data.errorMessage);
                 $("#tfa_insert_key").hide();
                 $("#add_key").show();
                 return;

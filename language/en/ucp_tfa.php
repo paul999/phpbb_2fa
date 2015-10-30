@@ -49,7 +49,7 @@ $lang = array_merge(
 		'TFA_NO_MODE'				=> 'No Mode',
 		'TFA_KEYS_DELETED'			=> 'Selected keys removed.',
 		'TFA_ERROR'					=> 'It seems something went wrong...',
-		'TFA_REGISTRATION_FAILED'	=> 'Registration failed with error: ',
+		'TFA_REG_FAILED'			=> 'Registration failed with error: ',
 		'TFA_ADD_KEY'				=> 'Register new key',
 	)
 );
