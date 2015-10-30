@@ -10,13 +10,30 @@
 
 namespace paul999\tfa\ucp;
 
+use InvalidArgumentException;
 use paul999\tfa\helper\registrationHelper;
+use const u2flib_server\ERR_ATTESTATION_SIGNATURE;
+use const u2flib_server\ERR_ATTESTATION_VERIFICATION;
+use const u2flib_server\ERR_AUTHENTICATION_FAILURE;
+use const u2flib_server\ERR_BAD_RANDOM;
+use const u2flib_server\ERR_BAD_UA_RETURNING;
+use const u2flib_server\ERR_COUNTER_TOO_LOW;
+use const u2flib_server\ERR_NO_MATCHING_REGISTRATION;
+use const u2flib_server\ERR_NO_MATCHING_REQUEST;
+use const u2flib_server\ERR_OLD_OPENSSL;
+use const u2flib_server\ERR_PUBKEY_DECODE;
+use const u2flib_server\ERR_UNMATCHED_CHALLENGE;
+use u2flib_server\Error;
 use u2flib_server\U2F;
 
 class tfa_module
 {
 	public $u_action;
 
+	/**
+	 * @param $id
+	 * @param $mode
+     */
 	function main($id, $mode)
 	{
 		global $db, $user, $template;
@@ -70,6 +87,83 @@ class tfa_module
 					}
 					break;
 				case 'register':
+						try {
+							$reg = $u2f->doRegister(json_decode($_SESSION['regReq']), json_decode($_POST['register2']));
+
+							$sql_ary = array(
+								'user_id'		=> $user->data['user_id'],
+								'key_handle'	=> $reg->keyHandle,
+								'public_key'	=> $reg->publicKey,
+								'certificate'	=> $reg->certificate,
+								'counter'		=> $reg->counter,
+							);
+
+							$sql = 'INSERT INTO ' . $registration_table . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+							$db->sql_query($sql);
+
+							meta_refresh(3, $this->u_action);
+							$message = $user->lang['TFA_KEY_ADDED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+							trigger_error($message);
+
+						}
+						catch (Error $error)
+						{
+							switch ($error->getCode()) {
+								/** Error for the authentication message not matching any outstanding
+								 * authentication request */
+								case ERR_NO_MATCHING_REQUEST:
+									$error[] = 'ERR_NO_MATCHING_REQUEST';
+									break;
+								/** Error for the authentication message not matching any registration */
+								case ERR_NO_MATCHING_REGISTRATION:
+									$error[] = 'ERR_NO_MATCHING_REGISTRATION';
+									break;
+								/** Error for the signature on the authentication message not verifying with
+								 * the correct key */
+								case ERR_AUTHENTICATION_FAILURE:
+									$error[] = 'ERR_AUTHENTICATION_FAILURE';
+									break;
+								/** Error for the challenge in the registration message not matching the
+								 * registration challenge */
+								case ERR_UNMATCHED_CHALLENGE:
+									$error[] = 'ERR_UNMATCHED_CHALLENGE';
+									break;
+								/** Error for the attestation signature on the registration message not
+								 * verifying */
+								case ERR_ATTESTATION_SIGNATURE:
+									$error[] = 'ERR_ATTESTATION_SIGNATURE';
+									break;
+								/** Error for the attestation verification not verifying */
+								case ERR_ATTESTATION_VERIFICATION:
+									$error[] = 'ERR_ATTESTATION_VERIFICATION';
+									break;
+								/** Error for not getting good random from the system */
+								case ERR_BAD_RANDOM:
+									$error[] = 'ERR_BAD_RANDOM';
+									break;
+								/** Error when the counter is lower than expected */
+								case ERR_COUNTER_TOO_LOW:
+									$error[] = 'ERR_COUNTER_TOO_LOW';
+									break;
+								/** Error decoding public key */
+								case ERR_PUBKEY_DECODE:
+									$error[] = 'ERR_PUBKEY_DECODE';
+									break;
+								/** Error user-agent returned error */
+								case ERR_BAD_UA_RETURNING:
+									$error[] = 'ERR_BAD_UA_RETURNING';
+									break;
+								/** Error old OpenSSL version */
+								case ERR_OLD_OPENSSL:
+									$error[] = sprintf('ERR_OLD_OPENSSL', OPENSSL_VERSION_TEXT);
+									break;
+								default:
+									$error[] = 'UNKNOWN_ERROR';
+							}
+						}
+						catch( InvalidArgumentException $e ) {
+							$error[] = $e->getMessage();
+ 						}
 					break;
 
 				default:

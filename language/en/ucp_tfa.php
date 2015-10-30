@@ -51,5 +51,7 @@ $lang = array_merge(
 		'TFA_ERROR'					=> 'It seems something went wrong...',
 		'TFA_REG_FAILED'			=> 'Registration failed with error: ',
 		'TFA_ADD_KEY'				=> 'Register new key',
+		'TFA_KEY_ADDED'				=> 'Your security key has been added and can be used.',
+		'TFA_INSERT_KEY'			=> 'Insert your security key, and press the button on the key',
 	)
 );
