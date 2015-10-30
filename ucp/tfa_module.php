@@ -74,7 +74,7 @@ class tfa_module
 					break;
 
 				default:
-					$error[] = 'U2F_NO_MODE';
+					$error[] = 'TFA_NO_MODE';
  			}
 
 			// Replace "error" strings with their real, localised form

@@ -46,9 +46,10 @@ $lang = array_merge(
 										<br /><br />
 										Depending on the configuration choosen by the forum administrator,
 										you might be required to add a security key before accessing the forum.',
-		'U2F_NO_MODE'				=> 'No Mode',
+		'TFA_NO_MODE'				=> 'No Mode',
 		'TFA_KEYS_DELETED'			=> 'Selected keys removed.',
 		'TFA_ERROR'					=> 'It seems something went wrong...',
 		'TFA_REGISTRATION_FAILED'	=> 'Registration failed with error: ',
+		'TFA_ADD_KEY'				=> 'Register new key',
 	)
 );

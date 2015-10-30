@@ -16,7 +16,7 @@
 
         setTimeout(function(){
             $("#no_response").show();
-        }, 5000);
+        }, 10000);
     });
 </script>
 <!-- ENDIF -->
@@ -31,11 +31,20 @@
     }
 
     $("add_key").click(function() {
+        $("#tfa_insert_key").show();
+        $("#add_key").hide();
+
+        setTimeout(function(){
+            $("#no_response").show();
+        }, 10000);
+
         u2f.register([req], sigs, function(data) {
 
             console.log("Register callback", data);
             if(data.errorCode) {
                 phpbb.alert("{LA_TFA_ERROR}", "{LA_TFA_REG_FAILED}" + data.errorCode);
+                $("#tfa_insert_key").hide();
+                $("#add_key").show();
                 return;
             }
             $("#register").value = JSON.stringify(data);
