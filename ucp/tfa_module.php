@@ -103,7 +103,7 @@ class tfa_module
 						$db->sql_query($sql);
 
 						$sql_ary = array(
-							'u2f_request'	=> json_encode($data[0], JSON_UNESCAPED_SLASHES),
+							'u2f_request'	=> '',
 						);
 
 						$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
@@ -198,7 +198,7 @@ class tfa_module
 			$template->assign_block_vars('keys', array(
 				'ID'			=> $row['registration_id'],
 				'REGISTERED'	=> $user->format_date($row['registered']),
-				'LAST_USEd'		=> $user->format_date($row['last_used']),
+				'LAST_USED'		=> $user->format_date($row['last_used']),
 			));
 
 			$reg 				= new registrationHelper();
