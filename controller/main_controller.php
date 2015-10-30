@@ -202,6 +202,7 @@ class main_controller
 			$reg = $this->u2f->doAuthenticate(json_decode($row['u2f_request']), $this->getRegistrations($user_id), json_decode(htmlspecialchars_decode($this->request->variable('authenticate', ''))));
 			$sql_ary = array(
 				'counter'	=> $reg->counter,
+				'last_used'	=> time(),
 			);
 
 			$sql = 'UPDATE ' . $this->registration_table . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE registration_id = ' . (int)$reg->id;
