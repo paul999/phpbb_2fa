@@ -95,6 +95,8 @@ class tfa_module
 							'public_key'	=> $reg->publicKey,
 							'certificate'	=> $reg->certificate,
 							'counter'		=> ($reg->counter > 0 ) ? $reg->counter : 0,
+							'registered'	=> time(),
+							'last_used'		=> time(),
 						);
 
 						$sql = 'INSERT INTO ' . $registration_table . ' ' . $db->sql_build_array('INSERT', $sql_ary);
@@ -194,6 +196,9 @@ class tfa_module
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$template->assign_block_vars('keys', array(
+				'ID'			=> $row['registration_id'],
+				'REGISTERED'	=> $user->format_date($row['registered']),
+				'LAST_USEd'		=> $user->format_date($row['last_used']),
 			));
 
 			$reg 				= new registrationHelper();
@@ -201,7 +206,7 @@ class tfa_module
 			$reg->certificate	= $row['certificate'];
 			$reg->keyHandle		= $row['key_handle'];
 			$reg->publicKey 	= $row['public_key'];
-			$reg->id 			= $row['id'];
+			$reg->id 			= $row['registration_id'];
 			$rows[] 			= $reg;
 		}
 		$data = $u2f->getRegisterData($rows);
