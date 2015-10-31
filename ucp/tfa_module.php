@@ -125,11 +125,7 @@ class tfa_module
 				'u2f_request' => '',
 			);
 
-			$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-									WHERE
-										session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-										session_user_id = ' . (int)$this->user->data['user_id'];
-			$this->db->sql_query($sql);
+			$this->update_session($sql_ary);
 
 			meta_refresh(3, $this->u_action);
 			$message = $this->user->lang['TFA_KEY_ADDED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
@@ -159,28 +155,27 @@ class tfa_module
 
 		add_form_key('ucp_tfa_keys');
 
-		if ($submit)
-		{
+		if ($submit) {
 			$mode = $this->request->variable('md', '');
 			if (!check_form_key('ucp_tfa_keys'))
 			{
 				$error[] = 'FORM_INVALID';
 			}
-
-			switch ($mode)
+			else
 			{
-				case 'delete':
-					if (!sizeof($error))
-					{
+				switch ($mode)
+				{
+					case 'delete':
 						$this->delete_keys();
-					}
-					break;
-				case 'register':
-					$this->register_security_key($error);
+						break;
+
+					case 'register':
+						$this->register_security_key($error);
 					break;
 
 				default:
 					$error[] = 'TFA_NO_MODE';
+				}
 			}
 
 			// Replace "error" strings with their real, localised form
@@ -217,25 +212,18 @@ class tfa_module
 			'u2f_request' => json_encode($data[0], JSON_UNESCAPED_SLASHES),
 		);
 
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-					WHERE
-						session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-						session_user_id = ' . (int) $this->user->data['user_id'];
-		$this->db->sql_query($sql);
-		$count = $this->db->sql_affectedrows();
+		$count = $this->update_session($sql_ary);
 
-		if ($count != 1)
+		if ($count == 0)
 		{
-			if ($count > 1)
-			{
-				// Reset sessions table. We had multiple sessions with same ID!!!
-				$sql_ary['u2f_request'] = '';
-				$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-							WHERE
-								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-								user_id = ' . (int) $this->user->data['user_id'];
-				$this->db->sql_query($sql);
-			}
+			trigger_error('UNABLE_TO_UPDATE_SESSION');
+		}
+		else if ($count > 1)
+		{
+			// Reset sessions table. We had multiple sessions with same ID!!!
+			$sql_ary['u2f_request'] = '';
+			$this->update_session($sql_ary);
+
 			trigger_error('UNABLE_TO_UPDATE_SESSION');
 		}
 
@@ -277,6 +265,22 @@ class tfa_module
 			$message = $this->user->lang['TFA_KEYS_DELETED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
 			trigger_error($message);
 		}
+	}
+
+	/**
+	 * Update the session with new TFA data
+	 * @param $sql_ary
+	 * @return int
+	 */
+	private function update_session($sql_ary)
+	{
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
+							WHERE
+								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
+								user_id = ' . (int) $this->user->data['user_id'];
+		$this->db->sql_query($sql);
+
+		return $this->db->sql_affectedrows();
 	}
 
 	/**
