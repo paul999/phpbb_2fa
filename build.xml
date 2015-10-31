@@ -20,6 +20,7 @@
 		<delete file="${dir}/.gitattributes" />
 		<delete file="${dir}/.travis.yml" />
 		<delete file="${dir}/build.xml" />
+		<delete file="${dir}/composer.phar" />
 
 		<if>
 			<equals arg1="${has-dependencies}" arg2="0" />
