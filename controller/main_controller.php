@@ -203,7 +203,8 @@ class main_controller
 		{
 			$response = json_decode(htmlspecialchars_decode($this->request->variable('authenticate', '')));
 
-			if( property_exists( $response, 'errorCode') ) {
+			if (property_exists( $response, 'errorCode'))
+			{
 				if ($response->errorCode == 4) // errorCode 4 means that this device wasn't registered
 				{
 					throw new AccessDeniedHttpException($this->user->lang('TFA_NOT_REGISTERED'));
