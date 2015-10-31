@@ -22,7 +22,10 @@
 	"require-dev": {
 		"phing/phing": "2.4.*",
 		"phpbb/epv": "dev-master",
-        "phpbb/phpbb": "~3.1"
+        "phpbb/phpbb": "~3.1",
+	  	"symfony/debug": "2.3.*",
+	  	"symfony/http-foundation": "2.3.*",
+	  	"symfony/filesystem": "2.3.*"
 	},
 	"extra": {
 		"display-name": "phpBB Two Factor Authentication",
