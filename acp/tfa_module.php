@@ -10,7 +10,7 @@
 
 namespace paul999\tfa\acp;
 
-use paul999\tfa\helper\sessionHelperInterface;
+use paul999\tfa\helper\session_helper_interface;
 
 class tfa_module
 {
@@ -48,7 +48,6 @@ class tfa_module
 				'legend4'				=> 'ACP_SUBMIT_CHANGES',
 			)
 		);
-
 
 		/**
 		 * Event to add and/or modify acp_board configurations
@@ -177,12 +176,12 @@ class tfa_module
 	{
 		global $user;
 		$act_ary = array(
-			'TFA_DISABLED'					=> sessionHelperInterface::MODE_DISABLED,
-			'TFA_NOT_REQUIRED'				=> sessionHelperInterface::MODE_NOT_REQUIRED,
-			'TFA_REQUIRED_FOR_ACP_LOGIN'	=> sessionHelperInterface::MODE_REQUIRED_FOR_ACP_LOGIN,
-			'TFA_REQUIRED_FOR_ADMIN'		=> sessionHelperInterface::MODE_REQUIRED_FOR_ADMIN,
-			'TFA_REQUIRED_FOR_MODERATOR'	=> sessionHelperInterface::MODE_REQUIRED_FOR_MODERATOR,
-			'TFA_REQUIRED'					=> sessionHelperInterface::MODE_REQUIRED,
+			'TFA_DISABLED'					=> session_helper_interface::MODE_DISABLED,
+			'TFA_NOT_REQUIRED'				=> session_helper_interface::MODE_NOT_REQUIRED,
+			'TFA_REQUIRED_FOR_ACP_LOGIN'	=> session_helper_interface::MODE_REQUIRED_FOR_ACP_LOGIN,
+			'TFA_REQUIRED_FOR_ADMIN'		=> session_helper_interface::MODE_REQUIRED_FOR_ADMIN,
+			'TFA_REQUIRED_FOR_MODERATOR'	=> session_helper_interface::MODE_REQUIRED_FOR_MODERATOR,
+			'TFA_REQUIRED'					=> session_helper_interface::MODE_REQUIRED,
 		);
 		$act_options = '';
 		foreach ($act_ary as $key => $data)

@@ -10,19 +10,7 @@
 
 namespace paul999\tfa\ucp;
 
-use InvalidArgumentException;
-use paul999\tfa\helper\registrationHelper;
-use const u2flib_server\ERR_ATTESTATION_SIGNATURE;
-use const u2flib_server\ERR_ATTESTATION_VERIFICATION;
-use const u2flib_server\ERR_AUTHENTICATION_FAILURE;
-use const u2flib_server\ERR_BAD_RANDOM;
-use const u2flib_server\ERR_BAD_UA_RETURNING;
-use const u2flib_server\ERR_COUNTER_TOO_LOW;
-use const u2flib_server\ERR_NO_MATCHING_REGISTRATION;
-use const u2flib_server\ERR_NO_MATCHING_REQUEST;
-use const u2flib_server\ERR_OLD_OPENSSL;
-use const u2flib_server\ERR_PUBKEY_DECODE;
-use const u2flib_server\ERR_UNMATCHED_CHALLENGE;
+use paul999\tfa\helper\registration_helper;
 use u2flib_server\Error;
 use u2flib_server\U2F;
 
@@ -61,7 +49,8 @@ class tfa_module
 				$error[] = 'FORM_INVALID';
 			}
 
-			switch ($mode) {
+			switch ($mode)
+			{
 				case 'delete':
 					if (!sizeof($error))
 					{
@@ -105,7 +94,7 @@ class tfa_module
 						$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 									WHERE
 										session_id = \'' . $db->sql_escape($user->data['session_id']) . '\' AND
-										session_user_id = ' . (int)$user->data['user_id'];
+										session_user_id = ' . (int) $user->data['user_id'];
 						$db->sql_query($sql);
 
 						meta_refresh(3, $this->u_action);
@@ -115,60 +104,61 @@ class tfa_module
 					}
 					catch (Error $err)
 					{
-						switch ($err->getCode()) {
+						switch ($err->getCode())
+						{
 							/** Error for the authentication message not matching any outstanding
 							 * authentication request */
-							case ERR_NO_MATCHING_REQUEST:
+							case \u2flib_server\ERR_NO_MATCHING_REQUEST:
 								$error[] = 'ERR_NO_MATCHING_REQUEST';
 								break;
 							/** Error for the authentication message not matching any registration */
-							case ERR_NO_MATCHING_REGISTRATION:
+							case \u2flib_server\ERR_NO_MATCHING_REGISTRATION:
 								$error[] = 'ERR_NO_MATCHING_REGISTRATION';
 								break;
 							/** Error for the signature on the authentication message not verifying with
 							 * the correct key */
-							case ERR_AUTHENTICATION_FAILURE:
+							case \u2flib_server\ERR_AUTHENTICATION_FAILURE:
 								$error[] = 'ERR_AUTHENTICATION_FAILURE';
 								break;
 							/** Error for the challenge in the registration message not matching the
 							 * registration challenge */
-							case ERR_UNMATCHED_CHALLENGE:
+							case \u2flib_server\ERR_UNMATCHED_CHALLENGE:
 								$error[] = 'ERR_UNMATCHED_CHALLENGE';
 								break;
 							/** Error for the attestation signature on the registration message not
 							 * verifying */
-							case ERR_ATTESTATION_SIGNATURE:
+							case \u2flib_server\ERR_ATTESTATION_SIGNATURE:
 								$error[] = 'ERR_ATTESTATION_SIGNATURE';
 								break;
 							/** Error for the attestation verification not verifying */
-							case ERR_ATTESTATION_VERIFICATION:
+							case \u2flib_server\ERR_ATTESTATION_VERIFICATION:
 								$error[] = 'ERR_ATTESTATION_VERIFICATION';
 								break;
 							/** Error for not getting good random from the system */
-							case ERR_BAD_RANDOM:
+							case \u2flib_server\ERR_BAD_RANDOM:
 								$error[] = 'ERR_BAD_RANDOM';
 								break;
 							/** Error when the counter is lower than expected */
-							case ERR_COUNTER_TOO_LOW:
+							case \u2flib_server\ERR_COUNTER_TOO_LOW:
 								$error[] = 'ERR_COUNTER_TOO_LOW';
 								break;
 							/** Error decoding public key */
-							case ERR_PUBKEY_DECODE:
+							case \u2flib_server\ERR_PUBKEY_DECODE:
 								$error[] = 'ERR_PUBKEY_DECODE';
 								break;
 							/** Error user-agent returned error */
-							case ERR_BAD_UA_RETURNING:
+							case \u2flib_server\ERR_BAD_UA_RETURNING:
 								$error[] = 'ERR_BAD_UA_RETURNING';
 								break;
 							/** Error old OpenSSL version */
-							case ERR_OLD_OPENSSL:
+							case \u2flib_server\ERR_OLD_OPENSSL:
 								$error[] = sprintf('ERR_OLD_OPENSSL', OPENSSL_VERSION_TEXT);
 								break;
 							default:
 								$error[] = 'UNKNOWN_ERROR';
 						}
 					}
-					catch( InvalidArgumentException $e ) {
+					catch( \InvalidArgumentException $e ) {
 						$error[] = $e->getMessage();
 					}
 					break;
@@ -197,7 +187,7 @@ class tfa_module
 				'LAST_USED'		=> $user->format_date($row['last_used']),
 			));
 
-			$reg 				= new registrationHelper();
+			$reg 				= new registration_helper();
 			$reg->counter 		= $row['counter'];
 			$reg->certificate	= $row['certificate'];
 			$reg->keyHandle		= $row['key_handle'];
@@ -214,7 +204,7 @@ class tfa_module
 		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 					WHERE
 						session_id = \'' . $db->sql_escape($user->data['session_id']) . '\' AND
-						session_user_id = ' . (int)$user->data['user_id'];
+						session_user_id = ' . (int) $user->data['user_id'];
 		$db->sql_query($sql);
 		$count = $db->sql_affectedrows();
 
@@ -227,7 +217,7 @@ class tfa_module
 				$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE
 								session_id = \'' . $db->sql_escape($user->data['session_id']) . '\' AND
-								user_id = ' . (int)$user->data['user_id'];
+								user_id = ' . (int) $user->data['user_id'];
 				$db->sql_query($sql);
 			}
 			trigger_error('UNABLE_TO_UPDATE_SESSION');

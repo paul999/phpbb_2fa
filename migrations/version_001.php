@@ -10,7 +10,6 @@
 
 namespace paul999\tfa\migrations;
 
-
 class version_001 extends \phpbb\db\migration\migration
 {
 	static public function depends_on()

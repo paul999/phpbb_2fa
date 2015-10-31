@@ -13,8 +13,8 @@ namespace paul999\tfa\helper;
 
 use u2flib_server\Registration;
 
-class registrationHelper extends Registration
+class registration_helper extends Registration
 {
-    /** @var int  */
-    public $id = 0;
+	/** @var int  */
+	public $id = 0;
 }

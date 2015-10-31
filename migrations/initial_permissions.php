@@ -14,10 +14,10 @@ use phpbb\db\migration\migration;
 
 class initial_permissions extends migration
 {
-    public function update_data()
-    {
-        return array(
-            array('permission.add', array('a_tfa')),
-        );
-    }
+	public function update_data()
+	{
+		return array(
+			array('permission.add', array('a_tfa')),
+		);
+	}
 }

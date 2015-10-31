@@ -9,6 +9,7 @@
 */
 
 namespace paul999\tfa\helper;
+
 use phpbb\auth\auth;
 use phpbb\config\config;
 use phpbb\db\driver\driver_interface;
@@ -16,7 +17,7 @@ use phpbb\db\driver\driver_interface;
 /**
  * helper method which is used to detect if a user needs to use 2FA
  */
-class sessionHelper implements sessionHelperInterface
+class session_helper implements session_helper_interface
 {
 
 	/**
@@ -72,17 +73,17 @@ class sessionHelper implements sessionHelperInterface
 	{
 		switch ($this->config['tfa_mode'])
 		{
-			case sessionHelperInterface::MODE_DISABLED:
+			case session_helper_interface::MODE_DISABLED:
 				return false;
-			case sessionHelperInterface::MODE_NOT_REQUIRED:
+			case session_helper_interface::MODE_NOT_REQUIRED:
 				return $this->isTfaRegistered($user_id);
-			case sessionHelperInterface::MODE_REQUIRED_FOR_ACP_LOGIN:
+			case session_helper_interface::MODE_REQUIRED_FOR_ACP_LOGIN:
 				return $this->do_permission_check($user_id, $userdata, 'a_', $admin, $try);
-			case sessionHelperInterface::MODE_REQUIRED_FOR_ADMIN:
+			case session_helper_interface::MODE_REQUIRED_FOR_ADMIN:
 				return $this->do_permission_check($user_id, $userdata, 'a_', true, $try);
-			case sessionHelperInterface::MODE_REQUIRED_FOR_MODERATOR:
+			case session_helper_interface::MODE_REQUIRED_FOR_MODERATOR:
 				return $this->do_permission_check($user_id, $userdata, array('m_', 'a_'), $admin, true);
-			case sessionHelperInterface::MODE_REQUIRED:
+			case session_helper_interface::MODE_REQUIRED:
 				return true;
 			default:
 				return false;
@@ -101,7 +102,7 @@ class sessionHelper implements sessionHelperInterface
 		{
 			return $this->user_array[$user_id];
 		}
-		$sql = 'SELECT COUNT(registration_id) as reg_id FROM ' . $this->registration_table . ' WHERE user_id = ' . (int)$user_id;
+		$sql = 'SELECT COUNT(registration_id) as reg_id FROM ' . $this->registration_table . ' WHERE user_id = ' . (int) $user_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);

@@ -10,7 +10,7 @@
 
 namespace paul999\tfa\migrations;
 
-use paul999\tfa\helper\sessionHelperInterface;
+use paul999\tfa\helper\session_helper_interface;
 
 class initial_config extends \phpbb\db\migration\migration
 {
@@ -23,7 +23,7 @@ class initial_config extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			array('config.add', array('tfa_mode', sessionHelperInterface::MODE_DISABLED)),
+			array('config.add', array('tfa_mode', session_helper_interface::MODE_DISABLED)),
 		);
 	}
 }

@@ -10,7 +10,7 @@
 
 namespace paul999\tfa\event;
 
-use paul999\tfa\helper\sessionHelperInterface;
+use paul999\tfa\helper\session_helper_interface;
 use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
@@ -24,7 +24,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class listener implements EventSubscriberInterface
 {
 	/**
-	 * @var sessionHelperInterface
+	 * @var session_helper_interface
 	 */
 	private $helper;
 
@@ -67,14 +67,14 @@ class listener implements EventSubscriberInterface
 	 * Constructor
 	 *
 	 * @access public
-	 * @param sessionHelperInterface $helper
+	 * @param session_helper_interface $helper
 	 * @param helper $controller_helper
 	 * @param user $user
 	 * @param request_interface $request
 	 * @param string $php_ext
 	 * @param string $root_path
 	 */
-	public function __construct(sessionHelperInterface $helper, helper $controller_helper, user $user, request_interface $request, driver_interface $db, config $config, $php_ext, $root_path)
+	public function __construct(session_helper_interface $helper, helper $controller_helper, user $user, request_interface $request, driver_interface $db, config $config, $php_ext, $root_path)
 	{
 		$this->helper				= $helper;
 		$this->controller_helper 	= $controller_helper;
@@ -111,7 +111,7 @@ class listener implements EventSubscriberInterface
 
 	public function user_setup_after($event)
 	{
-		if ($this->config['tfa_mode'] == sessionHelperInterface::MODE_DISABLED)
+		if ($this->config['tfa_mode'] == session_helper_interface::MODE_DISABLED)
 		{
 			return;
 		}
@@ -147,7 +147,7 @@ class listener implements EventSubscriberInterface
 	 */
 	public function auth_login_session_create_before($event)
 	{
-		if ($this->config['tfa_mode'] == sessionHelperInterface::MODE_DISABLED)
+		if ($this->config['tfa_mode'] == session_helper_interface::MODE_DISABLED)
 		{
 			return;
 		}

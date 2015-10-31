@@ -10,7 +10,6 @@
 
 namespace paul999\tfa\migrations;
 
-
 class initial_schema extends \phpbb\db\migration\migration
 {
 	public function update_schema()
@@ -46,3 +45,4 @@ class initial_schema extends \phpbb\db\migration\migration
 		);
 	}
 }
+

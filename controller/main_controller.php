@@ -10,27 +10,16 @@
 
 namespace paul999\tfa\controller;
 
-use paul999\tfa\helper\sessionHelperInterface;
+use paul999\tfa\helper\session_helper_interface;
 use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use paul999\tfa\helper\registrationHelper;
+use paul999\tfa\helper\registration_helper;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use const u2flib_server\ERR_ATTESTATION_SIGNATURE;
-use const u2flib_server\ERR_ATTESTATION_VERIFICATION;
-use const u2flib_server\ERR_AUTHENTICATION_FAILURE;
-use const u2flib_server\ERR_BAD_RANDOM;
-use const u2flib_server\ERR_BAD_UA_RETURNING;
-use const u2flib_server\ERR_COUNTER_TOO_LOW;
-use const u2flib_server\ERR_NO_MATCHING_REGISTRATION;
-use const u2flib_server\ERR_NO_MATCHING_REQUEST;
-use const u2flib_server\ERR_OLD_OPENSSL;
-use const u2flib_server\ERR_PUBKEY_DECODE;
-use const u2flib_server\ERR_UNMATCHED_CHALLENGE;
 use u2flib_server\Error;
 use u2flib_server\U2F;
 
@@ -134,7 +123,7 @@ class main_controller
 	{
 		$this->user->add_lang_ext('paul999/tfa', 'common');
 
-		if ($this->config['tfa_mode'] == sessionHelperInterface::MODE_DISABLED)
+		if ($this->config['tfa_mode'] == session_helper_interface::MODE_DISABLED)
 		{
 			throw new AccessDeniedHttpException('TFA_DISABLED');
 		}
@@ -152,7 +141,7 @@ class main_controller
 		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 					WHERE
 						session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-						session_user_id = ' . (int)$this->user->data['user_id'];
+						session_user_id = ' . (int) $this->user->data['user_id'];
 		$this->db->sql_query($sql);
 		$count = $this->db->sql_affectedrows();
 
@@ -165,7 +154,7 @@ class main_controller
 				$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 					WHERE
 						session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-						user_id = ' . (int)$this->user->data['user_id'];
+						user_id = ' . (int) $this->user->data['user_id'];
 				$this->db->sql_query($sql);
 			}
 			throw new BadRequestHttpException('UNABLE_TO_UPDATE_SESSION');
@@ -200,7 +189,7 @@ class main_controller
 
 		$sql = 'SELECT u2f_request FROM ' . SESSIONS_TABLE . ' WHERE
 			session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-  			session_user_id = ' . (int)$this->user->data['user_id'];
+			session_user_id = ' . (int) $this->user->data['user_id'];
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
@@ -210,15 +199,16 @@ class main_controller
 			throw new AccessDeniedHttpException($this->user->lang('TFA_NO_ACCESS'));
 		}
 
-		try {
-			/** @var \paul999\tfa\helper\registrationHelper $reg */
+		try
+		{
+			/** @var \paul999\tfa\helper\registration_helper $reg */
 			$reg = $this->u2f->doAuthenticate(json_decode($row['u2f_request']), $this->getRegistrations($user_id), json_decode(htmlspecialchars_decode($this->request->variable('authenticate', ''))));
 			$sql_ary = array(
 				'counter'	=> $reg->counter,
 				'last_used'	=> time(),
 			);
 
-			$sql = 'UPDATE ' . $this->registration_table . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE registration_id = ' . (int)$reg->id;
+			$sql = 'UPDATE ' . $this->registration_table . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE registration_id = ' . (int) $reg->id;
 			$this->db->sql_query($sql);
 
 			$old_session_id = $this->user->session_id;
@@ -256,50 +246,50 @@ class main_controller
 			switch ($error->getCode()) {
 				/** Error for the authentication message not matching any outstanding
 				 * authentication request */
-				case ERR_NO_MATCHING_REQUEST:
+				case \u2flib_server\ERR_NO_MATCHING_REQUEST:
 					throw new BadRequestHttpException($this->user->lang('ERR_NO_MATCHING_REQUEST'), $error);
 
 				/** Error for the authentication message not matching any registration */
-				case ERR_NO_MATCHING_REGISTRATION:
+				case \u2flib_server\ERR_NO_MATCHING_REGISTRATION:
 					throw new BadRequestHttpException($this->user->lang('ERR_NO_MATCHING_REGISTRATION'), $error);
 
 				/** Error for the signature on the authentication message not verifying with
 				 * the correct key */
-				case ERR_AUTHENTICATION_FAILURE:
+				case \u2flib_server\ERR_AUTHENTICATION_FAILURE:
 					throw new BadRequestHttpException($this->user->lang('ERR_AUTHENTICATION_FAILURE'), $error);
 
 				/** Error for the challenge in the registration message not matching the
 				 * registration challenge */
-				case ERR_UNMATCHED_CHALLENGE:
+				case \u2flib_server\ERR_UNMATCHED_CHALLENGE:
 					throw new BadRequestHttpException($this->user->lang('ERR_UNMATCHED_CHALLENGE'), $error);
 
 				/** Error for the attestation signature on the registration message not
 				 * verifying */
-				case ERR_ATTESTATION_SIGNATURE:
+				case \u2flib_server\ERR_ATTESTATION_SIGNATURE:
 					throw new BadRequestHttpException($this->user->lang('ERR_ATTESTATION_SIGNATURE'), $error);
 
 				/** Error for the attestation verification not verifying */
-				case ERR_ATTESTATION_VERIFICATION:
+				case \u2flib_server\ERR_ATTESTATION_VERIFICATION:
 					throw new BadRequestHttpException($this->user->lang('ERR_ATTESTATION_VERIFICATION'), $error);
 
 				/** Error for not getting good random from the system */
-				case ERR_BAD_RANDOM:
+				case \u2flib_server\ERR_BAD_RANDOM:
 					throw new BadRequestHttpException($this->user->lang('ERR_BAD_RANDOM'), $error);
 
 				/** Error when the counter is lower than expected */
-				case ERR_COUNTER_TOO_LOW:
+				case \u2flib_server\ERR_COUNTER_TOO_LOW:
 					throw new BadRequestHttpException($this->user->lang('ERR_COUNTER_TOO_LOW'), $error);
 
 				/** Error decoding public key */
-				case ERR_PUBKEY_DECODE:
+				case \u2flib_server\ERR_PUBKEY_DECODE:
 					throw new BadRequestHttpException($this->user->lang('ERR_PUBKEY_DECODE'), $error);
 
 				/** Error user-agent returned error */
-				case ERR_BAD_UA_RETURNING:
+				case \u2flib_server\ERR_BAD_UA_RETURNING:
 					throw new BadRequestHttpException($this->user->lang('ERR_BAD_UA_RETURNING'), $error);
 
 				/** Error old OpenSSL version */
-				case ERR_OLD_OPENSSL:
+				case \u2flib_server\ERR_OLD_OPENSSL:
 					throw new BadRequestHttpException(sprintf($this->user->lang('ERR_OLD_OPENSSL'), OPENSSL_VERSION_TEXT), $error);
 
 				default:
@@ -327,7 +317,7 @@ class main_controller
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$reg 				= new registrationHelper();
+			$reg 				= new registration_helper();
 			$reg->counter 		= $row['counter'];
 			$reg->certificate	= $row['certificate'];
 			$reg->keyHandle		= $row['key_handle'];

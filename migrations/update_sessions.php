@@ -10,7 +10,6 @@
 
 namespace paul999\tfa\migrations;
 
-
 class update_sessions extends \phpbb\db\migration\migration
 {
 
