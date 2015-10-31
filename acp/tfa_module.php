@@ -11,7 +11,6 @@
 namespace paul999\tfa\acp;
 
 use paul999\tfa\helper\session_helper_interface;
-use phpbb\request\request_interface;
 
 class tfa_module
 {
@@ -29,7 +28,6 @@ class tfa_module
 
 	public function main($id, $mode)
 	{
-		/** @var request_interface $request */
 		global $user, $template, $request;
 		global $config, $phpbb_dispatcher, $phpbb_log;
 

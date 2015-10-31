@@ -284,7 +284,8 @@ class main_controller
 	 */
 	private function createError(Error $error)
 	{
-		switch ($error->getCode()) {
+		switch ($error->getCode())
+		{
 			/** Error for the authentication message not matching any outstanding
 			 * authentication request */
 			case \u2flib_server\ERR_NO_MATCHING_REQUEST:

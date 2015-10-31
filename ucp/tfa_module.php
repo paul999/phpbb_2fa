@@ -11,6 +11,10 @@
 namespace paul999\tfa\ucp;
 
 use paul999\tfa\helper\registration_helper;
+use phpbb\db\driver\driver_interface;
+use phpbb\request\request_interface;
+use phpbb\template\template;
+use phpbb\user;
 use u2flib_server\Error;
 use u2flib_server\U2F;
 
@@ -32,6 +36,52 @@ class tfa_module
 	public $tpl_name;
 
 	/**
+	 * @var U2F
+	 */
+	private $u2f;
+
+	/**
+	 * @var string
+	 */
+	private $registration_table;
+
+	/**
+	 * @var driver_interface
+	 */
+	private $db;
+
+	/**
+	 * @var user
+	 */
+	private $user;
+
+	/**
+	 * @var template
+	 */
+	private $template;
+
+	/**
+	 * @var request_interface
+	 */
+	private $request;
+
+	/**
+	 * @param string $registration_table
+	 * @param driver_interface $db
+	 * @param user $user
+	 * @param template $template
+	 * @param request_interface $request
+	 */
+	private function setup($registration_table, driver_interface $db, user $user, template $template, request_interface $request)
+	{
+		$this->registration_table = $registration_table;
+		$this->db = $db;
+		$this->user = $user;
+		$this->template = $template;
+		$this->request = $request;
+	}
+
+	/**
 	 * @param $id
 	 * @param $mode
 	 */
@@ -44,19 +94,74 @@ class tfa_module
 		$user->add_lang_ext('paul999/tfa', 'ucp_tfa');
 		$user->add_lang_ext('paul999/tfa', 'common');
 
-		$registration_table = $phpbb_container->getParameter('paul999.2fa.tables.tfa_registration');
+		$this->setup($phpbb_container->getParameter('paul999.2fa.tables.tfa_registration'), $db, $user, $template, $request);
 
-		$submit		= $request->variable('md', false, false, \phpbb\request\request_interface::POST);
+		$this->createPage();
+	}
+
+	/**
+	 * @param array $error
+	 */
+	private function register_security_key(&$error)
+	{
+		try
+		{
+			$reg = $this->u2f->doRegister(json_decode($this->user->data['u2f_request']), json_decode(htmlspecialchars_decode($this->request->variable('register', ''))));
+
+			$sql_ary = array(
+				'user_id' => $this->user->data['user_id'],
+				'key_handle' => $reg->keyHandle,
+				'public_key' => $reg->publicKey,
+				'certificate' => $reg->certificate,
+				'counter' => ($reg->counter > 0) ? $reg->counter : 0,
+				'registered' => time(),
+				'last_used' => time(),
+			);
+
+			$sql = 'INSERT INTO ' . $this->registration_table . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+			$this->db->sql_query($sql);
+
+			$sql_ary = array(
+				'u2f_request' => '',
+			);
+
+			$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
+									WHERE
+										session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
+										session_user_id = ' . (int)$this->user->data['user_id'];
+			$this->db->sql_query($sql);
+
+			meta_refresh(3, $this->u_action);
+			$message = $this->user->lang['TFA_KEY_ADDED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+			trigger_error($message);
+
+		}
+		catch (Error $err)
+		{
+			$this->createError($err, $error);
+		}
+		catch (\InvalidArgumentException $e)
+		{
+			$error[] = $e->getMessage();
+		}
+	}
+
+	/**
+	 *
+	 */
+	private function createPage()
+	{
+		$submit = $this->request->variable('md', false, false, \phpbb\request\request_interface::POST);
 		$error = array();
 		$s_hidden_fields = '';
 
-		$u2f = new U2F('https://' . $request->server('HTTP_HOST'));
+		$this->u2f = new U2F('https://' . $this->request->server('HTTP_HOST'));
 
 		add_form_key('ucp_tfa_keys');
 
 		if ($submit)
 		{
-			$mode = $request->variable('md', '');
+			$mode = $this->request->variable('md', '');
 			if (!check_form_key('ucp_tfa_keys'))
 			{
 				$error[] = 'FORM_INVALID';
@@ -67,61 +172,11 @@ class tfa_module
 				case 'delete':
 					if (!sizeof($error))
 					{
-						$keys = $request->variable('keys', array(0));
-						if (!empty($keys))
-						{
-							$sql_where = $db->sql_in_set('registration_id', $keys);
-							$sql = 'DELETE FROM ' . $registration_table . '
-										WHERE user_id = ' . (int) $user->data['user_id'] . '
-										AND ' . $sql_where ;
-
-							$db->sql_query($sql);
-
-							meta_refresh(3, $this->u_action);
-							$message = $user->lang['TFA_KEYS_DELETED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
-							trigger_error($message);
-						}
+						$this->delete_keys();
 					}
 					break;
 				case 'register':
-					try {
-						$reg = $u2f->doRegister(json_decode($user->data['u2f_request']), json_decode(htmlspecialchars_decode($request->variable('register', ''))));
-
-						$sql_ary = array(
-							'user_id'		=> $user->data['user_id'],
-							'key_handle'	=> $reg->keyHandle,
-							'public_key'	=> $reg->publicKey,
-							'certificate'	=> $reg->certificate,
-							'counter'		=> ($reg->counter > 0 ) ? $reg->counter : 0,
-							'registered'	=> time(),
-							'last_used'		=> time(),
-						);
-
-						$sql = 'INSERT INTO ' . $registration_table . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-						$db->sql_query($sql);
-
-						$sql_ary = array(
-							'u2f_request'	=> '',
-						);
-
-						$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
-									WHERE
-										session_id = \'' . $db->sql_escape($user->data['session_id']) . '\' AND
-										session_user_id = ' . (int) $user->data['user_id'];
-						$db->sql_query($sql);
-
-						meta_refresh(3, $this->u_action);
-						$message = $user->lang['TFA_KEY_ADDED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
-
-					}
-					catch (Error $err)
-					{
-						$this->createError($err, $error);
-					}
-					catch (\InvalidArgumentException $e) {
-						$error[] = $e->getMessage();
-					}
+					$this->register_security_key($error);
 					break;
 
 				default:
@@ -129,45 +184,45 @@ class tfa_module
 			}
 
 			// Replace "error" strings with their real, localised form
-			$error = array_map(array($user, 'lang'), $error);
+			$error = array_map(array($this->user, 'lang'), $error);
 		}
 
 		$sql = 'SELECT *
-			FROM ' . $registration_table . '
-			WHERE user_id = ' . (int) $user->data['user_id'] . '
+			FROM ' . $this->registration_table . '
+			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
 			ORDER BY registration_id ASC';
 
-		$result = $db->sql_query($sql);
+		$result = $this->db->sql_query($sql);
 		$rows = array();
 
-		while ($row = $db->sql_fetchrow($result))
+		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$template->assign_block_vars('keys', array(
-				'ID'			=> $row['registration_id'],
-				'REGISTERED'	=> $user->format_date($row['registered']),
-				'LAST_USED'		=> $user->format_date($row['last_used']),
+			$this->template->assign_block_vars('keys', array(
+				'ID' => $row['registration_id'],
+				'REGISTERED' => $this->user->format_date($row['registered']),
+				'LAST_USED' => $this->user->format_date($row['last_used']),
 			));
 
-			$reg 				= new registration_helper();
-			$reg->counter 		= $row['counter'];
+			$reg				= new registration_helper();
+			$reg->counter		= $row['counter'];
 			$reg->certificate	= $row['certificate'];
 			$reg->keyHandle		= $row['key_handle'];
-			$reg->publicKey 	= $row['public_key'];
-			$reg->id 			= $row['registration_id'];
-			$rows[] 			= $reg;
+			$reg->publicKey		= $row['public_key'];
+			$reg->id			= $row['registration_id'];
+			$rows[]				= $reg;
 		}
-		$data = $u2f->getRegisterData($rows);
+		$data = $this->u2f->getRegisterData($rows);
 
 		$sql_ary = array(
-			'u2f_request'	=> json_encode($data[0], JSON_UNESCAPED_SLASHES),
+			'u2f_request' => json_encode($data[0], JSON_UNESCAPED_SLASHES),
 		);
 
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 					WHERE
-						session_id = \'' . $db->sql_escape($user->data['session_id']) . '\' AND
-						session_user_id = ' . (int) $user->data['user_id'];
-		$db->sql_query($sql);
-		$count = $db->sql_affectedrows();
+						session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
+						session_user_id = ' . (int) $this->user->data['user_id'];
+		$this->db->sql_query($sql);
+		$count = $this->db->sql_affectedrows();
 
 		if ($count != 1)
 		{
@@ -175,27 +230,27 @@ class tfa_module
 			{
 				// Reset sessions table. We had multiple sessions with same ID!!!
 				$sql_ary['u2f_request'] = '';
-				$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+				$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE
-								session_id = \'' . $db->sql_escape($user->data['session_id']) . '\' AND
-								user_id = ' . (int) $user->data['user_id'];
-				$db->sql_query($sql);
+								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
+								user_id = ' . (int) $this->user->data['user_id'];
+				$this->db->sql_query($sql);
 			}
 			trigger_error('UNABLE_TO_UPDATE_SESSION');
 		}
 
-		$db->sql_freeresult($result);
+		$this->db->sql_freeresult($result);
 
-		$template->assign_vars(array(
-			'ERROR'		=> (sizeof($error)) ? implode('<br />', $error) : '',
+		$this->template->assign_vars(array(
+			'ERROR' => (sizeof($error)) ? implode('<br />', $error) : '',
 
-			'L_TITLE'	=> $user->lang['UCP_TFA'],
+			'L_TITLE' => $this->user->lang['UCP_TFA'],
 
-			'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
-			'S_UCP_ACTION'		=> $this->u_action,
-			'U2F_REG'			=> true,
-			'U2F_SIGN_REQUEST'	=> json_encode($data[0], JSON_UNESCAPED_SLASHES),
-			'U2F_SIGN'			=> json_encode($data[1], JSON_UNESCAPED_SLASHES),
+			'S_HIDDEN_FIELDS' => $s_hidden_fields,
+			'S_UCP_ACTION' => $this->u_action,
+			'U2F_REG' => true,
+			'U2F_SIGN_REQUEST' => json_encode($data[0], JSON_UNESCAPED_SLASHES),
+			'U2F_SIGN' => json_encode($data[1], JSON_UNESCAPED_SLASHES),
 		));
 
 		// Set desired template
@@ -204,12 +259,34 @@ class tfa_module
 	}
 
 	/**
+	 *
+	 */
+	private function delete_keys()
+	{
+		$keys = $this->request->variable('keys', array(0));
+		if (!empty($keys))
+		{
+			$sql_where = $this->db->sql_in_set('registration_id', $keys);
+			$sql = 'DELETE FROM ' . $this->registration_table . '
+										WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+										AND ' . $sql_where;
+
+			$this->db->sql_query($sql);
+
+			meta_refresh(3, $this->u_action);
+			$message = $this->user->lang['TFA_KEYS_DELETED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+			trigger_error($message);
+		}
+	}
+
+	/**
 	 * @param Error $err
 	 * @param array $error
 	 */
 	private function createError(Error $err, &$error)
 	{
-		switch ($err->getCode()) {
+		switch ($err->getCode())
+		{
 			/** Error for the authentication message not matching any outstanding
 			 * authentication request */
 			case \u2flib_server\ERR_NO_MATCHING_REQUEST:
