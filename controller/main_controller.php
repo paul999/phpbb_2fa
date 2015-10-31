@@ -307,7 +307,7 @@ class main_controller
 
 	/**
 	 * Select all registration objects from the database
-	 * @param $user_id
+	 * @param integer $user_id
 	 * @return array
 	 */
 	private function getRegistrations($user_id)

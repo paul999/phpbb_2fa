@@ -175,7 +175,7 @@ class listener implements EventSubscriberInterface
 						'admin'			=> (int) $event['admin'],
 						'auto_login'	=> (int) $event['auto_login'],
 						'viewonline'	=> (int) !$this->request->is_set_post('viewonline'),
-						)) . '?redirect='. $redirect
+						)) . '?redirect=' . $redirect
 					);
 				}
 			}
