@@ -243,59 +243,7 @@ class main_controller
 		}
 		catch (Error $error)
 		{
-			switch ($error->getCode())
-			{
-				/** Error for the authentication message not matching any outstanding
-				 * authentication request */
-				case \u2flib_server\ERR_NO_MATCHING_REQUEST:
-					throw new BadRequestHttpException($this->user->lang('ERR_NO_MATCHING_REQUEST'), $error);
-
-				/** Error for the authentication message not matching any registration */
-				case \u2flib_server\ERR_NO_MATCHING_REGISTRATION:
-					throw new BadRequestHttpException($this->user->lang('ERR_NO_MATCHING_REGISTRATION'), $error);
-
-				/** Error for the signature on the authentication message not verifying with
-				 * the correct key */
-				case \u2flib_server\ERR_AUTHENTICATION_FAILURE:
-					throw new BadRequestHttpException($this->user->lang('ERR_AUTHENTICATION_FAILURE'), $error);
-
-				/** Error for the challenge in the registration message not matching the
-				 * registration challenge */
-				case \u2flib_server\ERR_UNMATCHED_CHALLENGE:
-					throw new BadRequestHttpException($this->user->lang('ERR_UNMATCHED_CHALLENGE'), $error);
-
-				/** Error for the attestation signature on the registration message not
-				 * verifying */
-				case \u2flib_server\ERR_ATTESTATION_SIGNATURE:
-					throw new BadRequestHttpException($this->user->lang('ERR_ATTESTATION_SIGNATURE'), $error);
-
-				/** Error for the attestation verification not verifying */
-				case \u2flib_server\ERR_ATTESTATION_VERIFICATION:
-					throw new BadRequestHttpException($this->user->lang('ERR_ATTESTATION_VERIFICATION'), $error);
-
-				/** Error for not getting good random from the system */
-				case \u2flib_server\ERR_BAD_RANDOM:
-					throw new BadRequestHttpException($this->user->lang('ERR_BAD_RANDOM'), $error);
-
-				/** Error when the counter is lower than expected */
-				case \u2flib_server\ERR_COUNTER_TOO_LOW:
-					throw new BadRequestHttpException($this->user->lang('ERR_COUNTER_TOO_LOW'), $error);
-
-				/** Error decoding public key */
-				case \u2flib_server\ERR_PUBKEY_DECODE:
-					throw new BadRequestHttpException($this->user->lang('ERR_PUBKEY_DECODE'), $error);
-
-				/** Error user-agent returned error */
-				case \u2flib_server\ERR_BAD_UA_RETURNING:
-					throw new BadRequestHttpException($this->user->lang('ERR_BAD_UA_RETURNING'), $error);
-
-				/** Error old OpenSSL version */
-				case \u2flib_server\ERR_OLD_OPENSSL:
-					throw new BadRequestHttpException(sprintf($this->user->lang('ERR_OLD_OPENSSL'), OPENSSL_VERSION_TEXT), $error);
-
-				default:
-					throw new BadRequestHttpException($this->user->lang('UNKNOWN_ERROR'), $error);
-			}
+			$this->createError($error);
 		}
 		catch (\InvalidArgumentException $invalid)
 		{
@@ -329,5 +277,64 @@ class main_controller
 
 		$this->db->sql_freeresult($result);
 		return $rows;
+	}
+
+	/**
+	 * @param Error $error
+	 */
+	private function createError(Error $error)
+	{
+		switch ($error->getCode()) {
+			/** Error for the authentication message not matching any outstanding
+			 * authentication request */
+			case \u2flib_server\ERR_NO_MATCHING_REQUEST:
+				throw new BadRequestHttpException($this->user->lang('ERR_NO_MATCHING_REQUEST'), $error);
+
+			/** Error for the authentication message not matching any registration */
+			case \u2flib_server\ERR_NO_MATCHING_REGISTRATION:
+				throw new BadRequestHttpException($this->user->lang('ERR_NO_MATCHING_REGISTRATION'), $error);
+
+			/** Error for the signature on the authentication message not verifying with
+			 * the correct key */
+			case \u2flib_server\ERR_AUTHENTICATION_FAILURE:
+				throw new BadRequestHttpException($this->user->lang('ERR_AUTHENTICATION_FAILURE'), $error);
+
+			/** Error for the challenge in the registration message not matching the
+			 * registration challenge */
+			case \u2flib_server\ERR_UNMATCHED_CHALLENGE:
+				throw new BadRequestHttpException($this->user->lang('ERR_UNMATCHED_CHALLENGE'), $error);
+
+			/** Error for the attestation signature on the registration message not
+			 * verifying */
+			case \u2flib_server\ERR_ATTESTATION_SIGNATURE:
+				throw new BadRequestHttpException($this->user->lang('ERR_ATTESTATION_SIGNATURE'), $error);
+
+			/** Error for the attestation verification not verifying */
+			case \u2flib_server\ERR_ATTESTATION_VERIFICATION:
+				throw new BadRequestHttpException($this->user->lang('ERR_ATTESTATION_VERIFICATION'), $error);
+
+			/** Error for not getting good random from the system */
+			case \u2flib_server\ERR_BAD_RANDOM:
+				throw new BadRequestHttpException($this->user->lang('ERR_BAD_RANDOM'), $error);
+
+			/** Error when the counter is lower than expected */
+			case \u2flib_server\ERR_COUNTER_TOO_LOW:
+				throw new BadRequestHttpException($this->user->lang('ERR_COUNTER_TOO_LOW'), $error);
+
+			/** Error decoding public key */
+			case \u2flib_server\ERR_PUBKEY_DECODE:
+				throw new BadRequestHttpException($this->user->lang('ERR_PUBKEY_DECODE'), $error);
+
+			/** Error user-agent returned error */
+			case \u2flib_server\ERR_BAD_UA_RETURNING:
+				throw new BadRequestHttpException($this->user->lang('ERR_BAD_UA_RETURNING'), $error);
+
+			/** Error old OpenSSL version */
+			case \u2flib_server\ERR_OLD_OPENSSL:
+				throw new BadRequestHttpException(sprintf($this->user->lang('ERR_OLD_OPENSSL'), OPENSSL_VERSION_TEXT), $error);
+
+			default:
+				throw new BadRequestHttpException($this->user->lang('UNKNOWN_ERROR'), $error);
+		}
 	}
 }

@@ -11,6 +11,7 @@
 namespace paul999\tfa\acp;
 
 use paul999\tfa\helper\session_helper_interface;
+use phpbb\request\request_interface;
 
 class tfa_module
 {
@@ -26,8 +27,9 @@ class tfa_module
 	/** @var   */
 	public $tpl_name;
 
-	function main($id, $mode)
+	public function main($id, $mode)
 	{
+		/** @var request_interface $request */
 		global $user, $template, $request;
 		global $config, $phpbb_dispatcher, $phpbb_log;
 
@@ -63,7 +65,7 @@ class tfa_module
 
 		$this->new_config = $config;
 		// Copied from acp_board.php
-		$cfg_array = (isset($_REQUEST['config'])) ? utf8_normalize_nfc($request->variable('config', array('' => ''), true)) : $this->new_config;
+		$cfg_array = ($request->is_set('config')) ? utf8_normalize_nfc($request->variable('config', array('' => ''), true)) : $this->new_config;
 		$error = array();
 
 		// We validate the complete config if wished
