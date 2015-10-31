@@ -20,7 +20,14 @@
 		<delete file="${dir}/.gitattributes" />
 		<delete file="${dir}/.travis.yml" />
 		<delete file="${dir}/build.xml" />
-		<delete file="${dir}/composer.lock" />
+
+		<if>
+			<equals arg1="${has-dependencies}" arg2="0" />
+			<then>
+				<delete file="${dir}/composer.lock" />
+			</then>
+		</if>
+
 		<delete file="${dir}/phpunit.xml.dist" />
 		<delete file="${dir}/README.md" />
 	</target>
