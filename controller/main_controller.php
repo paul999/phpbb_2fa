@@ -157,7 +157,7 @@ class main_controller
 						session_user_id = ' . (int) $this->user->data['user_id'];
 				$this->db->sql_query($sql);
 			}
-			throw new BadRequestHttpException('UNABLE_TO_UPDATE_SESSION');
+			throw new BadRequestHttpException('TFA_UNABLE_TO_UPDATE_SESSION');
 		}
 
 		$this->template->assign_vars(array(
@@ -201,8 +201,17 @@ class main_controller
 
 		try
 		{
+			$response = json_decode(htmlspecialchars_decode($this->request->variable('authenticate', '')));
+
+			if( property_exists( $response, 'errorCode') ) {
+				if ($response->errorCode == 4) // errorCode 4 means that this device wasn't registered
+				{
+					throw new AccessDeniedHttpException($this->user->lang('TFA_NOT_REGISTERED'));
+				}
+			}
+
 			/** @var \paul999\tfa\helper\registration_helper $reg */
-			$reg = $this->u2f->doAuthenticate(json_decode($row['u2f_request']), $this->getRegistrations($user_id), json_decode(htmlspecialchars_decode($this->request->variable('authenticate', ''))));
+			$reg = $this->u2f->doAuthenticate(json_decode($row['u2f_request']), $this->getRegistrations($user_id), $response);
 			$sql_ary = array(
 				'counter'	=> $reg->counter,
 				'last_used'	=> time(),
@@ -335,7 +344,7 @@ class main_controller
 				throw new BadRequestHttpException(sprintf($this->user->lang('ERR_OLD_OPENSSL'), OPENSSL_VERSION_TEXT), $error);
 
 			default:
-				throw new BadRequestHttpException($this->user->lang('UNKNOWN_ERROR'), $error);
+				throw new BadRequestHttpException($this->user->lang('TFA_UNKNOWN_ERROR'), $error);
 		}
 	}
 }

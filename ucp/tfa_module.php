@@ -217,7 +217,7 @@ class tfa_module
 
 		if ($count == 0)
 		{
-			trigger_error('UNABLE_TO_UPDATE_SESSION');
+			trigger_error('TFA_UNABLE_TO_UPDATE_SESSION');
 		}
 		else if ($count > 1)
 		{
@@ -225,7 +225,7 @@ class tfa_module
 			$sql_ary['u2f_request'] = '';
 			$this->update_session($sql_ary);
 
-			trigger_error('UNABLE_TO_UPDATE_SESSION');
+			trigger_error('TFA_UNABLE_TO_UPDATE_SESSION');
 		}
 
 		$this->db->sql_freeresult($result);
@@ -341,7 +341,7 @@ class tfa_module
 				$error[] = sprintf('ERR_OLD_OPENSSL', OPENSSL_VERSION_TEXT);
 				break;
 			default:
-				$error[] = 'UNKNOWN_ERROR';
+				$error[] = 'TFA_UNKNOWN_ERROR';
 		}
 	}
 }

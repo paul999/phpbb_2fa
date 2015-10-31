@@ -55,6 +55,7 @@ $lang = array_merge(
 		'ERR_BAD_UA_RETURNING'          => 'User-agent returned error',
 		'ERR_OLD_OPENSSL'               => 'OpenSSL has to be at least version 1.0.0, this is %s',
 		'UNKNOWN_ERROR'                 => 'A unknown error happened during the validation of your security key. Please try again later.',
+		'TFA_TFA_NOT_REGISTERED'		=> 'The used security key was not registered to your account',
 
 		'FTA_NO_RESPONSE'                   => 'No response received',
 		'FTA_NO_RESPONSE_RECEIVED'          => 'We did not receive a response from your U2F security key. Did you press the button?',
@@ -63,7 +64,7 @@ $lang = array_merge(
 		'FTA_INSERT_KEY'                    => 'Insert your security key',
 		'FTA_INSERT_KEY_EXPLAIN'            => 'Insert your security key into your computer and press the button on the key.',
 		'TFA_NO_ACCESS'						=> 'It seems you have no access to this page?',
-		'UNABLE_TO_UPDATE_SESSION'			=> 'Unable to update session. Please contact the board administrator',
+		'TFA_UNABLE_TO_UPDATE_SESSION'		=> 'Unable to update session. Please contact the board administrator',
 		'TFA_DISABLED'						=> 'Two factor authentication has been disabled',
 
 	)
