@@ -155,7 +155,8 @@ class tfa_module
 
 		add_form_key('ucp_tfa_keys');
 
-		if ($submit) {
+		if ($submit)
+		{
 			$mode = $this->request->variable('md', '');
 			if (!check_form_key('ucp_tfa_keys'))
 			{
@@ -173,8 +174,8 @@ class tfa_module
 						$this->register_security_key($error);
 					break;
 
-				default:
-					$error[] = 'TFA_NO_MODE';
+					default:
+						$error[] = 'TFA_NO_MODE';
 				}
 			}
 
