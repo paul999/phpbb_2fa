@@ -3,7 +3,7 @@ imports:
 
 services:
     paul999.tfa.sessionHelper:
-        class: paul999\tfa\helper\sessionHelper
+        class: paul999\tfa\helper\session_helper
         arguments:
             - @dbal.conn
             - @config
