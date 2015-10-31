@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="phpBB 2FA Extension Builder" description="Builds an extension.zip from a git repository" default="all">
 	<property name="vendor-name" value="paul999" />
-	<property name="extension-name" value="2fa" />
+	<property name="extension-name" value="tfa" />
 	<!--
 	Only set this to "true" if you have dependencies in the composer.json,
 	otherwise use "false".
 	-->
-	<property name="has-dependencies" value="false" />
+	<property name="has-dependencies" value="true" />
 
 	<target name="clean-package">
 		<!--
