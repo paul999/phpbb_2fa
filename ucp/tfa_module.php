@@ -158,7 +158,7 @@ class tfa_module
 								$error[] = 'UNKNOWN_ERROR';
 						}
 					}
-					catch( \InvalidArgumentException $e ) {
+					catch (\InvalidArgumentException $e) {
 						$error[] = $e->getMessage();
 					}
 					break;

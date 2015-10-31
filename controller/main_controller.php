@@ -243,7 +243,8 @@ class main_controller
 		}
 		catch (Error $error)
 		{
-			switch ($error->getCode()) {
+			switch ($error->getCode())
+			{
 				/** Error for the authentication message not matching any outstanding
 				 * authentication request */
 				case \u2flib_server\ERR_NO_MATCHING_REQUEST:
@@ -311,7 +312,7 @@ class main_controller
 	 */
 	private function getRegistrations($user_id)
 	{
-		$sql = 'SELECT * FROM ' . $this->registration_table . ' WHERE user_id = ' . (int)$user_id;
+		$sql = 'SELECT * FROM ' . $this->registration_table . ' WHERE user_id = ' . (int) $user_id;
 		$result = $this->db->sql_query($sql);
 		$rows = array();
 

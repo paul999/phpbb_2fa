@@ -45,4 +45,3 @@ class initial_schema extends \phpbb\db\migration\migration
 		);
 	}
 }
-
