@@ -7,8 +7,17 @@ services:
         arguments:
             - @dbal.conn
             - @config
+            - @user
+            - @paul999.tfa.module_collection
             - %paul999.2fa.tables.tfa_registration%
             - %tables.users%
+
+    paul999.tfa.module_collection:
+        class: phpbb\di\service_collection
+        arguments:
+            - @service_container
+        tags:
+            - { name: service_collection, tag: paul999.tfa.module }
 
     paul999.tfa.controller:
         class: paul999\tfa\controller\main_controller

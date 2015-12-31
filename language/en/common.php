@@ -67,5 +67,7 @@ $lang = array_merge(
 		'TFA_UNABLE_TO_UPDATE_SESSION'		=> 'Unable to update session. Please contact the board administrator',
 		'TFA_DISABLED'						=> 'Two factor authentication has been disabled',
 
+		'TFA_DOUBLE_PRIORITY'				=> 'The choosen priority (%d) for module %s is already in use for module %s',
+
 	)
 );

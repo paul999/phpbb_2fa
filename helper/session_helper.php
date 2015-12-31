@@ -10,9 +10,13 @@
 
 namespace paul999\tfa\helper;
 
+use paul999\tfa\exceptions\module_exception;
+use paul999\tfa\modules\module_interface;
 use phpbb\auth\auth;
 use phpbb\config\config;
 use phpbb\db\driver\driver_interface;
+use phpbb\di\service_collection;
+use phpbb\user;
 
 /**
  * helper method which is used to detect if a user needs to use 2FA
@@ -29,6 +33,16 @@ class session_helper implements session_helper_interface
 	 * @var config
 	 */
 	private $config;
+
+	/**
+	 * @var user
+	 */
+	private $user;
+
+	/**
+	 * @var array
+	 */
+	private $modules;
 
 	/**
 	 * @var string
@@ -51,15 +65,41 @@ class session_helper implements session_helper_interface
 	 * @access public
 	 * @param driver_interface $db
 	 * @param config $config
+	 * @param user $user
+	 * @param service_collection $modules
 	 * @param string $registration_table
 	 * @param string $user_table
 	 */
-	public function __construct(driver_interface $db, config $config, $registration_table, $user_table)
+	public function __construct(driver_interface $db, config $config, user $user, service_collection $modules, $registration_table, $user_table)
 	{
 		$this->db					= $db;
+		$this->user_array			= $user;
 		$this->config				= $config;
 		$this->registration_table	= $registration_table;
 		$this->user_table			= $user_table;
+
+		$this->validateModules($modules);
+	}
+
+	/**
+	 * Register the tagged modules if they are enabled.
+	 * @param service_collection $modules
+	 */
+	private function validateModules(service_collection $modules) {
+		/**
+		 * @var module_interface $module
+		 */
+		foreach ($modules as $module) {
+			if ($module instanceof module_interface) {
+				// Only add them if they are actually a module_interface.
+				if (isset($this->modules[$module->get_priority()])) {
+					throw new module_exception($this->user->lang('TFA_DOUBLE_PRIORITY', $module->get_priority(), get_class($module), get_class($this->modules[$module->get_priority()])));
+				}
+				if ($module->is_enabled()) {
+					$this->modules[$module->get_priority()] = $module;
+				}
+			}
+		}
 	}
 
 	/**
@@ -71,6 +111,9 @@ class session_helper implements session_helper_interface
 	 */
 	public function isTfaRequired($user_id, $admin = false, $userdata = array(), $try = false)
 	{
+		if (sizeof($this->modules) == 0) {
+			return false;
+		}
 		switch ($this->config['tfa_mode'])
 		{
 			case session_helper_interface::MODE_DISABLED:
