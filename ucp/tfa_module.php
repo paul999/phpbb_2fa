@@ -11,12 +11,12 @@
 namespace paul999\tfa\ucp;
 
 use paul999\tfa\helper\registration_helper;
+use paul999\u2f\Exceptions\U2fError;
+use paul999\u2f\U2F;
 use phpbb\db\driver\driver_interface;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use u2flib_server\Error;
-use u2flib_server\U2F;
 
 class tfa_module
 {
@@ -110,10 +110,10 @@ class tfa_module
 
 			$sql_ary = array(
 				'user_id' => $this->user->data['user_id'],
-				'key_handle' => $reg->keyHandle,
-				'public_key' => $reg->publicKey,
-				'certificate' => $reg->certificate,
-				'counter' => ($reg->counter > 0) ? $reg->counter : 0,
+				'key_handle' => $reg->getKeyHandle(),
+				'public_key' => $reg->getPublicKey(),
+				'certificate' => $reg->getCertificate(),
+				'counter' => ($reg->getCounter() > 0) ? $reg->getCounter() : 0,
 				'registered' => time(),
 				'last_used' => time(),
 			);
@@ -132,7 +132,7 @@ class tfa_module
 			trigger_error($message);
 
 		}
-		catch (Error $err)
+		catch (U2fError $err)
 		{
 			$this->createError($err, $error);
 		}
@@ -200,10 +200,10 @@ class tfa_module
 			));
 
 			$reg				= new registration_helper();
-			$reg->counter		= $row['counter'];
-			$reg->certificate	= $row['certificate'];
-			$reg->keyHandle		= $row['key_handle'];
-			$reg->publicKey		= $row['public_key'];
+			$reg->setCounter($row['counter']);
+			$reg->setCertificate($row['certificate']);
+			$reg->setKeyHandle($row['key_handle']);
+			$reg->setPublicKey($row['public_key']);
 			$reg->id			= $row['registration_id'];
 			$rows[]				= $reg;
 		}
@@ -285,59 +285,59 @@ class tfa_module
 	}
 
 	/**
-	 * @param Error $err
+	 * @param U2fError $err
 	 * @param array $error
 	 */
-	private function createError(Error $err, &$error)
+	private function createError(U2fError $err, &$error)
 	{
 		switch ($err->getCode())
 		{
 			/** Error for the authentication message not matching any outstanding
 			 * authentication request */
-			case \u2flib_server\ERR_NO_MATCHING_REQUEST:
+			case U2fError::ERR_NO_MATCHING_REQUEST:
 				$error[] = 'ERR_NO_MATCHING_REQUEST';
 				break;
 			/** Error for the authentication message not matching any registration */
-			case \u2flib_server\ERR_NO_MATCHING_REGISTRATION:
+			case U2fError::ERR_NO_MATCHING_REGISTRATION:
 				$error[] = 'ERR_NO_MATCHING_REGISTRATION';
 				break;
 			/** Error for the signature on the authentication message not verifying with
 			 * the correct key */
-			case \u2flib_server\ERR_AUTHENTICATION_FAILURE:
+			case U2fError::ERR_AUTHENTICATION_FAILURE:
 				$error[] = 'ERR_AUTHENTICATION_FAILURE';
 				break;
 			/** Error for the challenge in the registration message not matching the
 			 * registration challenge */
-			case \u2flib_server\ERR_UNMATCHED_CHALLENGE:
+			case U2fError::ERR_UNMATCHED_CHALLENGE:
 				$error[] = 'ERR_UNMATCHED_CHALLENGE';
 				break;
 			/** Error for the attestation signature on the registration message not
 			 * verifying */
-			case \u2flib_server\ERR_ATTESTATION_SIGNATURE:
+			case U2fError::ERR_ATTESTATION_SIGNATURE:
 				$error[] = 'ERR_ATTESTATION_SIGNATURE';
 				break;
 			/** Error for the attestation verification not verifying */
-			case \u2flib_server\ERR_ATTESTATION_VERIFICATION:
+			case U2fError::ERR_ATTESTATION_VERIFICATION:
 				$error[] = 'ERR_ATTESTATION_VERIFICATION';
 				break;
 			/** Error for not getting good random from the system */
-			case \u2flib_server\ERR_BAD_RANDOM:
+			case U2fError::ERR_BAD_RANDOM:
 				$error[] = 'ERR_BAD_RANDOM';
 				break;
 			/** Error when the counter is lower than expected */
-			case \u2flib_server\ERR_COUNTER_TOO_LOW:
+			case U2fError::ERR_COUNTER_TOO_LOW:
 				$error[] = 'ERR_COUNTER_TOO_LOW';
 				break;
 			/** Error decoding public key */
-			case \u2flib_server\ERR_PUBKEY_DECODE:
+			case U2fError::ERR_PUBKEY_DECODE:
 				$error[] = 'ERR_PUBKEY_DECODE';
 				break;
 			/** Error user-agent returned error */
-			case \u2flib_server\ERR_BAD_UA_RETURNING:
+			case U2fError::ERR_BAD_UA_RETURNING:
 				$error[] = 'ERR_BAD_UA_RETURNING';
 				break;
 			/** Error old OpenSSL version */
-			case \u2flib_server\ERR_OLD_OPENSSL:
+			case U2fError::ERR_OLD_OPENSSL:
 				$error[] = sprintf('ERR_OLD_OPENSSL', OPENSSL_VERSION_TEXT);
 				break;
 			default:

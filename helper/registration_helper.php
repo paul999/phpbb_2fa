@@ -10,7 +10,8 @@
 
 namespace paul999\tfa\helper;
 
-use u2flib_server\Registration;
+use paul999\u2f\Registration;
+use paul999\u2f\RegistrationInterface;
 
 class registration_helper extends Registration
 {
