@@ -11,7 +11,6 @@
 namespace paul999\tfa\helper;
 
 use paul999\u2f\Registration;
-use paul999\u2f\RegistrationInterface;
 
 class registration_helper extends Registration
 {
