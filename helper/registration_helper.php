@@ -16,4 +16,24 @@ class registration_helper extends Registration
 {
 	/** @var int  */
 	public $id = 0;
+
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
+	 * @param int $id
+	 * @return registration_helper
+	 */
+	public function setId($id)
+	{
+		$this->id = $id;
+		return $this;
+	}
+
+
 }

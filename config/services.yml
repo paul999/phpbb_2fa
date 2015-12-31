@@ -28,10 +28,9 @@ services:
             - @user
             - @request
             - @config
+            - @paul999.tfa.sessionHelper
             - %core.root_path%
             - %core.php_ext%
-            - %tables.users%
-            - %paul999.2fa.tables.tfa_registration%
 
     paul999.tfa.listener:
         class: paul999\tfa\event\listener
@@ -47,3 +46,13 @@ services:
         tags:
             - { name: event.listener }
 
+    paul999.tfa.modules.u2f:
+        class: paul999\tfa\modules\u2f
+        arguments:
+            - @dball.conn
+            - @user
+            - @request
+            - @template
+            - %paul999.2fa.tables.tfa_registration%
+        tags:
+            - { name: paul999.tfa.module }

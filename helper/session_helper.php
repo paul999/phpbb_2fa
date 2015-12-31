@@ -92,14 +92,41 @@ class session_helper implements session_helper_interface
 		foreach ($modules as $module) {
 			if ($module instanceof module_interface) {
 				// Only add them if they are actually a module_interface.
+				$priority = $module->get_priority($this->user->data['user_id']);
 				if (isset($this->modules[$module->get_priority()])) {
-					throw new module_exception($this->user->lang('TFA_DOUBLE_PRIORITY', $module->get_priority(), get_class($module), get_class($this->modules[$module->get_priority()])));
+					throw new module_exception($this->user->lang('TFA_DOUBLE_PRIORITY', $priority, get_class($module), get_class($this->modules[$priority])));
 				}
 				if ($module->is_enabled()) {
-					$this->modules[$module->get_priority()] = $module;
+					$this->modules[$priority] = $module;
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param $requested_module
+	 * @return null|module_interface
+	 */
+	public function findModule($requested_module)
+	{
+		/**
+		 * @var module_interface $module
+		 */
+		foreach ($this->getModules() as $module)
+		{
+			if (get_class($module) == $requested_module)
+			{
+				return $module;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getModules() {
+		return $this->modules;
 	}
 
 	/**
@@ -145,12 +172,14 @@ class session_helper implements session_helper_interface
 		{
 			return $this->user_array[$user_id];
 		}
-		$sql = 'SELECT COUNT(registration_id) as reg_id FROM ' . $this->registration_table . ' WHERE user_id = ' . (int) $user_id;
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
 
-		$this->user_array[$user_id] = $row && $row['reg_id'] > 0;
+		/**
+		 * @var int $priority
+		 * @var module_interface $module
+		 */
+		foreach ($this->modules as $priority => $module) {
+			$this->user_array[$user_id] = $this->user[$user_id] || $module->is_usable($user_id);
+		}
 		return $this->user_array[$user_id];
 	}
 

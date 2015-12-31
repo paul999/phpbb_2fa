@@ -10,6 +10,8 @@
 
 namespace paul999\tfa\helper;
 
+use paul999\tfa\modules\module_interface;
+
 interface session_helper_interface
 {
 	const MODE_DISABLED = 0;
@@ -18,6 +20,20 @@ interface session_helper_interface
 	const MODE_REQUIRED_FOR_ADMIN = 3;
 	const MODE_REQUIRED_FOR_MODERATOR = 4;
 	const MODE_REQUIRED = 5;
+
+	/**
+	 * @param $requested_module
+	 * @return null|module_interface
+	 */
+	public function findModule($requested_module);
+
+	/**
+	 * Get the current active two factor auth modules.
+	 *
+	 * @return array
+	 */
+	public function getModules();
+
 	/**
 	 * Check if Two Factor authentication for this user is required
 	 *

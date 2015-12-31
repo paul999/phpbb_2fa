@@ -55,5 +55,6 @@ $lang = array_merge(
 		'TFA_INSERT_KEY'			=> 'Insert your security key, and press the button on the key',
 		'TFA_REGISTERED'			=> 'Key registered',
 		'TFA_LAST_USED'				=> 'Key last used',
+		'TFA_MODULE_NOT_FOUND'		=> 'The selected module (%s) has not been found',
 	)
 );

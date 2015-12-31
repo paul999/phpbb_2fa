@@ -4,9 +4,63 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4ad8d1a63aa45610887f3a705302e4d4",
-    "content-hash": "41c663ffa306b5ec6a72f964e2f267c2",
+    "hash": "63e4da9fd6470b8fa4e841881ad94fde",
+    "content-hash": "e9aaa3be6de5866854cf20433befba00",
     "packages": [
+        {
+            "name": "browscap/browscap-php",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/browscap/browscap-php.git",
+                "reference": "f17a326ebaf7878c2ae1d2d5ed7bc402160c0828"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/browscap/browscap-php/zipball/f17a326ebaf7878c2ae1d2d5ed7bc402160c0828",
+                "reference": "f17a326ebaf7878c2ae1d2d5ed7bc402160c0828",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "phpbrowscap\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Stoppani",
+                    "email": "jonathan.stoppani@gmail.com"
+                },
+                {
+                    "name": "Thomas Mueller",
+                    "email": "t_mueller_stolzenhain@yahoo.de"
+                },
+                {
+                    "name": "James Titcumb",
+                    "email": "james@asgrim.com"
+                }
+            ],
+            "description": "Standalone replacement for php's native get_browser() function",
+            "homepage": "https://github.com/browscap/browscap-php",
+            "keywords": [
+                "browser",
+                "capabilities",
+                "get_browser",
+                "user agent"
+            ],
+            "time": "2015-11-24 17:24:06"
+        },
         {
             "name": "composer/installers",
             "version": "v1.0.22",

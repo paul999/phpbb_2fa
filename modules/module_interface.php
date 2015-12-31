@@ -29,9 +29,10 @@ interface module_interface
      * And has it setup up correctly.
      * This method will be called during login, not during registration/
      *
-     * @return boolean
+     * @param int $user_id
+     * @return bool
      */
-    public function is_usable();
+    public function is_usable($user_id);
 
     /**
      * Check if the user can potentially use this.
@@ -39,33 +40,36 @@ interface module_interface
      *
      * You can, for example, check if the current browser is suitable.
      *
-     * @return boolean
+     * @param int $user_id
+     * @return bool
      */
-    public function is_potentially_usable();
+    public function is_potentially_usable($user_id);
 
     /**
      * Get the priority for this module.
-     * A higher priority means more chance it gets selected.
+     * A lower priority means more chance it gets selected as default option
      *
      * There can be only one module with a specific priority!
      * If there is already a module registered with this priority,
      * a Exception might be thrown
      *
+     * @param int $user_id If set, the priority can depend on the current user
      * @return int
      */
-    public function get_priority();
+    public function get_priority($user_id = 0);
 
     /**
      * Start of the login procedure.
-     * @return void
+     * @param int $user_id
+     * @return int
      */
-    public function login_start();
+    public function login_start($user_id);
 
     /**
      * Actual login procedure
-     * @return void
+     * @param int $user_id
      */
-    public function login();
+    public function login($user_id);
 
     /**
      * Start of registration
@@ -80,11 +84,16 @@ interface module_interface
     public function register();
 
     /**
-     * This method is called for each row in the UCP.
-     * Return a array with data, which is assigned to the template.
-     *
-     * @param $data
-     * @return array
+     * This method is called to show the UCP page.
+     * You can assign template variables to the template, or do anything else here.
      */
-    public function show_ucp_row($data);
+    public function show_ucp();
+
+    /**
+     * Delete a specific row from the UCP.
+     * The data is based on the data provided in show_ucp.
+     * @param array $data
+     * @return mixed
+     */
+    public function delete($data);
 }
