@@ -10,7 +10,6 @@
 
 namespace paul999\tfa\exceptions;
 
-
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class module_exception extends BadRequestHttpException

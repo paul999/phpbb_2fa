@@ -10,11 +10,7 @@
 
 namespace paul999\tfa\ucp;
 
-use paul999\tfa\helper\registration_helper;
 use paul999\tfa\helper\session_helper;
-use paul999\u2f\Exceptions\U2fError;
-use paul999\u2f\U2F;
-use phpbb\db\driver\driver_interface;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
@@ -93,11 +89,13 @@ class tfa_module
 	 */
 	private function register_security_key(&$error)
 	{
-		try {
+		try
+		{
 			$class = $this->request->variable('class', '');
 			$module = $this->session_helper->findModule($class);
 
-			if ($module != null) {
+			if ($module != null)
+			{
 				$module->register();
 
 				meta_refresh(3, $this->u_action);
@@ -109,7 +107,8 @@ class tfa_module
 				$error[] = $this->user->lang('TFA_MODULE_NOT_FOUND', $class);
 			}
 		}
-		catch (\Exception $e) {
+		catch (\Exception $e)
+		{
 			$error[] = $e->getMessage();
 		}
 	}
@@ -152,7 +151,6 @@ class tfa_module
 			// Replace "error" strings with their real, localised form
 			$error = array_map(array($this->user, 'lang'), $error);
 		}
-
 
 		$this->template->assign_vars(array(
 			'ERROR' 			=> (sizeof($error)) ? implode('<br />', $error) : '',

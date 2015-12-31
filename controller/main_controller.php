@@ -139,7 +139,7 @@ class main_controller
 				break;
 			}
 		}
-		if ($module == null)
+		if ($module == null || !($module instanceof module_interface))
 		{
 			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
 		}
@@ -163,7 +163,6 @@ class main_controller
 			}
 		}
 		$module->login_start($user_id);
-
 
 		$this->template->assign_vars(array(
 			'REDIRECT'		=> $this->request->variable('redirect', ''),

@@ -85,18 +85,23 @@ class session_helper implements session_helper_interface
 	 * Register the tagged modules if they are enabled.
 	 * @param service_collection $modules
 	 */
-	private function validateModules(service_collection $modules) {
+	private function validateModules(service_collection $modules)
+	{
 		/**
 		 * @var module_interface $module
 		 */
-		foreach ($modules as $module) {
-			if ($module instanceof module_interface) {
+		foreach ($modules as $module)
+		{
+			if ($module instanceof module_interface)
+			{
 				// Only add them if they are actually a module_interface.
 				$priority = $module->get_priority($this->user->data['user_id']);
-				if (isset($this->modules[$module->get_priority()])) {
+				if (isset($this->modules[$module->get_priority()]))
+				{
 					throw new module_exception($this->user->lang('TFA_DOUBLE_PRIORITY', $priority, get_class($module), get_class($this->modules[$priority])));
 				}
-				if ($module->is_enabled()) {
+				if ($module->is_enabled())
+				{
 					$this->modules[$priority] = $module;
 				}
 			}
@@ -125,7 +130,8 @@ class session_helper implements session_helper_interface
 	/**
 	 * @return array
 	 */
-	public function getModules() {
+	public function getModules()
+	{
 		return $this->modules;
 	}
 
@@ -138,7 +144,8 @@ class session_helper implements session_helper_interface
 	 */
 	public function isTfaRequired($user_id, $admin = false, $userdata = array(), $try = false)
 	{
-		if (sizeof($this->modules) == 0) {
+		if (sizeof($this->modules) == 0)
+		{
 			return false;
 		}
 		switch ($this->config['tfa_mode'])
@@ -177,7 +184,8 @@ class session_helper implements session_helper_interface
 		 * @var int $priority
 		 * @var module_interface $module
 		 */
-		foreach ($this->modules as $priority => $module) {
+		foreach ($this->modules as $priority => $module)
+		{
 			$this->user_array[$user_id] = $this->user[$user_id] || $module->is_usable($user_id);
 		}
 		return $this->user_array[$user_id];
