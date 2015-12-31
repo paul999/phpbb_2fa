@@ -89,11 +89,11 @@ interface module_interface
      */
     public function show_ucp();
 
-    /**
-     * Delete a specific row from the UCP.
-     * The data is based on the data provided in show_ucp.
-     * @param array $data
-     * @return mixed
-     */
-    public function delete($data);
+	/**
+	 * Delete a specific row from the UCP.
+	 * The data is based on the data provided in show_ucp.
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function delete($data);
 }

@@ -120,19 +120,23 @@ class main_controller
 			throw new AccessDeniedHttpException('TFA_NO_ACCESS');
 		}
 		$modules = $this->session_helper->getModules();
+		$module = null;
 
 		/**
 		 * @var module_interface $module
 		 */
-		if (!empty($default))
+		if (!empty($class))
 		{
 			$module = $this->session_helper->findModule($class);
 		}
 		else
 		{
+			/**
+			 * @var module_interface $row
+			 */
 			foreach ($modules as $row)
 			{
-				if ($module->is_usable($user_id))
+				if ($row->is_usable($user_id))
 				{
 					$module = $row;
 				}

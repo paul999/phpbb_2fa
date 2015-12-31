@@ -201,7 +201,7 @@ class u2f implements module_interface
 		{
 			$sql = 'SELECT u2f_request FROM ' . SESSIONS_TABLE . ' WHERE
 				session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-				session_user_id = ' . (int)$this->user->data['user_id'];
+				session_user_id = ' . (int) $this->user->data['user_id'];
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
@@ -230,7 +230,7 @@ class u2f implements module_interface
 				'last_used' => time(),
 			);
 
-			$sql = 'UPDATE ' . $this->registration_table . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE registration_id = ' . (int)$reg->id;
+			$sql = 'UPDATE ' . $this->registration_table . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE registration_id = ' . (int) $reg->id;
 			$this->db->sql_query($sql);
 		}
 		catch (U2fError $error)
@@ -354,7 +354,7 @@ class u2f implements module_interface
 			$reg->setKeyHandle($row['key_handle']);
 			$reg->setPublicKey($row['public_key']);
 			$reg->id			= $row['registration_id'];
-			$this->reg_data		= $reg;
+			$this->reg_data[]	= $reg;
 		}
 		$this->db->sql_freeresult($result);
 	}
@@ -371,7 +371,7 @@ class u2f implements module_interface
 		{
 			$sql_where = $this->db->sql_in_set('registration_id', $data['keys']);
 			$sql = 'DELETE FROM ' . $this->registration_table . '
-												WHERE user_id = ' . (int)$this->user->data['user_id'] . '
+												WHERE user_id = ' . (int) $this->user->data['user_id'] . '
 												AND ' . $sql_where;
 
 			$this->db->sql_query($sql);
