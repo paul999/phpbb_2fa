@@ -79,7 +79,7 @@ class tfa_module
 		$user->add_lang_ext('paul999/tfa', 'ucp_tfa');
 		$user->add_lang_ext('paul999/tfa', 'common');
 
-		$this->setup($user, $template, $request, $phpbb_container->get('paul999.2fa.sessionHelper'));
+		$this->setup($user, $template, $request, $phpbb_container->get('paul999.tfa.sessionHelper'));
 
 		$this->createPage();
 	}
