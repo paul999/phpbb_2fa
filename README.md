@@ -1,4 +1,7 @@
 # phpbb_2fa
+[![Build Status](https://travis-ci.org/paul999/phpbb_2fa.svg)](https://travis-ci.org/paul999/phpbb_2fa)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/paul999/phpbb_2fa/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/paul999/phpbb_2fa/?branch=master)
+
 phpBB extension to implement 2FA
 ================================
 

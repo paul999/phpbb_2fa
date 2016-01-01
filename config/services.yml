@@ -49,7 +49,7 @@ services:
     paul999.tfa.modules.u2f:
         class: paul999\tfa\modules\u2f
         arguments:
-            - @dball.conn
+            - @dbal.conn
             - @user
             - @request
             - @template
