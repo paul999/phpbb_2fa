@@ -143,10 +143,9 @@ class u2f implements module_interface
 	 * If there is already a module registered with this priority,
 	 * a Exception might be thrown
 	 *
-	 * @param int $user_id If set, the priority can depend on the current user
 	 * @return int
 	 */
-	public function get_priority($user_id = 0)
+	public function get_priority()
 	{
 		return 10;
 	}

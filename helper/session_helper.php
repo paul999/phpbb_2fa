@@ -95,7 +95,7 @@ class session_helper implements session_helper_interface
 			if ($module instanceof module_interface)
 			{
 				// Only add them if they are actually a module_interface.
-				$priority = $module->get_priority($this->user->data['user_id']);
+				$priority = $module->get_priority();
 				if (isset($this->modules[$module->get_priority()]))
 				{
 					throw new module_exception($this->user->lang('TFA_DOUBLE_PRIORITY', $priority, get_class($module), get_class($this->modules[$priority])));
