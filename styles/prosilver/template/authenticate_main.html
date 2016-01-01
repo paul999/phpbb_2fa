@@ -1,20 +1,7 @@
 <!-- INCLUDE overall_header.html -->
-<!-- INCLUDEJS @paul999_tfa/js/u2f-api.js -->
-<!-- INCLUDEJS @paul999_tfa/js/bowser.js -->
 
-<form action="{U_SUBMIT_AUTH}" id="submit_auth">
-    <input type="hidden" name="redirect" value="{REDIRECT}">
-    <input type="hidden" name="authenticate" id="authenticate" />
-</form>
+<!-- EVENT paul999_tfa_authenticate -->
+<!-- BEGIN tfa_options -->
 
-<!-- INCLUDE tfa_browser_support.html -->
-
-<div class="navbar">
-    <div class="inner">
-
-       <h2>{L_FTA_INSERT_KEY}</h2><br />
-       {L_FTA_INSERT_KEY_EXPLAIN}
-
-    </div>
-</div>
+<!-- END tfa_options -->
 <!-- INCLUDE overall_footer.html -->
