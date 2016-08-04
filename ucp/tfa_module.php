@@ -107,7 +107,10 @@ class tfa_module
 				}
 				if ($module->can_register())
 				{
-					$this->template->assign_var('S_HIDDEN_FIELDS', build_hidden_fields(array('class' => $class)));
+					$this->template->assign_vars(array(
+						'S_HIDDEN_FIELDS' => build_hidden_fields(array('class' => $class)),
+						'S_UCP_ACTION'    => $this->u_action,
+					));
 					$this->tpl_name = $module->register_start();
 				}
 				else
