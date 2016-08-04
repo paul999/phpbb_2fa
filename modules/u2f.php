@@ -62,11 +62,6 @@ class u2f implements module_interface
 	private $u2f;
 
 	/**
-	 * @var array
-	 */
-	private $reg_data;
-
-	/**
 	 * u2f constructor.
 	 * @param driver_interface $db
 	 * @param user $user
@@ -292,7 +287,28 @@ class u2f implements module_interface
 	 */
 	public function register_start()
 	{
-		$data = $this->u2f->getRegisterData($this->reg_data);
+		$sql = 'SELECT *
+			FROM ' . $this->registration_table . '
+			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+			ORDER BY registration_id ASC';
+
+		$result = $this->db->sql_query($sql);
+		$reg_data = array();
+
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$reg = new registration_helper();
+			$reg->setCounter($row['counter']);
+			$reg->setCertificate($row['certificate']);
+			$reg->setKeyHandle($row['key_handle']);
+			$reg->setPublicKey($row['public_key']);
+			$reg->setId($row['registration_id']);
+
+			$reg_data[] = $reg;
+		}
+		$this->db->sql_freeresult($result);
+
+		$data = $this->u2f->getRegisterData($reg_data);
 
 		$sql_ary = array(
 			'u2f_request' => json_encode($data[0], JSON_UNESCAPED_SLASHES),
@@ -387,15 +403,6 @@ class u2f implements module_interface
 				'REGISTERED'    => $this->user->format_date($row['registered']),
 				'LAST_USED'     => $this->user->format_date($row['last_used']),
 			));
-/*
-			$reg = new registration_helper();
-			$reg->setCounter($row['counter']);
-			$reg->setCertificate($row['certificate']);
-			$reg->setKeyHandle($row['key_handle']);
-			$reg->setPublicKey($row['public_key']);
-			$reg->setId($row['registration_id']);
-
-			$this->reg_data[] = $reg; */
 		}
 		$this->db->sql_freeresult($result);
 	}
