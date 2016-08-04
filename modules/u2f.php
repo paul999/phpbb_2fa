@@ -105,13 +105,14 @@ class u2f implements module_interface
 	 */
 	public function is_usable($user_id)
 	{
-		$browscap = new Browscap();
-		$info = $browscap->getBrowser();
-		if ($info['Browser'] !== 'chrome')
+		if (!$this->is_potentially_usable($user_id))
 		{
-			return false; // u2f is currently only supported in chrome!
+			return false;
 		}
-		$sql = 'SELECT COUNT(registration_id) as reg_id FROM ' . $this->registration_table . ' WHERE user_id = ' . (int) $user_id;
+		$sql = 'SELECT COUNT(registration_id) as reg_id 
+					FROM ' . $this->registration_table . ' 
+					WHERE 
+						user_id = ' . (int) $user_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
@@ -132,7 +133,26 @@ class u2f implements module_interface
 	{
 		$browsercap = new Browscap();
 		$info = $browsercap->getBrowser();
-		return $info['Browser'] === 'chrome';
+		return $info['Browser'] === 'chrome' && $this->is_ssl();
+	}
+
+	/**
+	 * Check if the current session is secure.
+	 *
+	 * @return bool
+	 */
+	private function is_ssl()
+	{
+		$secure = $this->request->server('HTTPS');
+		if (!empty($secure))
+		{
+			return 'on' == strtolower($secure) || '1' == $secure;
+		}
+		elseif ('443' == $this->request->server('SERVER_PORT'))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -198,9 +218,11 @@ class u2f implements module_interface
 	{
 		try
 		{
-			$sql = 'SELECT u2f_request FROM ' . SESSIONS_TABLE . ' WHERE
-				session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-				session_user_id = ' . (int) $this->user->data['user_id'];
+			$sql = 'SELECT u2f_request 
+						FROM ' . SESSIONS_TABLE . ' 
+						WHERE
+							session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
+							session_user_id = ' . (int) $this->user->data['user_id'];
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
@@ -229,7 +251,7 @@ class u2f implements module_interface
 				'last_used' => time(),
 			);
 
-			$sql = 'UPDATE ' . $this->registration_table . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE registration_id = ' . (int) $reg->id;
+			$sql = 'UPDATE ' . $this->registration_table . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE registration_id = ' . (int) $reg->getId();
 			$this->db->sql_query($sql);
 		}
 		catch (U2fError $error)
@@ -347,13 +369,14 @@ class u2f implements module_interface
 				'LAST_USED'     => $this->user->format_date($row['last_used']),
 			));
 
-			$reg				= new registration_helper();
+			$reg = new registration_helper();
 			$reg->setCounter($row['counter']);
 			$reg->setCertificate($row['certificate']);
 			$reg->setKeyHandle($row['key_handle']);
 			$reg->setPublicKey($row['public_key']);
-			$reg->id			= $row['registration_id'];
-			$this->reg_data[]	= $reg;
+			$reg->setId($row['registration_id']);
+
+			$this->reg_data[] = $reg;
 		}
 		$this->db->sql_freeresult($result);
 	}
@@ -390,13 +413,14 @@ class u2f implements module_interface
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$reg 				= new registration_helper();
+			$reg = new registration_helper();
 			$reg->setCounter($row['counter']);
 			$reg->setCertificate($row['certificate']);
 			$reg->setKeyHandle($row['key_handle']);
 			$reg->setPublicKey($row['public_key']);
-			$reg->id 			= $row['registration_id'];
-			$rows[] 			= $reg;
+			$reg->setId($row['registration_id']);
+
+			$rows[] = $reg;
 		}
 
 		$this->db->sql_freeresult($result);

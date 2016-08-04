@@ -139,8 +139,8 @@ class main_controller
 				if ($row->is_usable($user_id))
 				{
 					$module = $row;
+					break;
 				}
-				break;
 			}
 		}
 		if ($module == null || !($module instanceof module_interface))
@@ -227,7 +227,7 @@ class main_controller
 				// the login array is used because the user ids do not differ for re-authentication
 				$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
 						WHERE session_id = '" . $this->db->sql_escape($old_session_id) . "'
-						AND session_user_id = {$user_id}";
+						AND session_user_id = " . (int)$user_id;
 				$this->db->sql_query($sql);
 
 				redirect(append_sid("{$this->root_path}adm/index.{$this->php_ext}", false, true, $this->user->data['session_id']));

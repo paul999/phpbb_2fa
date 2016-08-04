@@ -16,8 +16,9 @@ interface module_interface
 	 * Return if this module is enabled by the admin
 	 * (And all server requirements are met).
 	 *
-	 * Do not return false in case a specific user disabeld this module,
-	 * OR if the user is unable to use this specific module.
+	 * Do not return false in case a specific user disabled this module,
+	 * OR if the user is unable to use this specific module,
+	 * OR if a browser specific item is missing/incorrect.
 	 * @return boolean
 	 */
 	public function is_enabled();

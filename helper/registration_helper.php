@@ -14,8 +14,10 @@ use paul999\u2f\Registration;
 
 class registration_helper extends Registration
 {
-	/** @var int  */
-	public $id = 0;
+	/**
+	 * @var int
+	 */
+	private $id = 0;
 
 	/**
 	 * @return int
