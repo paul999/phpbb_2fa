@@ -107,6 +107,7 @@ class tfa_module
 				}
 				if ($module->can_register())
 				{
+					$this->template->assign_var('S_HIDDEN_FIELDS', build_hidden_fields(array('class' => $class)));
 					$this->tpl_name = $module->register_start();
 				}
 				else
@@ -159,6 +160,7 @@ class tfa_module
 					break;
 
 				case $this->user->lang('TFA_NEW'):
+				case $this->user->lang('TFA_ADD_KEY'):
 					$error = array_merge($this->register_security_key(), $error);
 
 					if (!sizeof($error))
