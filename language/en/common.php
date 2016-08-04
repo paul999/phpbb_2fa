@@ -69,5 +69,8 @@ $lang = array_merge(
 
 		'TFA_DOUBLE_PRIORITY'				=> 'The choosen priority (%d) for module %s is already in use for module %s',
 
+        // Module names
+        'MODULE_U2F'        => 'U2F',
+
 	)
 );

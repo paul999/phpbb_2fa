@@ -200,18 +200,19 @@ class tfa_module
 		{
 			foreach ($keys as $row)
 			{
-				if (isset($row['class']))
+			    $row = explode('_', $row);
+				if (isset($row[0]))
 				{
 					$module = $this->session_helper->findModule($row['class']);
 					if ($module != null)
 					{
-						$module->delete($row);
+						$module->delete($row[1]);
 					}
 				}
 			}
-			meta_refresh(3, $this->u_action);
-			$message = $this->user->lang['TFA_KEYS_DELETED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
-			trigger_error($message);
 		}
+        meta_refresh(3, $this->u_action);
+        $message = $this->user->lang['TFA_KEYS_DELETED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+        trigger_error($message);
 	}
 }

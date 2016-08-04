@@ -12,6 +12,12 @@ namespace paul999\tfa\modules;
 
 interface module_interface
 {
+    /**
+     * Get a language key for this specific module.
+     * @return string
+     */
+    public function get_translatable_name();
+
 	/**
 	 * Return if this module is enabled by the admin
 	 * (And all server requirements are met).
@@ -91,6 +97,7 @@ interface module_interface
 	 * Do the actual registration of a new security key.
 	 *
 	 * @return boolean Result of the registration.
+     * @throws BadRequestHttpException
 	 */
 	public function register();
 

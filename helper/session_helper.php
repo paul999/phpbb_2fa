@@ -186,7 +186,7 @@ class session_helper implements session_helper_interface
 		 */
 		foreach ($this->modules as $priority => $module)
 		{
-			$this->user_array[$user_id] = $this->user[$user_id] || $module->is_usable($user_id);
+			$this->user_array[$user_id] = $this->user_array[$user_id] || $module->is_usable($user_id);
 		}
 		return $this->user_array[$user_id];
 	}

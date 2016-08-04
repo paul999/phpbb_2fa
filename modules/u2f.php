@@ -280,8 +280,8 @@ class u2f implements module_interface
 
 	/**
 	 * Start of registration
-	 * @return void
-	 */
+	 * @return string
+     */
 	public function register_start()
 	{
 		$data = $this->u2f->getRegisterData($this->reg_data);
@@ -310,11 +310,14 @@ class u2f implements module_interface
 			'U2F_SIGN_REQUEST'  => json_encode($data[0], JSON_UNESCAPED_SLASHES),
 			'U2F_SIGN'          => json_encode($data[1], JSON_UNESCAPED_SLASHES),
 		));
+
+        return 'tfa_u2f_ucp_new';
 	}
 
 	/**
 	 * Actual registration
 	 * @return void
+     * @throws BadRequestHttpException
 	 */
 	public function register()
 	{
@@ -359,16 +362,17 @@ class u2f implements module_interface
 			ORDER BY registration_id ASC';
 
 		$result = $this->db->sql_query($sql);
-		$this->reg_data = array();
+		//$this->reg_data = array();
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$this->template->assign_block_vars('keys', array(
+			    'CLASS'         => 'u2f',
 				'ID'            => $row['registration_id'],
 				'REGISTERED'    => $this->user->format_date($row['registered']),
 				'LAST_USED'     => $this->user->format_date($row['last_used']),
 			));
-
+/*
 			$reg = new registration_helper();
 			$reg->setCounter($row['counter']);
 			$reg->setCertificate($row['certificate']);
@@ -376,7 +380,7 @@ class u2f implements module_interface
 			$reg->setPublicKey($row['public_key']);
 			$reg->setId($row['registration_id']);
 
-			$this->reg_data[] = $reg;
+			$this->reg_data[] = $reg; */
 		}
 		$this->db->sql_freeresult($result);
 	}
@@ -399,6 +403,25 @@ class u2f implements module_interface
 			$this->db->sql_query($sql);
 		}
 	}
+
+    /**
+     * If this module can add new keys (Or other things)
+     *
+     * @return boolean
+     */
+    public function can_register()
+    {
+        return $this->is_potentially_usable(false);
+    }
+
+    /**
+     * Get a language key for this specific module.
+     * @return string
+     */
+    public function get_translatable_name()
+    {
+        return 'MODULE_U2F';
+    }
 
 	/**
 	 * Select all registration objects from the database
