@@ -13,7 +13,9 @@ namespace paul999\tfa\modules;
 use paul999\tfa\helper\registration_helper;
 use paul999\u2f\AuthenticationResponse;
 use paul999\u2f\Exceptions\U2fError;
+use paul999\u2f\RegisterRequest;
 use paul999\u2f\RegisterRequestInterface;
+use paul999\u2f\RegisterResponse;
 use paul999\u2f\SignRequest;
 use phpbb\db\driver\driver_interface;
 use phpbb\request\request_interface;
@@ -347,9 +349,13 @@ class u2f implements module_interface
 	{
 		try
 		{
-			$data = json_decode($this->user->data['u2f_request']);
+			$register = json_decode($this->user->data['u2f_request']);
+			$response = json_decode(htmlspecialchars_decode($this->request->variable('register', '')));
 
-			$reg = $this->u2f->doRegister($data, json_decode(htmlspecialchars_decode($this->request->variable('register', ''))));
+			$registerrequest = new RegisterRequest($register->challenge, $register->appId);
+			$responserequest = new RegisterResponse($response->registrationData, $response->clientData, $response->errorCode);
+
+			$reg = $this->u2f->doRegister($registerrequest, $responserequest);
 
 			$sql_ary = array(
 				'user_id' => $this->user->data['user_id'],
