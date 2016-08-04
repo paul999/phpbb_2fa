@@ -163,7 +163,6 @@ class tfa_module
 					break;
 
 				case $this->user->lang('TFA_NEW'):
-				case $this->user->lang('TFA_ADD_KEY'):
 					$error = array_merge($this->register_security_key(), $error);
 
 					if (!sizeof($error))
