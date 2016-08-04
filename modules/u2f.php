@@ -139,7 +139,7 @@ class u2f implements module_interface
 	public function is_potentially_usable($user_id = false)
 	{
 		$browsercap = new Browscap($this->root_path . 'cache/');
-		$info = $browsercap->getBrowser();
+		$info = $browsercap->getBrowser($this->request->server('HTTP_USER_AGENT'));
 		return $info['Browser'] === 'chrome' && $this->is_ssl();
 	}
 
