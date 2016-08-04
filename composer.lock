@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b080887b6016a812349f28526b4b591b",
-    "content-hash": "e9aaa3be6de5866854cf20433befba00",
+    "hash": "535cf3b107774c266c136dadbb244369",
+    "content-hash": "6648f7f90dc7189a4e472b560cbbf2a1",
     "packages": [
         {
             "name": "browscap/browscap-php",
@@ -169,17 +169,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/paul999/php-u2flib-server.git",
-                "reference": "67a09a39239fcbf22b4cdbdab7d716211c1ab6d7"
+                "reference": "d1c17a402381ab22c0ac7a06ce18fedf2b303456"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paul999/php-u2flib-server/zipball/67a09a39239fcbf22b4cdbdab7d716211c1ab6d7",
-                "reference": "67a09a39239fcbf22b4cdbdab7d716211c1ab6d7",
+                "url": "https://api.github.com/repos/paul999/php-u2flib-server/zipball/d1c17a402381ab22c0ac7a06ce18fedf2b303456",
+                "reference": "d1c17a402381ab22c0ac7a06ce18fedf2b303456",
                 "shasum": ""
             },
             "require": {
                 "ext-openssl": "*",
-                "php": "^5.3.3 | ^7.0"
+                "php": "^5.4.0 | ^7.0"
             },
             "type": "library",
             "autoload": {
@@ -209,7 +209,7 @@
             ],
             "description": "Library for U2F implementation",
             "homepage": "http://u2flib.io",
-            "time": "2016-08-04 11:16:17"
+            "time": "2016-08-04 17:03:54"
         }
     ],
     "packages-dev": [
@@ -476,12 +476,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpbb/epv.git",
-                "reference": "cb9db0e10f445588158f568d61a24d0e6fc9090c"
+                "reference": "219151fcf7b2e20ea6c347673d2fd83f02a0ebe8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpbb/epv/zipball/cb9db0e10f445588158f568d61a24d0e6fc9090c",
-                "reference": "cb9db0e10f445588158f568d61a24d0e6fc9090c",
+                "url": "https://api.github.com/repos/phpbb/epv/zipball/219151fcf7b2e20ea6c347673d2fd83f02a0ebe8",
+                "reference": "219151fcf7b2e20ea6c347673d2fd83f02a0ebe8",
                 "shasum": ""
             },
             "require": {
@@ -518,7 +518,7 @@
                 }
             ],
             "description": "A extension validator for phpBB extensions. Extensions are required to pass the validator when submitted to the extension database.",
-            "time": "2016-08-03 16:26:30"
+            "time": "2016-08-04 15:59:57"
         },
         {
             "name": "phpbb/phpbb",
@@ -1569,7 +1569,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.9"
+        "php": ">=5.4.0"
     },
     "platform-dev": []
 }
