@@ -90,7 +90,7 @@ class u2f implements module_interface
 	 */
 	public function is_enabled()
 	{
-		// TODO: Implement is_enabled() method.
+		return true;
 	}
 
 	/**

@@ -42,7 +42,7 @@ class session_helper implements session_helper_interface
 	/**
 	 * @var array
 	 */
-	private $modules;
+	private $modules = array();
 
 	/**
 	 * @var string
