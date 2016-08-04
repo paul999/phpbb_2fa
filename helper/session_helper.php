@@ -119,7 +119,7 @@ class session_helper implements session_helper_interface
 		 */
 		foreach ($this->getModules() as $module)
 		{
-			if (get_class($module) == $requested_module)
+			if ($module->get_name() == $requested_module)
 			{
 				return $module;
 			}
