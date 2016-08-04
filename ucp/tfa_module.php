@@ -11,7 +11,6 @@
 namespace paul999\tfa\ucp;
 
 use paul999\tfa\helper\session_helper;
-use paul999\tfa\modules\module_interface;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
@@ -86,22 +85,34 @@ class tfa_module
 	}
 
 	/**
-	 * @param array $error
+	 * return array
 	 */
-	private function register_security_key(&$error)
+	private function register_security_key()
 	{
 		try
 		{
+			$error = array();
 			$class = $this->request->variable('class', '');
 			$module = $this->session_helper->findModule($class);
+			$submit = $this->request->variable('md', false, false, \phpbb\request\request_interface::POST);
 
 			if ($module != null)
 			{
-				$module->register();
-
-				meta_refresh(3, $this->u_action);
-				$message = $this->user->lang['TFA_KEY_ADDED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
-				trigger_error($message);
+				if ($submit)
+				{
+					$module->register();
+					meta_refresh(3, $this->u_action);
+					$message = $this->user->lang['TFA_KEY_ADDED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+					trigger_error($message);
+				}
+				if ($module->can_register())
+				{
+					$this->tpl_name = $module->register_start();
+				}
+				else
+				{
+					$error[] = 'TFA_MODULE_NO_REGISTER';
+ 				}
 			}
 			else
 			{
@@ -112,6 +123,7 @@ class tfa_module
 		{
 			$error[] = $e->getMessage();
 		}
+		return $error;
 	}
 
 	/**
@@ -119,42 +131,51 @@ class tfa_module
 	 */
 	private function createPage()
 	{
-		$submit = $this->request->variable('md', false, false, \phpbb\request\request_interface::POST);
 		$error = array();
 		$s_hidden_fields = '';
 
 		add_form_key('ucp_tfa_keys');
 
-		if ($submit)
+		$module_row = $this->request->variable('md', '');
+
+		// Set desired template
+		$this->tpl_name = 'ucp_tfa';
+		$this->page_title = 'UCP_TFA';
+
+		switch ($module_row)
 		{
-			$module_row = $this->request->variable('md', '');
-			if (!check_form_key('ucp_tfa_keys'))
-			{
-				$error[] = 'FORM_INVALID';
-			}
-			else
-			{
-				switch ($module_row)
+			case 'delete':
+				if (!check_form_key('ucp_tfa_keys'))
 				{
-					case 'delete':
-						$this->delete_keys();
-						break;
-
-					case 'register':
-						$this->register_security_key($error);
-					break;
-
-					default:
-						$error[] = 'TFA_NO_MODE';
+					$error[] = 'FORM_INVALID';
 				}
-			}
+				else
+				{
+					if ($this->request->variable('md', false, false, \phpbb\request\request_interface::POST))
+					{
+						$this->delete_keys();
+					}
+				}
+			break;
 
-			// Replace "error" strings with their real, localised form
-			$error = array_map(array($this->user, 'lang'), $error);
+			case 'register':
+				$error = array_merge($this->register_security_key(), $error);
+
+				if (!sizeof($error))
+				{
+					return; // register_security_key has its own template stuff, so we return here.
+				}
+			break;
+
+			default:
+				$error[] = 'TFA_NO_MODE';
 		}
 
+		// Replace "error" strings with their real, localised form
+		$error = array_map(array($this->user, 'lang'), $error);
+
 		/**
-		 * @var $module_row module_interface
+		 * @var $module_row \paul999\tfa\modules\module_interface
 		 */
 		foreach ($this->session_helper->getModules() as $module_row)
 		{
@@ -167,10 +188,6 @@ class tfa_module
 			'S_HIDDEN_FIELDS' 	=> $s_hidden_fields,
 			'S_UCP_ACTION' 		=> $this->u_action,
 		));
-
-		// Set desired template
-		$this->tpl_name = 'ucp_tfa';
-		$this->page_title = 'UCP_TFA';
 	}
 
 	/**

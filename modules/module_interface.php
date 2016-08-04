@@ -72,14 +72,25 @@ interface module_interface
 	public function login($user_id);
 
 	/**
-	 * Start of registration
-	 * @return void
+	 * If this module can add new keys (Or other things)
+	 *
+	 * @return boolean 
+	 */
+	public function can_register();
+
+	/**
+	 * Start with the registration of a new security key.
+	 * This page should return a name of a template, and
+	 * it should assign the required variables for this template.
+	 *
+	 * @return string
 	 */
 	public function register_start();
 
 	/**
-	 * Actual registration
-	 * @return void
+	 * Do the actual registration of a new security key.
+	 *
+	 * @return boolean Result of the registration.
 	 */
 	public function register();
 
