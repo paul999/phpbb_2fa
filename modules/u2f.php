@@ -148,7 +148,7 @@ class u2f implements module_interface
 		{
 			return 'on' == strtolower($secure) || '1' == $secure;
 		}
-		elseif ('443' == $this->request->server('SERVER_PORT'))
+		else if ('443' == $this->request->server('SERVER_PORT'))
 		{
 			return true;
 		}

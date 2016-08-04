@@ -73,7 +73,7 @@ class session_helper implements session_helper_interface
 	public function __construct(driver_interface $db, config $config, user $user, service_collection $modules, $registration_table, $user_table)
 	{
 		$this->db					= $db;
-		$this->user_array			= $user;
+		$this->user					= $user;
 		$this->config				= $config;
 		$this->registration_table	= $registration_table;
 		$this->user_table			= $user_table;

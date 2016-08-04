@@ -11,6 +11,7 @@
 namespace paul999\tfa\ucp;
 
 use paul999\tfa\helper\session_helper;
+use paul999\tfa\modules\module_interface;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
@@ -126,14 +127,14 @@ class tfa_module
 
 		if ($submit)
 		{
-			$mode = $this->request->variable('md', '');
+			$module_row = $this->request->variable('md', '');
 			if (!check_form_key('ucp_tfa_keys'))
 			{
 				$error[] = 'FORM_INVALID';
 			}
 			else
 			{
-				switch ($mode)
+				switch ($module_row)
 				{
 					case 'delete':
 						$this->delete_keys();
@@ -150,6 +151,14 @@ class tfa_module
 
 			// Replace "error" strings with their real, localised form
 			$error = array_map(array($this->user, 'lang'), $error);
+		}
+
+		/**
+		 * @var $module_row module_interface
+		 */
+		foreach ($this->session_helper->getModules() as $module_row)
+		{
+			$module_row->show_ucp();
 		}
 
 		$this->template->assign_vars(array(
