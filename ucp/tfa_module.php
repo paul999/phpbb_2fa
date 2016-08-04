@@ -215,10 +215,10 @@ class tfa_module
 		{
 			foreach ($keys as $row)
 			{
-				$row = explode('_', $row);
+				$row = explode('_', $row); // 0 is class, 1 is ID
 				if (isset($row[0]))
 				{
-					$module = $this->session_helper->findModule($row['class']);
+					$module = $this->session_helper->findModule($row[0]);
 					if ($module != null)
 					{
 						$module->delete($row[1]);
