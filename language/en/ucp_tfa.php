@@ -58,5 +58,6 @@ $lang = array_merge(
 		'TFA_LAST_USED'				=> 'Key last used',
 		'TFA_MODULE_NOT_FOUND'		=> 'The selected module (%s) has not been found',
 		'TFA_MODULE_NO_REGISTER'	=> 'The selected module does not accept new keys for registration',
+		'TFA_SELECT_NEW'			=> 'Add new key',
 	)
 );

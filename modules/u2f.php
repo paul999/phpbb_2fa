@@ -140,7 +140,7 @@ class u2f implements module_interface
 	{
 		$browsercap = new Browscap($this->root_path . 'cache/');
 		$info = $browsercap->getBrowser($this->request->server('HTTP_USER_AGENT'));
-		return $info->Browser === 'chrome' && $this->is_ssl();
+		return strtolower($info->Browser) === 'chrome' && $this->is_ssl();
 	}
 
 	/**
