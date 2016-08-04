@@ -54,5 +54,6 @@ services:
             - @request
             - @template
             - %paul999.2fa.tables.tfa_registration%
+            - %core.root_path%
         tags:
             - { name: paul999.tfa.module }

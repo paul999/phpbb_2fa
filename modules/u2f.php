@@ -50,6 +50,11 @@ class u2f implements module_interface
 	 */
 	private $registration_table;
 
+    /**
+     * @var string
+     */
+    private $root_path;
+
 	/**
 	 * @var \paul999\u2f\U2F
 	 */
@@ -60,20 +65,22 @@ class u2f implements module_interface
 	 */
 	private $reg_data;
 
-	/**
-	 * u2f constructor.
-	 * @param driver_interface $db
-	 * @param user $user
-	 * @param request_interface $request
-	 * @param template $template
-	 * @param string $registration_table
-	 */
-	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, $registration_table)
+    /**
+     * u2f constructor.
+     * @param driver_interface $db
+     * @param user $user
+     * @param request_interface $request
+     * @param template $template
+     * @param string $registration_table
+     * @param string $root_path
+     */
+	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, $registration_table, $root_path)
 	{
 		$this->db       = $db;
 		$this->user     = $user;
 		$this->request  = $request;
 		$this->template = $template;
+        $this->root_path= $root_path;
 
 		$this->registration_table	= $registration_table;
 
@@ -126,12 +133,12 @@ class u2f implements module_interface
 	 *
 	 * You can, for example, check if the current browser is suitable.
 	 *
-	 * @param int $user_id
+	 * @param int|boolean $user_id Use false to ignore user
 	 * @return bool
 	 */
-	public function is_potentially_usable($user_id)
+	public function is_potentially_usable($user_id = false)
 	{
-		$browsercap = new Browscap();
+		$browsercap = new Browscap($this->root_path . 'cache/');
 		$info = $browsercap->getBrowser();
 		return $info['Browser'] === 'chrome' && $this->is_ssl();
 	}

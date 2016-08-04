@@ -180,6 +180,8 @@ class session_helper implements session_helper_interface
 			return $this->user_array[$user_id];
 		}
 
+        $this->user_array[$user_id] = false; // Preset to false.
+
 		/**
 		 * @var int $priority
 		 * @var module_interface $module

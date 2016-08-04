@@ -47,10 +47,10 @@ interface module_interface
 	 *
 	 * You can, for example, check if the current browser is suitable.
 	 *
-	 * @param int $user_id
+	 * @param int|boolean $user_id Use false to ignore user
 	 * @return bool
 	 */
-	public function is_potentially_usable($user_id);
+	public function is_potentially_usable($user_id = false);
 
 	/**
 	 * Get the priority for this module.
