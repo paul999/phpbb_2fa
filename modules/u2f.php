@@ -349,11 +349,6 @@ class u2f implements module_interface
 		{
 			$data = json_decode($this->user->data['u2f_request']);
 
-			if (!$data instanceof RegisterRequestInterface)
-			{
-				throw new BadRequestHttpException($this->user->lang('ERR_TFA_NO_REQUEST_FOUND_IN_SESSION'));
-			}
-
 			$reg = $this->u2f->doRegister($data, json_decode(htmlspecialchars_decode($this->request->variable('register', ''))));
 
 			$sql_ary = array(
