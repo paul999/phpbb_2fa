@@ -48,6 +48,7 @@ $lang = array_merge(
 										you might be required to add a security key before accessing the forum.',
 		'TFA_NO_MODE'				=> 'No Mode',
 		'TFA_KEYS_DELETED'			=> 'Selected keys removed.',
+        'TFA_NEW'                   => 'Add new key',
 		'TFA_ERROR'					=> 'It seems something went wrong...',
 		'TFA_REG_FAILED'			=> 'Registration failed with error: ',
 		'TFA_ADD_KEY'				=> 'Register new key',

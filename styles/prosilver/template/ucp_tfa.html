@@ -36,8 +36,14 @@
 
     <fieldset class="display-actions">
         {S_HIDDEN_FIELDS}
-        <input type="hidden" name="md" id="md" value="delete" />
-        <input type="submit" name="submit" value="{L_DELETE_MARKED}" class="button2" />
+        <select name="new">
+            <option>{L_TFA_SELECT_NEW}</option>
+            <!-- BEGIN new_keys -->
+            <option value="{new_keys.CLASS">{new_keys.NAME}</option>
+            <!-- END new_keys -->
+        </select>
+        <input type="submit" name="md" value="{L_TFA_NEW}" class="button1" />
+        <input type="submit" name="md" value="{L_DELETE_MARKED}" class="button2" />
         <div><a href="#" onclick="$('#ucp input:checkbox').prop('checked', true); return false;">{L_MARK_ALL}</a> &bull; <a href="#" onclick="$('#ucp input:checkbox').prop('checked', false); return false;">{L_UNMARK_ALL}</a></div>
         {S_FORM_TOKEN}
     </fieldset>
