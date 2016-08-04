@@ -191,7 +191,7 @@ class tfa_module
 			if ($module_row->can_register())
 			{
 				$this->template->assign_block_vars('new_keys', array(
-					'CLASS' => get_class($module_row),
+					'CLASS' => $module_row->get_name(),
 					'NAME'	=> $this->user->lang($module_row->get_translatable_name()),
 				));
 			}
@@ -215,13 +215,13 @@ class tfa_module
 		{
 			foreach ($keys as $row)
 			{
-				$row = explode('_', $row); // 0 is class, 1 is ID
+				$row = explode('-', $row); // 0 is class, 1 is ID
 				if (isset($row[0]))
 				{
 					$module = $this->session_helper->findModule($row[0]);
 					if ($module != null)
 					{
-						$module->delete($row[1]);
+						$module->delete(intval($row[1]));
 					}
 				}
 			}

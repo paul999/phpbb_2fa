@@ -374,7 +374,7 @@ class u2f implements module_interface
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$this->template->assign_block_vars('keys', array(
-				'CLASS'         => 'u2f',
+				'CLASS'         => $this->get_name(),
 				'ID'            => $row['registration_id'],
 				'REGISTERED'    => $this->user->format_date($row['registered']),
 				'LAST_USED'     => $this->user->format_date($row['last_used']),
@@ -395,20 +395,17 @@ class u2f implements module_interface
 	/**
 	 * Delete a specific row from the UCP.
 	 * The data is based on the data provided in show_ucp.
-	 * @param array $data
-	 * @return mixed
+	 * @param int $key
+	 * @return void
 	 */
-	public function delete($data)
+	public function delete($key)
 	{
-		if (isset($data['keys']))
-		{
-			$sql_where = $this->db->sql_in_set('registration_id', $data['keys']);
 			$sql = 'DELETE FROM ' . $this->registration_table . '
-												WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-												AND ' . $sql_where;
+						WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+						AND registration_id =' . (int) $key;
 
 			$this->db->sql_query($sql);
-		}
+
 	}
 
 	/**
@@ -419,6 +416,16 @@ class u2f implements module_interface
 	public function can_register()
 	{
 		return $this->is_potentially_usable(false);
+	}
+
+	/**
+	 * Return the name of the current module
+	 * This is for internal use only
+	 * @return string
+	 */
+	public function get_name()
+	{
+		return 'u2f';
 	}
 
 	/**

@@ -24,7 +24,7 @@
                     <td>{keys.ID}</td>
                     <td class="center">{keys.REGISTERED}</td>
                     <td class="center">{keys.LAST_USED}</td>
-                    <td class="center mark"><input type="checkbox" name="keys[]" value="{keys.CLASS}_{keys.ID}" id="{keys.ID}" /></td>
+                    <td class="center mark"><input type="checkbox" name="keys[]" value="{keys.CLASS}-{keys.ID}" id="{keys.ID}" /></td>
                 </tr>
                 <!-- BEGINELSE -->
                     <tr><td colspan="4" class="bg1" style="text-align: center">{L_TFA_NO_KEYS}</td></tr>
@@ -36,7 +36,7 @@
 
     <fieldset class="display-actions">
         {S_HIDDEN_FIELDS}
-        <select name="new">
+        <select name="class">
             <option>{L_TFA_SELECT_NEW}</option>
             <!-- BEGIN new_keys -->
             <option value="{new_keys.CLASS}">{new_keys.NAME}</option>

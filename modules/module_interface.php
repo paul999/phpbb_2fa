@@ -19,6 +19,13 @@ interface module_interface
 	public function get_translatable_name();
 
 	/**
+	 * Return the name of the current module
+	 * This is for internal use only
+	 * @return string
+	 */
+	public function get_name();
+
+	/**
 	 * Return if this module is enabled by the admin
 	 * (And all server requirements are met).
 	 *
@@ -110,8 +117,8 @@ interface module_interface
 	/**
 	 * Delete a specific row from the UCP.
 	 * The data is based on the data provided in show_ucp.
-	 * @param array $data
-	 * @return mixed
+	 * @param int $key
+	 * @return void
 	 */
-	public function delete($data);
+	public function delete($key);
 }
