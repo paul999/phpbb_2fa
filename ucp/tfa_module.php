@@ -94,7 +94,7 @@ class tfa_module
 			$error = array();
 			$class = $this->request->variable('class', '');
 			$module = $this->session_helper->findModule($class);
-			$submit = $this->request->variable('add_key', false, false, \phpbb\request\request_interface::POST);
+			$submit = $this->request->variable('md', false, false, \phpbb\request\request_interface::POST);
 
 			if ($module != null)
 			{
