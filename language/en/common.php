@@ -55,7 +55,9 @@ $lang = array_merge(
 		'ERR_BAD_UA_RETURNING'          => 'User-agent returned error',
 		'ERR_OLD_OPENSSL'               => 'OpenSSL has to be at least version 1.0.0, this is %s',
 		'UNKNOWN_ERROR'                 => 'A unknown error happened during the validation of your security key. Please try again later.',
-		'TFA_TFA_NOT_REGISTERED'		=> 'The used security key was not registered to your account',
+
+		'ERR_TFA_NO_REQUEST_FOUND_IN_SESSION'	=> 'No request found in the current session. Did you submit via a different page?',
+		'TFA_TFA_NOT_REGISTERED'				=> 'The used security key was not registered to your account',
 
 		'FTA_NO_RESPONSE'                   => 'No response received',
 		'FTA_NO_RESPONSE_RECEIVED'          => 'We did not receive a response from your U2F security key. Did you press the button?',

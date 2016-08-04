@@ -94,7 +94,7 @@ class tfa_module
 			$error = array();
 			$class = $this->request->variable('class', '');
 			$module = $this->session_helper->findModule($class);
-			$submit = $this->request->variable('md', false, false, \phpbb\request\request_interface::POST);
+			$submit = $this->request->variable('add_key', false, false, \phpbb\request\request_interface::POST);
 
 			if ($module != null)
 			{
@@ -137,7 +137,7 @@ class tfa_module
 
 		add_form_key('ucp_tfa_keys');
 
-		$module_row = $this->request->variable('md', '');
+		$module_row = $this->request->variable('md', '', true, \phpbb\request\request_interface::POST);
 
 		// Set desired template
 		$this->tpl_name = 'ucp_tfa';
@@ -154,10 +154,7 @@ class tfa_module
 					}
 					else
 					{
-						if ($this->request->variable('md', false, false, \phpbb\request\request_interface::POST))
-						{
 							$this->delete_keys();
-						}
 					}
 					break;
 
@@ -195,7 +192,7 @@ class tfa_module
 					'NAME'	=> $this->user->lang($module_row->get_translatable_name()),
 				));
 			}
- 		}
+		}
 
 		$this->template->assign_vars(array(
 			'ERROR'           => (sizeof($error)) ? implode('<br />', $error) : '',

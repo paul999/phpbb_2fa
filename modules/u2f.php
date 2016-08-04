@@ -13,6 +13,7 @@ namespace paul999\tfa\modules;
 use paul999\tfa\helper\registration_helper;
 use paul999\u2f\AuthenticationResponse;
 use paul999\u2f\Exceptions\U2fError;
+use paul999\u2f\RegisterRequestInterface;
 use paul999\u2f\SignRequest;
 use phpbb\db\driver\driver_interface;
 use phpbb\request\request_interface;
@@ -330,7 +331,14 @@ class u2f implements module_interface
 	{
 		try
 		{
-			$reg = $this->u2f->doRegister(json_decode($this->user->data['u2f_request']), json_decode(htmlspecialchars_decode($this->request->variable('register', ''))));
+			$data = json_decode($this->user->data['u2f_request']);
+
+			if (!$data instanceof RegisterRequestInterface)
+			{
+				throw new BadRequestHttpException($this->user->lang('ERR_TFA_NO_REQUEST_FOUND_IN_SESSION'));
+			}
+
+			$reg = $this->u2f->doRegister($data, json_decode(htmlspecialchars_decode($this->request->variable('register', ''))));
 
 			$sql_ary = array(
 				'user_id' => $this->user->data['user_id'],

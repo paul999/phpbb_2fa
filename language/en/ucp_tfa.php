@@ -48,7 +48,7 @@ $lang = array_merge(
 										you might be required to add a security key before accessing the forum.',
 		'TFA_NO_MODE'				=> 'No Mode',
 		'TFA_KEYS_DELETED'			=> 'Selected keys removed.',
-        'TFA_NEW'                   => 'Add new key',
+		'TFA_NEW'                   => 'Add new key',
 		'TFA_ERROR'					=> 'It seems something went wrong...',
 		'TFA_REG_FAILED'			=> 'Registration failed with error: ',
 		'TFA_ADD_KEY'				=> 'Register new key',
@@ -59,5 +59,6 @@ $lang = array_merge(
 		'TFA_MODULE_NOT_FOUND'		=> 'The selected module (%s) has not been found',
 		'TFA_MODULE_NO_REGISTER'	=> 'The selected module does not accept new keys for registration',
 		'TFA_SELECT_NEW'			=> 'Add new key',
+		'TFA_ADD_NEW_U2F_KEY'		=> 'Add a new U2F key to your account',
 	)
 );
