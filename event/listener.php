@@ -247,7 +247,10 @@ class listener implements EventSubscriberInterface
 					));
 
 					page_header('TFA_KEY_REQUIRED');
-					$this->template->display('@paul999_tfa/authenticate_main.html');
+
+					$this->template->set_filenames(array(
+							'body' => '@paul999_tfa/authenticate_main.html')
+					);
 					page_footer(false); // Do not include cron on this page!
 				}
 			}
