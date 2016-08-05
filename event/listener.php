@@ -206,16 +206,9 @@ class listener implements EventSubscriberInterface
 						{
 							if ($row->is_usable($user_id))
 							{
-								$this->template->assign_block_vars('', array_merge(array(
-									'U_CHANGE_CLASS' => $this->controller_helper->route('paul999_tfa_read_controller', array(
-										'user_id'    => $user_id,
-										'admin'      => $event['admin'],
-										'auto_login' => $event['auto_login'],
-										'viewonline' => !$this->request->is_set_post('viewonline'),
-										'class'      => $row->get_name(),
-									)),
-									$row->login_start($user_id),
-								)));
+								$this->template->assign_block_vars('tfa_options', array_merge(array(
+									'ID'	=> $row->get_name(),
+								), $row->login_start($user_id)));
 							}
 						}
 					}
