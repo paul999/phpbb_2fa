@@ -209,10 +209,10 @@ class listener implements EventSubscriberInterface
 								$this->template->assign_block_vars('tfa_options', array_merge(array(
 									'ID'	=> $row->get_name(),
 									'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
-										'user_id'		=> $user_id,
-										'admin'			=> $event['admin'],
-										'auto_login'	=> $event['auto_login'],
-										'viewonline'	=> !$this->request->is_set_post('viewonline'),
+										'user_id'		=> (int) $user_id,
+										'admin'			=> (int) $event['admin'],
+										'auto_login'	=> (int) $event['auto_login'],
+										'viewonline'	=> (int) !$this->request->is_set_post('viewonline'),
 										'class'			=> $row->get_name(),
 									)),
 								), $row->login_start($user_id)));
