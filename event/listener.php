@@ -115,6 +115,11 @@ class listener implements EventSubscriberInterface
 		{
 			return;
 		}
+		if (defined('IN_LOGIN'))
+		{
+			// We skip this when we are at a page related to login (This includes logout :))
+			return;
+		}
 		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data) && !$this->helper->isTfaRegistered($this->user->data['user_id']))
 		{
 			$sql = 'SELECT module_id FROM ' . MODULES_TABLE . ' WHERE module_langname = \'UCP_TFA\' OR module_langname = \'UCP_TFA_MANAGE\'';
