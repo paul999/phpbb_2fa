@@ -11,7 +11,6 @@
 namespace paul999\tfa\controller;
 
 use paul999\tfa\helper\session_helper_interface;
-use paul999\tfa\modules\module_interface;
 use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;

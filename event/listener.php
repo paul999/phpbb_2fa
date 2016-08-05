@@ -19,7 +19,6 @@ use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
@@ -227,7 +226,6 @@ class listener implements EventSubscriberInterface
 								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
 								session_user_id = ' . (int) $this->user->data['user_id'];
 					$this->db->sql_query($sql);
-
 
 					$this->template->assign_vars(array(
 						'REDIRECT'		=> $this->request->variable('redirect', ''),
