@@ -69,7 +69,8 @@ $lang = array_merge(
 		'TFA_ADD_NEW_U2F_KEY'		=> 'Add a new U2F key to your account',
 		'TFA_ADD_NEW_OTP_KEY'		=> 'Add a new OTP key to your account',
 		'TFA_ADD_OTP_KEY_EXPLAIN'	=> 'Scan the QR code below with a Authenticator app (Like Google Authenticator), 
-		or fill in the next secret in the app: %s.',
+		or fill in the next secret in the app: %s . After that, confirm by providing a key from your Authenticator app.',
+		'TFA_OTP_KEY'				=> 'OTP key',
 		'TFA_KEYTYPE'				=> 'Key type',
 	)
 );
