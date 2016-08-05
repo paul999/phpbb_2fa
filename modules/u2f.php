@@ -213,6 +213,7 @@ class u2f implements module_interface
 
 		$this->template->assign_vars(array(
 			'U2F_REQ'				=> $registrations,
+			'S_TFA_U2F'				=> true,
 			'S_TFA_INCLUDE_HTML'	=> 'tfa_u2f_authenticate.html',
 		));
 	}
