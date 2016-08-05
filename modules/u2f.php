@@ -181,9 +181,9 @@ class u2f extends abstract_module
 			$this->update_session($sql_ary);
 			throw new BadRequestHttpException('TFA_UNABLE_TO_UPDATE_SESSION');
 		}
+		$this->template->assign_var('U2F_REQ', $registrations);
 
 		return array(
-			'U2F_REQ'				=> $registrations,
 			'S_TFA_INCLUDE_HTML'	=> '@paul999_tfa/tfa_u2f_authenticate.html',
 		);
 	}
