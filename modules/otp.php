@@ -172,6 +172,11 @@ class otp extends abstract_module
 	{
 		$key = $this->request->variable('authenticate', '');
 
+		if (empty($key))
+		{
+			throw new BadRequestHttpException($this->user->lang('TFA_NO_KEY_PROVIDED'));
+		}
+
 		foreach ($this->getRegistrations($user_id) as $registration)
 		{
 			if ($this->otp->checkTOTP($registration['secret'], $key, 'sha1'))
@@ -185,6 +190,7 @@ class otp extends abstract_module
 							WHERE 
 								registration_id = ' . (int) $registration['registration_id'];
 				$this->db->sql_query($sql);
+				return true;
 			}
 		}
 		return false;
