@@ -195,7 +195,7 @@ class OTP implements module_interface
 			)),
 		));
 
-		return 'tfa_otp_ucp_new.html';
+		return 'tfa_otp_ucp_new';
 	}
 
 	/**
