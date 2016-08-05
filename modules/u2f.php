@@ -211,7 +211,10 @@ class u2f implements module_interface
 			throw new BadRequestHttpException('TFA_UNABLE_TO_UPDATE_SESSION');
 		}
 
-		$this->template->assign_var('U2F_REQ', $registrations);
+		$this->template->assign_vars(array(
+			'U2F_REQ'				=> $registrations,
+			'S_TFA_INCLUDE_HTML'	=> 'tfa_u2f_ucp_authenticate.html',
+		));
 	}
 
 	/**
