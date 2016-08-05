@@ -186,7 +186,7 @@ class listener implements EventSubscriberInterface
 				else
 				{
 					$this->user->add_lang_ext('paul999/tfa', 'common');
-					$user_id = $event['user_id'];
+					$user_id = $event['login']['user_row']['user_id'];
 					$modules = $this->session_helper->getModules();
 					$module = null;
 
