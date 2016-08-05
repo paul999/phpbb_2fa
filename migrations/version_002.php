@@ -16,6 +16,7 @@ class version_002 extends \phpbb\db\migration\migration
 	{
 		return array(
 			'\paul999\tfa\migrations\version_001',
+			'\paul999\tfa\migrations\initial_otp_schema',
 		);
 	}
 }
