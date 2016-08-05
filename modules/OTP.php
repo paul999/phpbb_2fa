@@ -185,7 +185,7 @@ class OTP implements module_interface
 	public function register_start()
 	{
 		$secret = $this->otp->generateSecret();
-		$QR = $this->otp_helper->generateKeyURI('sha1', $secret, $this->user->data['user_id']);
+		$QR = $this->otp_helper->generateKeyURI('totp', $secret, $this->user->data['user_id']);
 		$this->template->assign_vars(array(
 			'TFA_QR_CODE'				=> 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . $QR,
 			'TFA_SECRET'				=> $secret,
