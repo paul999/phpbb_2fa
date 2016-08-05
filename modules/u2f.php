@@ -275,7 +275,7 @@ class u2f extends abstract_module
 
 		$count = $this->update_session($sql_ary);
 
-		if ($count != 0)
+		if ($count != 1)
 		{
 			// Reset sessions table. We had multiple sessions with same ID!!!
 			$sql_ary['u2f_request'] = '';
