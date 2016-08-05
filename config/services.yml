@@ -5,65 +5,66 @@ services:
     paul999.tfa.sessionHelper:
         class: paul999\tfa\helper\session_helper
         arguments:
-            - @dbal.conn
-            - @config
-            - @user
-            - @paul999.tfa.module_collection
-            - %paul999.2fa.tables.tfa_registration%
-            - %tables.users%
+            - '@dbal.conn'
+            - '@config'
+            - '@user'
+            - '@paul999.tfa.module_collection'
+            - '%paul999.2fa.tables.tfa_registration%'
+            - '%tables.users%'
 
     paul999.tfa.module_collection:
         class: phpbb\di\service_collection
         arguments:
-            - @service_container
+            - '@service_container'
         tags:
             - { name: service_collection, tag: paul999.tfa.module }
 
     paul999.tfa.controller:
         class: paul999\tfa\controller\main_controller
         arguments:
-            - @controller.helper
-            - @dbal.conn
-            - @template
-            - @user
-            - @request
-            - @config
-            - @paul999.tfa.sessionHelper
-            - %core.root_path%
-            - %core.php_ext%
+            - '@controller.helper'
+            - '@dbal.conn'
+            - '@template'
+            - '@user'
+            - '@request'
+            - '@config'
+            - '@paul999.tfa.sessionHelper'
+            - '%core.root_path%'
+            - '%core.php_ext%'
 
     paul999.tfa.listener:
         class: paul999\tfa\event\listener
         arguments:
-            - @paul999.tfa.sessionHelper
-            - @controller.helper
-            - @user
-            - @request
-            - @dbal.conn
-            - @config
-            - %core.php_ext%
-            - %core.root_path%
+            - '@paul999.tfa.sessionHelper'
+            - '@controller.helper'
+            - '@user'
+            - '@request'
+            - '@dbal.conn'
+            - '@config'
+            - '%core.php_ext%v
+            - '%core.root_path%'
         tags:
             - { name: event.listener }
 
     paul999.tfa.modules.u2f:
         class: paul999\tfa\modules\u2f
         arguments:
-            - @dbal.conn
-            - @user
-            - @request
-            - @template
-            - %paul999.2fa.tables.tfa_registration%
-            - %core.root_path%
+            - '@dbal.conn'
+            - '@user'
+            - '@request'
+            - '@template'
+            - '%paul999.2fa.tables.tfa_registration%'
+            - '%core.root_path%'
         tags:
             - { name: paul999.tfa.module }
 
-    paul999.tfa.modules.OTP:
-        class: paul999\tfa\modules\OTP
+    paul999.tfa.modules.otp:
+        class: paul999\tfa\modules\otp
         arguments:
-            - @dbal.conn
-            - @user
-            - @request
-            - @template
+            - '@dbal.conn'
+            - '@user'
+            - '@request'
+            - '@template'
+            - '%paul999.2fa.tables.tfa_otp_registration%'
         tags:
             - { name: paul999.tfa.module }

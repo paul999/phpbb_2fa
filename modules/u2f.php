@@ -24,28 +24,12 @@ use phpbrowscap\Browscap;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class u2f implements module_interface
+class u2f extends abstract_module
 {
-
-	/**
-	 * @var driver_interface
-	 */
-	private $db;
-
-	/**
-	 * @var user
-	 */
-	private $user;
-
 	/**
 	 * @var request_interface
 	 */
 	private $request;
-
-	/**
-	 * @var template
-	 */
-	private $template;
 
 	/**
 	 * @var string
@@ -363,24 +347,7 @@ class u2f implements module_interface
 	 */
 	public function show_ucp()
 	{
-		$sql = 'SELECT *
-			FROM ' . $this->registration_table . '
-			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-			ORDER BY registration_id ASC';
-
-		$result = $this->db->sql_query($sql);
-
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$this->template->assign_block_vars('keys', array(
-				'CLASS'         => $this->get_name(),
-				'ID'            => $row['registration_id'],
-				'REGISTERED'    => $this->user->format_date($row['registered']),
-				'LAST_USED'     => $this->user->format_date($row['last_used']),
-				'TYPE'			=> $this->user->lang($this->get_translatable_name()),
-			));
-		}
-		$this->db->sql_freeresult($result);
+		$this->show_ucp_complete($this->registration_table);
 	}
 
 	/**
@@ -391,11 +358,11 @@ class u2f implements module_interface
 	 */
 	public function delete($key)
 	{
-			$sql = 'DELETE FROM ' . $this->registration_table . '
-						WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-						AND registration_id =' . (int) $key;
+		$sql = 'DELETE FROM ' . $this->registration_table . '
+					WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+					AND registration_id =' . (int) $key;
 
-			$this->db->sql_query($sql);
+		$this->db->sql_query($sql);
 	}
 
 	/**
@@ -530,4 +497,5 @@ class u2f implements module_interface
 
 		return $this->db->sql_affectedrows();
 	}
+
 }

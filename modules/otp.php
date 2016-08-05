@@ -10,7 +10,6 @@
 
 namespace paul999\tfa\modules;
 
-
 use OTPAuthenticate\OTPAuthenticate;
 use OTPAuthenticate\OTPHelper;
 use phpbb\db\driver\driver_interface;
@@ -19,7 +18,7 @@ use phpbb\template\template;
 use phpbb\user;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class OTP implements module_interface
+class otp extends abstract_module
 {
 	/**
 	 * @var \OTPAuthenticate\OTPHelper
@@ -30,22 +29,31 @@ class OTP implements module_interface
 	 * @var \OTPAuthenticate\OTPAuthenticate
 	 */
 	private $otp;
+
 	/**
 	 * @var \phpbb\db\driver\driver_interface
 	 */
 	private $db;
+
 	/**
 	 * @var \phpbb\user
 	 */
 	private $user;
+
 	/**
 	 * @var \phpbb\request\request_interface
 	 */
 	private $request;
+
 	/**
 	 * @var \phpbb\template\template
 	 */
 	private $template;
+
+	/**
+	 * @var string
+	 */
+	private $otp_registration_table;
 
 	/**
 	 * OTP constructor.
@@ -54,8 +62,9 @@ class OTP implements module_interface
 	 * @param \phpbb\user                       $user
 	 * @param \phpbb\request\request_interface  $request
 	 * @param \phpbb\template\template          $template
+	 * @param string                            $otp_registration_table
 	 */
-	public function __construct(driver_interface $db, user $user, request_interface $request, template $template)
+	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, $otp_registration_table)
 	{
 		$this->otp_helper = new OTPHelper();
 		$this->otp = new OTPAuthenticate();
@@ -63,6 +72,7 @@ class OTP implements module_interface
 		$this->user = $user;
 		$this->request = $request;
 		$this->template = $template;
+		$this->otp_registration_table = $otp_registration_table;
 	}
 
 	/**
@@ -81,7 +91,7 @@ class OTP implements module_interface
 	 */
 	public function get_name()
 	{
-		return 'OTP';
+		return 'otp';
 	}
 
 	/**
@@ -111,7 +121,15 @@ class OTP implements module_interface
 	 */
 	public function is_usable($user_id)
 	{
-		return true;
+		$sql = 'SELECT COUNT(registration_id) as reg_id 
+					FROM ' . $this->otp_registration_table . ' 
+					WHERE 
+						user_id = ' . (int) $user_id;
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		return $row && $row['reg_id'] > 0;
 	}
 
 	/**
@@ -214,6 +232,16 @@ class OTP implements module_interface
 		{
 			throw new BadRequestHttpException($this->user->lang('TFA_OTP_INVALID_KEY'));
 		}
+
+		$sql_ary = array(
+			'user_id' 		=> $this->user->data['user_id'],
+			'secret'		=> $secret,
+			'registered' 	=> time(),
+			'last_used' 	=> time(),
+		);
+
+		$sql = 'INSERT INTO ' . $this->otp_registration_table . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
+		$this->db->sql_query($sql);
 	}
 
 	/**
@@ -222,7 +250,7 @@ class OTP implements module_interface
 	 */
 	public function show_ucp()
 	{
-		// TODO: Implement show_ucp() method.
+		$this->show_ucp_complete($this->otp_registration_table);
 	}
 
 	/**
@@ -235,5 +263,10 @@ class OTP implements module_interface
 	 */
 	public function delete($key)
 	{
-		// TODO: Implement delete() method.
-}}
+		$sql = 'DELETE FROM ' . $this->otp_registration_table . '
+					WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+					AND registration_id =' . (int) $key;
+
+		$this->db->sql_query($sql);
+	}
+}
