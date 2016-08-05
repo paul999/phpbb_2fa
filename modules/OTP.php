@@ -17,6 +17,7 @@ use phpbb\db\driver\driver_interface;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class OTP implements module_interface
 {
@@ -189,7 +190,7 @@ class OTP implements module_interface
 		$this->template->assign_vars(array(
 			'TFA_QR_CODE'				=> 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . $QR,
 			'TFA_SECRET'				=> $secret,
-			'TFA_ADD_OTP_KEY_EXPLAIN'	=> $this->user->lang('TFA_ADD_OTP_KEY_EXPLAIN', $secret),
+			'TFA__ADD_OTP_KEY_EXPLAIN'	=> $this->user->lang('TFA_ADD_OTP_KEY_EXPLAIN', $secret),
 			'S_HIDDEN_FIELDS'			=> build_hidden_fields(array(
 				'secret'	=> $secret,
 			)),
@@ -206,7 +207,13 @@ class OTP implements module_interface
 	 */
 	public function register()
 	{
-		// TODO: Implement register() method.
+		$secret = $this->request->variable('secret', '');
+		$otp	= $this->request->variable('otp', '');
+
+		if (!$this->otp->checkTOTP($secret, $otp))
+		{
+			throw new BadRequestHttpException($this->user->lang('TFA_OTP_INVALID_KEY'));
+		}
 	}
 
 	/**
