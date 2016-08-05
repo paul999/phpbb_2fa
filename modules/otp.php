@@ -31,24 +31,9 @@ class otp extends abstract_module
 	private $otp;
 
 	/**
-	 * @var \phpbb\db\driver\driver_interface
-	 */
-	private $db;
-
-	/**
-	 * @var \phpbb\user
-	 */
-	private $user;
-
-	/**
 	 * @var \phpbb\request\request_interface
 	 */
 	private $request;
-
-	/**
-	 * @var \phpbb\template\template
-	 */
-	private $template;
 
 	/**
 	 * @var string
