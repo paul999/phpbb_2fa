@@ -190,7 +190,7 @@ class OTP implements module_interface
 		$this->template->assign_vars(array(
 			'TFA_QR_CODE'				=> 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . $QR,
 			'TFA_SECRET'				=> $secret,
-			'l_TFA_ADD_OTP_KEY_EXPLAIN'	=> $this->user->lang('TFA_ADD_OTP_KEY_EXPLAIN', $secret),
+			'L_TFA_ADD_OTP_KEY_EXPLAIN'	=> $this->user->lang('TFA_ADD_OTP_KEY_EXPLAIN', $secret),
 			'S_HIDDEN_FIELDS'			=> build_hidden_fields(array(
 				'secret'	=> $secret,
 			)),
