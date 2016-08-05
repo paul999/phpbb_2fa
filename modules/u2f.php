@@ -14,7 +14,6 @@ use paul999\tfa\helper\registration_helper;
 use paul999\u2f\AuthenticationResponse;
 use paul999\u2f\Exceptions\U2fError;
 use paul999\u2f\RegisterRequest;
-use paul999\u2f\RegisterRequestInterface;
 use paul999\u2f\RegisterResponse;
 use paul999\u2f\SignRequest;
 use phpbb\db\driver\driver_interface;
