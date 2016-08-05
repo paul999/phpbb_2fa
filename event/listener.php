@@ -188,42 +188,30 @@ class listener implements EventSubscriberInterface
 					$this->user->add_lang_ext('paul999/tfa', 'common');
 					$user_id = $event['login']['user_row']['user_id'];
 					$modules = $this->session_helper->getModules();
-					$module = null;
 
 					/**
-					 * @var module_interface $module
+					 * @var module_interface $row
 					 */
-					if (!empty($class) && $class != '_')
+					foreach ($modules as $row)
 					{
-						$module = $this->session_helper->findModule($class);
-					}
-					else
-					{
-						/**
-						 * @var module_interface $row
-						 */
-						foreach ($modules as $row)
+						if ($row->is_usable($user_id))
 						{
-							if ($row->is_usable($user_id))
-							{
-								$this->template->assign_block_vars('tfa_options', array_merge(array(
-									'ID'	=> $row->get_name(),
-									'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
-										'user_id'		=> (int) $user_id,
-										'admin'			=> (int) $event['admin'],
-										'auto_login'	=> (int) $event['auto_login'],
-										'viewonline'	=> (int) !$this->request->is_set_post('viewonline'),
-										'class'			=> $row->get_name(),
-									)),
-								), $row->login_start($user_id)));
-							}
+							$this->template->assign_block_vars('tfa_options', array_merge(array(
+								'ID'	=> $row->get_name(),
+								'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
+									'user_id'		=> (int) $user_id,
+									'admin'			=> (int) $event['admin'],
+									'auto_login'	=> (int) $event['auto_login'],
+									'viewonline'	=> (int) !$this->request->is_set_post('viewonline'),
+									'class'			=> $row->get_name(),
+								)),
+							), $row->login_start($user_id)));
 						}
 					}
 
 					add_form_key('tfa_login_page');
 
 					$random = sha1(random_bytes(32));
-					$this->user->set_cookie('rm', $random, 600);
 
 					if (!empty($this->user->data['tfa_random']))
 					{

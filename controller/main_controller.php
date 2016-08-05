@@ -121,9 +121,8 @@ class main_controller
 			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
 		}
 		$random = $this->request->variable('random', '');
-		$cookie = $this->request->variable($this->config['cookie_name'] . 'rm', '', false, request_interface::COOKIE);
 
-		if ($this->user->data['tfa_random'] !== $cookie || $cookie !== $random || $this->user->data['tfa_random'] !== $random || strlen($random) != 40)
+		if ($this->user->data['tfa_random'] !== $random || strlen($random) != 40)
 		{
 			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
 		}
