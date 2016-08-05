@@ -43,7 +43,7 @@ $lang = array_merge(
 		'ACP_TFA_SETTINGS_EXPLAIN'	=> 'Here you can set the configuration for two factor settings.
 										The suggested configuration option for the requirement is or do not require Two factor authentication,
 										or only require it for the ACP login. <br /><br />
-										The following browsers currently support the technology in used by this extension:
+										There are for the U2F security key some browser requirements:
 										<ul>
 											<li>Google Chrome (At least version 41)</li>
 										</ul>
@@ -55,8 +55,8 @@ $lang = array_merge(
 											<li>Safari</li>
 										</ul>
 										However, several browser vendors promised it might be supported in a newer release.
-										We will provide a update to this extension when a browser provides support for it.',
-		'TFA_REQUIRES_SSL'			=> 'You seem to be using a non secure connection. This extension requires a secure SSL connection to work. Without secure connection, it won’t function properly!',
+										When a browser does not meet these requirements, the user won’t be able to select U2F.',
+		'TFA_REQUIRES_SSL'			=> 'You seem to be using a non secure connection. This extension requires a secure SSL connection for some security keys to work.',
 
 		'TFA_MODE'						=> 'Two factor authentication mode',
 		'TFA_MODE_EXPLAIN'				=> 'Here you can select which users are required (If any at all) to use two factor authentication mode. Selecting “Two factor authentication disabled” will disable the functionality completely.',
