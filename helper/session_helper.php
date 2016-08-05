@@ -204,7 +204,7 @@ class session_helper implements session_helper_interface
 	{
 		if (empty($userdata))
 		{
-			$sql = 'SELECT * FROM ' . $this->user_table . 'WHERE user_id = ' . (int) $user_id;
+			$sql = 'SELECT * FROM ' . $this->user_table . ' WHERE user_id = ' . (int) $user_id;
 			$result = $this->db->sql_query($sql);
 			$userdata = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);

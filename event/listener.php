@@ -115,7 +115,7 @@ class listener implements EventSubscriberInterface
 		{
 			return;
 		}
-		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS)
+		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data) && !$this->helper->isTfaRegistered($this->user->data['user_id']))
 		{
 			$sql = 'SELECT module_id FROM ' . MODULES_TABLE . ' WHERE module_langname = \'UCP_TFA\' OR module_langname = \'UCP_TFA_MANAGE\'';
 			$result = $this->db->sql_query($sql);
@@ -133,12 +133,10 @@ class listener implements EventSubscriberInterface
 			{
 				return; // We are at our UCP page, so skip any other checks. This page is always available
 			}
-			if ($this->helper->isTfaRequired($this->user->data['user_id']) && !$this->helper->isTfaRegistered($this->user->data['user_id']))
-			{
-				$this->user->add_lang_ext('paul999/tfa', 'common');
-				$url = append_sid("{$this->root_path}ucp.{$this->php_ext}", "i={$ucp_mode}");
-				trigger_error($this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>'), E_USER_WARNING);
-			}
+			$this->user->add_lang_ext('paul999/tfa', 'common');
+			$url = append_sid("{$this->root_path}ucp.{$this->php_ext}", "i={$ucp_mode}");
+			trigger_error($this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>'), E_USER_WARNING);
+
 		}
 	}
 
