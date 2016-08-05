@@ -2,7 +2,7 @@
 
 <!-- BEGIN tfa_options -->
     <!-- IF tfa_options.S_TFA_INCLUDE_HTML -->
-        <div id="{tfa_options.ID}" <!-- IF not tfa_options.S_FIRST_ROW -->style="display:none "<! ENDIF -->>
+        <div id="{tfa_options.ID}" <!-- IF not tfa_options.S_FIRST_ROW -->style="display:none "<!-- ENDIF -->>
             <form action="{tfa_options.U_SUBMIT_AUTH}" id="submit_auth" method="post">
                 {S_FORM_TOKEN}
                 <input type="hidden" name="random" value="{RANDOM}" />
