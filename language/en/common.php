@@ -1,15 +1,5 @@
 <?php
-/**
- *
- * 2FA extension for the phpBB Forum Software package.
- *
- * @copyright (c) 2015 Paul Sohier
- * @license GNU General Public License, version 2 (GPL-2.0)
- *
- */
-
-/**
- * DO NOT CHANGE
+/**Compatible* DO NOT CHANGE
  */
 if (!defined('IN_PHPBB'))
 {
@@ -39,7 +29,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge(
 	$lang, array(
-		'TFA_REQUIRED_KEY_MISSING'      => 'The administrator of this forum requires that you have added a Two Factor Authentication key for access to (limited) parts of this forum, however you currently have no keys registerted to your account. You can add a new security key %s here%s.
+		'TFA_REQUIRED_KEY_MISSING'      => 'The administrator of this forum requires that you have added a Two Factor Authentication key for access to (limited) parts of this forum, however you currently have no (Compitable) keys registerted to your account. You can add a new security key %s here%s.
 												<br />For security reasons, the board has been disabled until you add a security key to your account. Your might be required to fill in your password while adding a security key!',
 		// Controller
 		'TFA_SOMETHING_WENT_WRONG'      => 'Something unexpected happened. Please try again later',

@@ -377,6 +377,7 @@ class u2f implements module_interface
 				'ID'            => $row['registration_id'],
 				'REGISTERED'    => $this->user->format_date($row['registered']),
 				'LAST_USED'     => $this->user->format_date($row['last_used']),
+				'TYPE'			=> $this->user->lang($this->get_translatable_name()),
 			));
 		}
 		$this->db->sql_freeresult($result);

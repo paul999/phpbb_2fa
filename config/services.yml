@@ -57,3 +57,13 @@ services:
             - %core.root_path%
         tags:
             - { name: paul999.tfa.module }
+
+    paul999.tfa.modules.OTP:
+        class: paul999\tfa\modules\OTP
+        arguments:
+            - @dbal.conn
+            - @user
+            - @request
+            - @template
+        tags:
+            - { name: paul999.tfa.module }

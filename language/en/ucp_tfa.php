@@ -45,7 +45,13 @@ $lang = array_merge(
 											If you loose your keys, make sure to remove them from your account!
 										<br /><br />
 										Depending on the configuration choosen by the forum administrator,
-										you might be required to add a security key before accessing the forum.',
+										you might be required to add a security key before accessing the forum.
+										<br /><br />
+										Some security keys (Like the U2F standard) currently only work in specific 
+										browser. Due to that, it is possible that there are keys registered to your 
+										account, but the access to the board is blocked because no valid keys are found
+										that work with your browser. It is suggested to at least register some backup keys
+										and store them in a secure location.',
 		'TFA_NO_MODE'				=> 'No Mode',
 		'TFA_KEYS_DELETED'			=> 'Selected keys removed.',
 		'TFA_NEW'                   => 'Add new key',
@@ -61,5 +67,9 @@ $lang = array_merge(
 		'TFA_MODULE_NO_REGISTER'	=> 'The selected module does not accept new keys for registration',
 		'TFA_SELECT_NEW'			=> 'Add new key',
 		'TFA_ADD_NEW_U2F_KEY'		=> 'Add a new U2F key to your account',
+		'TFA_ADD_NEW_OTP_KEY'		=> 'Add a new OTP key to your account',
+		'TFA_ADD_OTP_KEY_EXPLAIN'	=> 'Scan the QR code below with a Authenticator app (Like Google Authenticator), 
+		or fill in the next secret in the app: %s.',
+		'TFA_KEYTYPE'				=> 'Key type',
 	)
 );
