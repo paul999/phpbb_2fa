@@ -184,7 +184,7 @@ class u2f extends abstract_module
 
 		return array(
 			'U2F_REQ'				=> $registrations,
-			'S_TFA_INCLUDE_HTML'	=> 'tfa_u2f_authenticate.html',
+			'S_TFA_INCLUDE_HTML'	=> '@paul999_tfa/tfa_u2f_authenticate.html',
 		);
 	}
 

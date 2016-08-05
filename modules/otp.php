@@ -157,7 +157,7 @@ class otp extends abstract_module
 	public function login_start($user_id)
 	{
 		return array(
-			'S_TFA_INCLUDE_HTML'	=> 'tfa_otp_authenticate.html',
+			'S_TFA_INCLUDE_HTML'	=> '@paul999_tfa/tfa_otp_authenticate.html',
 		);
 	}
 
