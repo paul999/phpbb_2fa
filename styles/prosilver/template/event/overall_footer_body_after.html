@@ -45,7 +45,13 @@
 
             console.log("Register callback", data);
             if(data.errorCode) {
-                phpbb.alert("{LA_TFA_ERROR}", "{LA_TFA_REG_FAILED}" + data.errorCode + "," + data.errorMessage);
+                var message = "{LA_TFA_REG_FAILED}" + data.errorCode + "," + data.errorMessage;
+                if (data.errorCode == 4) {
+                    // ErrorCode for is when the device is already added.
+                    message = "{LA_TFA_REG_EXISTS}";
+                }
+
+                phpbb.alert("{LA_TFA_ERROR}", message);
                 $("#tfa_insert_key").hide();
                 $("#add_key").show();
                 clearTimeout(tm);

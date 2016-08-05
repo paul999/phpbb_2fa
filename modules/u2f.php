@@ -351,9 +351,15 @@ class u2f implements module_interface
 		{
 			$register = json_decode($this->user->data['u2f_request']);
 			$response = json_decode(htmlspecialchars_decode($this->request->variable('register', '')));
+			$error = 0;
+
+			if (property_exists($response, 'errorCode'))
+			{
+				$error = $response->errorCode;
+			}
 
 			$registerrequest = new RegisterRequest($register->challenge, $register->appId);
-			$responserequest = new RegisterResponse($response->registrationData, $response->clientData, $response->errorCode);
+			$responserequest = new RegisterResponse($response->registrationData, $response->clientData, $error);
 
 			$reg = $this->u2f->doRegister($registerrequest, $responserequest);
 

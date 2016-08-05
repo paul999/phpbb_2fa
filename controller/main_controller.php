@@ -125,7 +125,7 @@ class main_controller
 		/**
 		 * @var module_interface $module
 		 */
-		if (!empty($class))
+		if (!empty($class) && $class != '_')
 		{
 			$module = $this->session_helper->findModule($class);
 		}
@@ -161,7 +161,7 @@ class main_controller
 						'admin'			=> $admin,
 						'auto_login'	=> $auto_login,
 						'viewonline'	=> $viewonline,
-						'class'			=> get_class($row),
+						'class'			=> $row->get_name(),
 					)),
 				));
 			}
@@ -175,7 +175,7 @@ class main_controller
 				'admin'			=> $admin,
 				'auto_login'	=> $auto_login,
 				'viewonline'	=> $viewonline,
-				'class'			=> get_class($module),
+				'class'			=> $row->get_name(),
 			)),
 		));
 
