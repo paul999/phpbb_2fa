@@ -161,7 +161,7 @@ class u2f extends abstract_module
 	/**
 	 * Start of the login procedure.
 	 * @param int $user_id
-	 * @return void
+	 * @return array
 	 * @throws BadRequestHttpException
 	 */
 	public function login_start($user_id)
@@ -182,10 +182,10 @@ class u2f extends abstract_module
 			throw new BadRequestHttpException('TFA_UNABLE_TO_UPDATE_SESSION');
 		}
 
-		$this->template->assign_vars(array(
+		return array(
 			'U2F_REQ'				=> $registrations,
 			'S_TFA_INCLUDE_HTML'	=> 'tfa_u2f_authenticate.html',
-		));
+		);
 	}
 
 	/**

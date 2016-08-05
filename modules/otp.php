@@ -152,13 +152,13 @@ class otp extends abstract_module
 	 *
 	 * @param int $user_id
 	 *
-	 * @return int
+	 * @return array
 	 */
 	public function login_start($user_id)
 	{
-		$this->template->assign_vars(array(
+		return array(
 			'S_TFA_INCLUDE_HTML'	=> 'tfa_otp_authenticate.html',
-		));
+		);
 	}
 
 	/**

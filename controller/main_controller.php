@@ -104,91 +104,6 @@ class main_controller
 	 * @param bool $admin
 	 * @param bool $auto_login
 	 * @param bool $viewonline
-	 * @param string $class
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function display($user_id, $admin, $auto_login, $viewonline, $class)
-	{
-		$this->user->add_lang_ext('paul999/tfa', 'common');
-
-		if ($this->config['tfa_mode'] == session_helper_interface::MODE_DISABLED)
-		{
-			throw new AccessDeniedHttpException('TFA_DISABLED');
-		}
-		if (($this->user->data['user_id'] != ANONYMOUS && !$admin) || $user_id == ANONYMOUS || ($user_id != $this->user->data['user_id'] && $admin))
-		{
-			throw new AccessDeniedHttpException('TFA_NO_ACCESS');
-		}
-		$modules = $this->session_helper->getModules();
-		$module = null;
-
-		/**
-		 * @var module_interface $module
-		 */
-		if (!empty($class) && $class != '_')
-		{
-			$module = $this->session_helper->findModule($class);
-		}
-		else
-		{
-			/**
-			 * @var module_interface $row
-			 */
-			foreach ($modules as $row)
-			{
-				if ($row->is_usable($user_id))
-				{
-					$module = $row;
-					break;
-				}
-			}
-		}
-		if ($module == null || !($module instanceof module_interface))
-		{
-			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
-		}
-
-		/**
-		 * @var module_interface $row
-		 */
-		foreach ($modules as $row)
-		{
-			if ($row->is_usable($user_id))
-			{
-				$this->template->assign_block_vars('', array(
-					'U_CHANGE_CLASS'	=> $this->controller_helper->route('paul999_tfa_read_controller', array(
-						'user_id'		=> $user_id,
-						'admin'			=> $admin,
-						'auto_login'	=> $auto_login,
-						'viewonline'	=> $viewonline,
-						'class'			=> $row->get_name(),
-					)),
-				));
-			}
-		}
-		$module->login_start($user_id);
-
-		add_form_key('tfa_login_page');
-
-		$this->template->assign_vars(array(
-			'REDIRECT'		=> $this->request->variable('redirect', ''),
-			'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
-				'user_id'		=> $user_id,
-				'admin'			=> $admin,
-				'auto_login'	=> $auto_login,
-				'viewonline'	=> $viewonline,
-				'class'			=> $module->get_name(),
-			)),
-		));
-
-		return $this->controller_helper->render('@paul999_tfa/authenticate_main.html');
-	}
-
-	/**
-	 * @param int $user_id
-	 * @param bool $admin
-	 * @param bool $auto_login
-	 * @param bool $viewonline
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * @throws AccessDeniedHttpException
 	 */
@@ -200,6 +115,27 @@ class main_controller
 		{
 			throw new AccessDeniedHttpException($this->user->lang('FORM_INVALID'));
 		}
+
+		if (empty($this->user->data['tfa_random']) || $user_id != $this->user->data['tfa_uid'])
+		{
+			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+		}
+		$random = $this->request->variable('random', '');
+		$cookie = $this->request->variable($this->config['cookie_name'] . 'rm', '', false, request_interface::COOKIE);
+
+		if ($this->user->data['tfa_random'] !== $cookie || $cookie !== $random || $this->user->data['tfa_random'] !== $random || strlen($random) != 40)
+		{
+			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+		}
+		$sql_ary = array(
+			'tfa_random' 	=> '',
+			'tfa_uid'		=> 0,
+		);
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
+							WHERE
+								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
+								session_user_id = ' . (int) $this->user->data['user_id'];
+		$this->db->sql_query($sql);
 
 		if (empty($class))
 		{

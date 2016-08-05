@@ -74,7 +74,7 @@ interface module_interface
 	/**
 	 * Start of the login procedure.
 	 * @param int $user_id
-	 * @return void
+	 * @return array with data to be assign to the template.
 	 */
 	public function login_start($user_id);
 

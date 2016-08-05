@@ -63,6 +63,7 @@ $lang = array_merge(
 		'TFA_OTP_KEY_EXPLAIN'				=> 'Please open the authenticator app and take over the current displayed key in the textfield below',
 		'TFA_INCORRECT_KEY'					=> 'Provided key was incorrect.',
 		'TFA_NO_KEY_PROVIDED'				=> 'No key provided',
+		'TFA_KEY_REQUIRED'					=> 'Please provide your security key',
 
 		'TFA_DOUBLE_PRIORITY'				=> 'The choosen priority (%d) for module %s is already in use for module %s',
 
