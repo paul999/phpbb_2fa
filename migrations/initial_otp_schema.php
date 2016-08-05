@@ -16,7 +16,7 @@ class initial_otp_schema extends \phpbb\db\migration\migration
 	{
 		return array(
 			'add_tables'	=> array(
-				$this->table_prefix . 'tfa_otp_registration'	=> array(
+				$this->table_prefix . 'tfa_otp_reg'	=> array(
 					'COLUMNS'	=> array(
 						'registration_id'		=> array('UINT', null, 'auto_increment'),
 						'user_id'				=> array('UINT', 0),
