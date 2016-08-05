@@ -175,7 +175,7 @@ class main_controller
 				'admin'			=> $admin,
 				'auto_login'	=> $auto_login,
 				'viewonline'	=> $viewonline,
-				'class'			=> $row->get_name(),
+				'class'			=> $module->get_name(),
 			)),
 		));
 

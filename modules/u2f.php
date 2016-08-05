@@ -189,25 +189,13 @@ class u2f implements module_interface
 			'u2f_request'	=> $registrations
 		);
 
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-					WHERE
-						session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-						session_user_id = ' . (int) $this->user->data['user_id'];
-		$this->db->sql_query($sql);
-		$count = $this->db->sql_affectedrows();
+		$count = $this->update_session($sql_ary);
 
 		if ($count != 1)
 		{
-			if ($count > 1)
-			{
-				// Reset sessions table. We had multiple sessions with same ID!!!
-				$sql_ary['u2f_request'] = '';
-				$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-					WHERE
-						session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-						session_user_id = ' . (int) $this->user->data['user_id'];
-				$this->db->sql_query($sql);
-			}
+			// Reset sessions table.
+			$sql_ary['u2f_request'] = '';
+			$this->update_session($sql_ary);
 			throw new BadRequestHttpException('TFA_UNABLE_TO_UPDATE_SESSION');
 		}
 
@@ -222,6 +210,7 @@ class u2f implements module_interface
 	 * Actual login procedure
 	 * @param int $user_id
 	 * @throws AccessDeniedHttpException
+	 * @throws BadRequestHttpException
 	 */
 	public function login($user_id)
 	{
@@ -251,7 +240,7 @@ class u2f implements module_interface
 				}
 				throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
 			}
-			$result = new AuthenticationResponse($response->signatureData, $response->clientData, $response->keyHandle, $response->errorCode);
+			$result = new AuthenticationResponse($response->signatureData, $response->clientData, $response->keyHandle); // Do not need to include errorCode, as we already handled it.
 
 			/** @var \paul999\tfa\helper\registration_helper $reg */
 			$reg = $this->u2f->doAuthenticate($this->convertRequests(json_decode($row['u2f_request'])), $this->getRegistrations($user_id), $result);
@@ -293,26 +282,7 @@ class u2f implements module_interface
 	 */
 	public function register_start()
 	{
-		$sql = 'SELECT *
-			FROM ' . $this->registration_table . '
-			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-			ORDER BY registration_id ASC';
-
-		$result = $this->db->sql_query($sql);
-		$reg_data = array();
-
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$reg = new registration_helper();
-			$reg->setCounter($row['counter']);
-			$reg->setCertificate($row['certificate']);
-			$reg->setKeyHandle($row['key_handle']);
-			$reg->setPublicKey($row['public_key']);
-			$reg->setId($row['registration_id']);
-
-			$reg_data[] = $reg;
-		}
-		$this->db->sql_freeresult($result);
+		$reg_data = $this->getRegistrations($this->user->data['user_id']);
 
 		$data = $this->u2f->getRegisterData($reg_data);
 
@@ -322,11 +292,7 @@ class u2f implements module_interface
 
 		$count = $this->update_session($sql_ary);
 
-		if ($count == 0)
-		{
-			trigger_error('TFA_UNABLE_TO_UPDATE_SESSION');
-		}
-		else if ($count > 1)
+		if ($count != 0)
 		{
 			// Reset sessions table. We had multiple sessions with same ID!!!
 			$sql_ary['u2f_request'] = '';
@@ -404,7 +370,6 @@ class u2f implements module_interface
 			ORDER BY registration_id ASC';
 
 		$result = $this->db->sql_query($sql);
-		//$this->reg_data = array();
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
@@ -431,7 +396,6 @@ class u2f implements module_interface
 						AND registration_id =' . (int) $key;
 
 			$this->db->sql_query($sql);
-
 	}
 
 	/**
