@@ -168,6 +168,8 @@ class main_controller
 		}
 		$module->login_start($user_id);
 
+		add_form_key('tfa_login_page');
+
 		$this->template->assign_vars(array(
 			'REDIRECT'		=> $this->request->variable('redirect', ''),
 			'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
@@ -194,6 +196,11 @@ class main_controller
 	{
 		$this->user->add_lang_ext('paul999/tfa', 'common');
 
+		if (!check_form_key('tfa_login_page'))
+		{
+			throw new AccessDeniedHttpException($this->user->lang('FORM_INVALID'));
+		}
+
 		if (empty($class))
 		{
 			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
@@ -205,7 +212,10 @@ class main_controller
 		{
 			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
 		}
-		$module->login($user_id);
+		if (!$module->login($user_id))
+		{
+			throw new AccessDeniedHttpException($this->user->lang('TFA_INCORRECT_KEY'));
+		}
 
 		$old_session_id = $this->user->session_id;
 

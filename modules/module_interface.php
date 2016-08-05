@@ -74,13 +74,14 @@ interface module_interface
 	/**
 	 * Start of the login procedure.
 	 * @param int $user_id
-	 * @return int
+	 * @return void
 	 */
 	public function login_start($user_id);
 
 	/**
 	 * Actual login procedure
 	 * @param int $user_id
+	 * @return boolean
 	 */
 	public function login($user_id);
 

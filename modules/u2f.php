@@ -184,14 +184,16 @@ class u2f extends abstract_module
 
 		$this->template->assign_vars(array(
 			'U2F_REQ'				=> $registrations,
-			'S_TFA_U2F'				=> true,
 			'S_TFA_INCLUDE_HTML'	=> 'tfa_u2f_authenticate.html',
 		));
 	}
 
 	/**
 	 * Actual login procedure
+	 *
 	 * @param int $user_id
+	 *
+	 * @return bool
 	 * @throws AccessDeniedHttpException
 	 * @throws BadRequestHttpException
 	 */
@@ -234,6 +236,8 @@ class u2f extends abstract_module
 
 			$sql = 'UPDATE ' . $this->registration_table . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE registration_id = ' . (int) $reg->getId();
 			$this->db->sql_query($sql);
+
+			return true;
 		}
 		catch (U2fError $error)
 		{
@@ -243,6 +247,7 @@ class u2f extends abstract_module
 		{
 			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG') . '<br />' . $invalid->getMessage(), $invalid);
 		}
+		return false;
 	}
 
 	/**
@@ -295,7 +300,6 @@ class u2f extends abstract_module
 
 	/**
 	 * Actual registration
-	 * @return void
 	 * @throws BadRequestHttpException
 	 */
 	public function register()

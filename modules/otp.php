@@ -156,17 +156,38 @@ class otp extends abstract_module
 	 */
 	public function login_start($user_id)
 	{
-		// TODO: Implement login_start() method.
+		$this->template->assign_vars(array(
+			'S_TFA_INCLUDE_HTML'	=> 'tfa_otp_authenticate.html',
+		));
 	}
 
 	/**
 	 * Actual login procedure
 	 *
 	 * @param int $user_id
+	 *
+	 * @return bool
 	 */
 	public function login($user_id)
 	{
-		// TODO: Implement login() method.
+		$key = $this->request->variable('authenticate', '');
+
+		foreach ($this->getRegistrations($user_id) as $registration)
+		{
+			if ($this->otp->checkTOTP($registration['secret'], $key, 'sha1'))
+			{
+				// We found a valid key.
+				$sql_ary = array(
+					'last_used' => time(),
+				);
+				$sql = 'UPDATE ' . $this->otp_registration_table . ' 
+							SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' 
+							WHERE 
+								registration_id = ' . (int) $registration['registration_id'];
+				$this->db->sql_query($sql);
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -253,5 +274,20 @@ class otp extends abstract_module
 					AND registration_id =' . (int) $key;
 
 		$this->db->sql_query($sql);
+	}
+
+	/**
+	 * Select all registration objects from the database
+	 * @param integer $user_id
+	 * @return array
+	 */
+	private function getRegistrations($user_id)
+	{
+		$sql = 'SELECT * FROM ' . $this->otp_registration_table . ' WHERE user_id = ' . (int) $user_id;
+		$result = $this->db->sql_query($sql);
+		$rows = $this->db->sql_fetchrowset($result);
+
+		$this->db->sql_freeresult($result);
+		return $rows;
 	}
 }
