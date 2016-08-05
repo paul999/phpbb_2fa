@@ -211,7 +211,7 @@ class otp extends abstract_module
 	public function register()
 	{
 		$secret = $this->request->variable('secret', '');
-		$otp	= $this->request->variable('otp', '');
+		$otp	= $this->request->variable('register', '');
 
 		if (!$this->otp->checkTOTP($secret, $otp))
 		{
