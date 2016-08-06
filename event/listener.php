@@ -145,7 +145,7 @@ class listener implements EventSubscriberInterface
 	 * @param object $event
 	 *
 	 * @return object
-	 * @throw BadRequestHttpException
+	 * @throw http_exception
 	 */
 	public function auth_login_session_create_before($event)
 	{

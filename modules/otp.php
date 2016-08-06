@@ -13,10 +13,10 @@ namespace paul999\tfa\modules;
 use OTPAuthenticate\OTPAuthenticate;
 use OTPAuthenticate\OTPHelper;
 use phpbb\db\driver\driver_interface;
+use phpbb\exception\http_exception;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class otp extends abstract_module
 {
@@ -166,7 +166,7 @@ class otp extends abstract_module
 
 		if (empty($key))
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_NO_KEY_PROVIDED'));
+			throw new http_exception(400, 'TFA_NO_KEY_PROVIDED');
 		}
 
 		foreach ($this->getRegistrations($user_id) as $registration)
@@ -225,7 +225,7 @@ class otp extends abstract_module
 	 * Do the actual registration of a new security key.
 	 *
 	 * @return boolean Result of the registration.
-	 * @throws BadRequestHttpException
+	 * @throws http_exception
 	 */
 	public function register()
 	{
@@ -234,7 +234,7 @@ class otp extends abstract_module
 
 		if (!$this->otp->checkTOTP($secret, $otp, 'sha1'))
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_OTP_INVALID_KEY'));
+			throw new http_exception(400, 'TFA_OTP_INVALID_KEY');
 		}
 
 		$sql_ary = array(

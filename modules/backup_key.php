@@ -11,11 +11,11 @@
 namespace paul999\tfa\modules;
 
 use phpbb\db\driver\driver_interface;
+use phpbb\exception\http_exception;
 use phpbb\passwords\manager;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class backup_key extends abstract_module
 {
@@ -165,7 +165,7 @@ class backup_key extends abstract_module
 
 		if (empty($key))
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_NO_KEY_PROVIDED'));
+			throw new http_exception(400, 'TFA_NO_KEY_PROVIDED');
 		}
 
 		foreach ($this->getRegistrations($user_id) as $registration)
@@ -237,7 +237,6 @@ class backup_key extends abstract_module
 	 * Do the actual registration of a new security key.
 	 *
 	 * @return boolean Result of the registration.
-	 * @throws BadRequestHttpException
 	 */
 	public function register()
 	{

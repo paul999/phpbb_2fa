@@ -10,9 +10,9 @@
 
 namespace paul999\tfa\exceptions;
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use phpbb\exception\http_exception;
 
-class module_exception extends BadRequestHttpException
+class module_exception extends http_exception
 {
 
 }

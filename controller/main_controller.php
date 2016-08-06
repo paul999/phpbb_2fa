@@ -14,11 +14,10 @@ use paul999\tfa\helper\session_helper_interface;
 use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
+use phpbb\exception\http_exception;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Controller
@@ -104,7 +103,7 @@ class main_controller
 	 * @param bool $auto_login
 	 * @param bool $viewonline
 	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @throws AccessDeniedHttpException
+	 * @throws http_exception
 	 */
 	public function submit($user_id, $admin, $auto_login, $viewonline, $class)
 	{
@@ -112,18 +111,18 @@ class main_controller
 
 		if (!check_form_key('tfa_login_page'))
 		{
-			throw new AccessDeniedHttpException($this->user->lang('FORM_INVALID'));
+			throw new http_exception(403, 'FORM_INVALID');
 		}
 
 		if (empty($this->user->data['tfa_random']) || $user_id != $this->user->data['tfa_uid'])
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
 		$random = $this->request->variable('random', '');
 
 		if ($this->user->data['tfa_random'] !== $random || strlen($random) != 40)
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
 		$sql_ary = array(
 			'tfa_random' => '',
@@ -137,14 +136,14 @@ class main_controller
 
 		if (empty($class))
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
 
 		$module = $this->session_helper->findModule($class);
 
 		if ($module == null)
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
 
 		$redirect = $this->request->variable('redirect', "{$this->root_path}/index.{$this->php_ext}");
@@ -156,7 +155,7 @@ class main_controller
 				$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
 			}
 		}
-		catch (BadRequestHttpException $ex) // @TODO: Replace exception with own exception
+		catch (http_exception $ex) // @TODO: Replace exception with own exception
 		{
 			$this->template->assign_var('S_ERROR', $ex->getMessage());
 			$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
@@ -190,6 +189,6 @@ class main_controller
 
 			redirect(append_sid($redirect, false, true, $this->user->data['session_id']));
 		}
-		throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+		throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 	}
 }

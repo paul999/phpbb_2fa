@@ -17,9 +17,9 @@ use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\di\service_collection;
+use phpbb\exception\http_exception;
 use phpbb\template\template;
 use phpbb\user;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * helper method which is used to detect if a user needs to use 2FA
@@ -117,7 +117,7 @@ class session_helper implements session_helper_interface
 				$priority = $module->get_priority();
 				if (isset($this->modules[$module->get_priority()]))
 				{
-					throw new module_exception($this->user->lang('TFA_DOUBLE_PRIORITY', $priority, get_class($module), get_class($this->modules[$priority])));
+					throw new module_exception(400, 'TFA_DOUBLE_PRIORITY', array($priority, get_class($module), get_class($this->modules[$priority])));
 				}
 				if ($module->is_enabled())
 				{
@@ -252,7 +252,7 @@ class session_helper implements session_helper_interface
 
 		if (!empty($this->user->data['tfa_random']))
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
 
 		$sql_ary = array(
