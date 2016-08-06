@@ -24,7 +24,7 @@
                 <!-- IF keys.S_ROW_COUNT is even --><tr class="bg1"><!-- ELSE --><tr class="bg2"><!-- ENDIF -->
                     <td>{keys.ID}</td>
                     <td class="center">{keys.REGISTERED}</td>
-                    <td class="center"><!-- IF keys.last_used -->{keys.LAST_USED}<!-- ELSE -->{L_TFA_KEY_NOT_USED}<!-- ENDIF --></td>
+                    <td class="center"><!-- IF keys.LAST_USED -->{keys.LAST_USED}<!-- ELSE -->{L_TFA_KEY_NOT_USED}<!-- ENDIF --></td>
                     <td class="center">{keys.TYPE}</td>
                     <td class="center mark"><input type="checkbox" name="keys[]" value="{keys.CLASS}-{keys.ID}" id="{keys.ID}" /></td>
                 </tr>
