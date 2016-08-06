@@ -1,8 +1,5 @@
 .tfa_login
 {
-    width: 500px
-}
-.tfa_center
-{
-    text-align: center;
+    width: 500px;
+    margin: auto;
 }
