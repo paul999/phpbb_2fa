@@ -17,12 +17,11 @@ use paul999\u2f\RegisterRequest;
 use paul999\u2f\RegisterResponse;
 use paul999\u2f\SignRequest;
 use phpbb\db\driver\driver_interface;
+use phpbb\exception\http_exception;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
 use phpbrowscap\Browscap;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class u2f extends abstract_module
 {
@@ -126,7 +125,7 @@ class u2f extends abstract_module
 		$secure = $this->request->server('HTTPS');
 		if (!empty($secure))
 		{
-			return 'on' == strtolower($secure) || '1' == $secure;
+			return 'on' === strtolower($secure) || '1' == $secure;
 		}
 		else if ('443' == $this->request->server('SERVER_PORT'))
 		{
@@ -154,7 +153,7 @@ class u2f extends abstract_module
 	 * Start of the login procedure.
 	 * @param int $user_id
 	 * @return array
-	 * @throws BadRequestHttpException
+	 * @throws http_exception
 	 */
 	public function login_start($user_id)
 	{
@@ -171,7 +170,7 @@ class u2f extends abstract_module
 			// Reset sessions table.
 			$sql_ary['u2f_request'] = '';
 			$this->update_session($sql_ary);
-			throw new BadRequestHttpException('TFA_UNABLE_TO_UPDATE_SESSION');
+			throw new http_exception(400, 'TFA_UNABLE_TO_UPDATE_SESSION');
 		}
 		$this->template->assign_var('U2F_REQ', $registrations);
 
@@ -186,25 +185,24 @@ class u2f extends abstract_module
 	 * @param int $user_id
 	 *
 	 * @return bool
-	 * @throws AccessDeniedHttpException
-	 * @throws BadRequestHttpException
+	 * @throws http_exception
 	 */
 	public function login($user_id)
 	{
 		try
 		{
 			$sql = 'SELECT u2f_request 
-						FROM ' . SESSIONS_TABLE . ' 
-						WHERE
-							session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-							session_user_id = ' . (int) $this->user->data['user_id'];
+				FROM ' . SESSIONS_TABLE . " 
+				WHERE
+					session_id = '" . $this->db->sql_escape($this->user->data['session_id']) . "' AND
+					session_user_id = " . (int) $this->user->data['user_id'];
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
 
 			if (!$row || empty($row['u2f_request']))
 			{
-				throw new AccessDeniedHttpException($this->user->lang('TFA_NO_ACCESS'));
+				throw new http_exception(403, 'TFA_NO_ACCESS');
 			}
 
 			$response = json_decode(htmlspecialchars_decode($this->request->variable('authenticate', '')));
@@ -213,9 +211,9 @@ class u2f extends abstract_module
 			{
 				if ($response->errorCode == 4) // errorCode 4 means that this device wasn't registered
 				{
-					throw new AccessDeniedHttpException($this->user->lang('TFA_NOT_REGISTERED'));
+					throw new http_exception(403, 'TFA_NOT_REGISTERED');
 				}
-				throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+				throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 			}
 			$result = new AuthenticationResponse($response->signatureData, $response->clientData, $response->keyHandle); // Do not need to include errorCode, as we already handled it.
 
@@ -237,7 +235,7 @@ class u2f extends abstract_module
 		}
 		catch (\InvalidArgumentException $invalid)
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG') . '<br />' . $invalid->getMessage(), $invalid);
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG' . '<br />' . $invalid->getMessage(), array(), $invalid);
 		}
 		return false;
 	}
@@ -292,7 +290,7 @@ class u2f extends abstract_module
 
 	/**
 	 * Actual registration
-	 * @throws BadRequestHttpException
+	 * @throws http_exception
 	 */
 	public function register()
 	{
@@ -355,8 +353,8 @@ class u2f extends abstract_module
 	public function delete($key)
 	{
 		$sql = 'DELETE FROM ' . $this->registration_table . '
-					WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-					AND registration_id =' . (int) $key;
+			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+			AND registration_id =' . (int) $key;
 
 		$this->db->sql_query($sql);
 	}
@@ -419,7 +417,7 @@ class u2f extends abstract_module
 
 	/**
 	 * @param U2fError $error
-	 * @throws BadRequestHttpException
+	 * @throws http_exception
 	 */
 	private function createError(U2fError $error)
 	{
@@ -428,53 +426,53 @@ class u2f extends abstract_module
 			/** Error for the authentication message not matching any outstanding
 			 * authentication request */
 			case U2fError::ERR_NO_MATCHING_REQUEST:
-				throw new BadRequestHttpException($this->user->lang('ERR_NO_MATCHING_REQUEST'), $error);
+				throw new http_exception(400, 'ERR_NO_MATCHING_REQUEST', array(), $error);
 
 			/** Error for the authentication message not matching any registration */
 			case U2fError::ERR_NO_MATCHING_REGISTRATION:
-				throw new BadRequestHttpException($this->user->lang('ERR_NO_MATCHING_REGISTRATION'), $error);
+				throw new http_exception(400, 'ERR_NO_MATCHING_REGISTRATION', array(), $error);
 
 			/** Error for the signature on the authentication message not verifying with
 			 * the correct key */
 			case U2fError::ERR_AUTHENTICATION_FAILURE:
-				throw new BadRequestHttpException($this->user->lang('ERR_AUTHENTICATION_FAILURE'), $error);
+				throw new http_exception(400, 'ERR_AUTHENTICATION_FAILURE', array(), $error);
 
 			/** Error for the challenge in the registration message not matching the
 			 * registration challenge */
 			case U2fError::ERR_UNMATCHED_CHALLENGE:
-				throw new BadRequestHttpException($this->user->lang('ERR_UNMATCHED_CHALLENGE'), $error);
+				throw new http_exception(400, 'ERR_UNMATCHED_CHALLENGE', array(), $error);
 
 			/** Error for the attestation signature on the registration message not
 			 * verifying */
 			case U2fError::ERR_ATTESTATION_SIGNATURE:
-				throw new BadRequestHttpException($this->user->lang('ERR_ATTESTATION_SIGNATURE'), $error);
+				throw new http_exception(400, 'ERR_ATTESTATION_SIGNATURE', array(), $error);
 
 			/** Error for the attestation verification not verifying */
 			case U2fError::ERR_ATTESTATION_VERIFICATION:
-				throw new BadRequestHttpException($this->user->lang('ERR_ATTESTATION_VERIFICATION'), $error);
+				throw new http_exception(400, 'ERR_ATTESTATION_VERIFICATION', array(), $error);
 
 			/** Error for not getting good random from the system */
 			case U2fError::ERR_BAD_RANDOM:
-				throw new BadRequestHttpException($this->user->lang('ERR_BAD_RANDOM'), $error);
+				throw new http_exception(400, 'ERR_BAD_RANDOM', array(), $error);
 
 			/** Error when the counter is lower than expected */
 			case U2fError::ERR_COUNTER_TOO_LOW:
-				throw new BadRequestHttpException($this->user->lang('ERR_COUNTER_TOO_LOW'), $error);
+				throw new http_exception(400, 'ERR_COUNTER_TOO_LOW', array(), $error);
 
 			/** Error decoding public key */
 			case U2fError::ERR_PUBKEY_DECODE:
-				throw new BadRequestHttpException($this->user->lang('ERR_PUBKEY_DECODE'), $error);
+				throw new http_exception(400, 'ERR_PUBKEY_DECODE', array(), $error);
 
 			/** Error user-agent returned error */
 			case U2fError::ERR_BAD_UA_RETURNING:
-				throw new BadRequestHttpException($this->user->lang('ERR_BAD_UA_RETURNING'), $error);
+				throw new http_exception(400, 'ERR_BAD_UA_RETURNING', array(), $error);
 
 			/** Error old OpenSSL version */
 			case U2fError::ERR_OLD_OPENSSL:
-				throw new BadRequestHttpException(sprintf($this->user->lang('ERR_OLD_OPENSSL'), OPENSSL_VERSION_TEXT), $error);
+				throw new http_exception(400, 'ERR_OLD_OPENSSL', array(OPENSSL_VERSION_TEXT), $error);
 
 			default:
-				throw new BadRequestHttpException($this->user->lang('TFA_UNKNOWN_ERROR'), $error);
+				throw new http_exception(400, 'TFA_UNKNOWN_ERROR', array(), $error);
 		}
 	}
 
@@ -485,13 +483,12 @@ class u2f extends abstract_module
 	 */
 	private function update_session($sql_ary)
 	{
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-							WHERE
-								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-								session_user_id = ' . (int) $this->user->data['user_id'];
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . "
+			WHERE
+				session_id = '" . $this->db->sql_escape($this->user->data['session_id']) . "' AND
+				session_user_id = " . (int) $this->user->data['user_id'];
 		$this->db->sql_query($sql);
 
 		return $this->db->sql_affectedrows();
 	}
-
 }

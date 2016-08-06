@@ -38,10 +38,8 @@ abstract class abstract_module implements module_interface
 	protected function show_ucp_complete($table, $where = '')
 	{
 		$sql = 'SELECT *
-			FROM ' . $table . '
-			WHERE 
-				user_id = ' . (int) $this->user->data['user_id'] . '
-				' . $where . '
+			FROM ' . $this->db->sql_escape($table) . '
+			WHERE user_id = ' . (int) $this->user->data['user_id'] . ' ' . $where . '
 			ORDER BY registration_id ASC';
 
 		$result = $this->db->sql_query($sql);
@@ -60,7 +58,7 @@ abstract class abstract_module implements module_interface
 	}
 
 	/**
-	 * Check if the provided user as a specific key in the table provided
+	 * Check if the provided user has a specific key in the table provided
 	 *
 	 * @param string $table   Table to check in
 	 * @param int    $user_id The specific user
@@ -71,10 +69,8 @@ abstract class abstract_module implements module_interface
 	protected function check_table_for_user($table, $user_id, $where = '')
 	{
 		$sql = 'SELECT COUNT(registration_id) as reg_id 
-					FROM ' . $table . ' 
-					WHERE 
-						user_id = ' . (int) $user_id .
-						' ' . $where;
+			FROM ' . $this->db->sql_escape($table) . '
+			WHERE user_id = ' . (int) $user_id . ' ' . $where;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);

@@ -11,11 +11,11 @@
 namespace paul999\tfa\modules;
 
 use phpbb\db\driver\driver_interface;
+use phpbb\exception\http_exception;
 use phpbb\passwords\manager;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class backup_key extends abstract_module
 {
@@ -165,7 +165,7 @@ class backup_key extends abstract_module
 
 		if (empty($key))
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_NO_KEY_PROVIDED'));
+			throw new http_exception(400, 'TFA_NO_KEY_PROVIDED');
 		}
 
 		foreach ($this->getRegistrations($user_id) as $registration)
@@ -182,9 +182,9 @@ class backup_key extends abstract_module
 					'valid'		=> false,
 				);
 				$sql = 'UPDATE ' . $this->backup_registration_table . ' 
-							SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' 
-							WHERE 
-								registration_id = ' . (int) $registration['registration_id'];
+					SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' 
+					WHERE 
+						registration_id = ' . (int) $registration['registration_id'];
 				$this->db->sql_query($sql);
 				return true;
 			}
@@ -211,7 +211,7 @@ class backup_key extends abstract_module
 	 */
 	public function register_start()
 	{
-		$sql = [];
+		$sql = array();
 
 		for ($i = 0; $i < self::NUMBER_OF_KEYS; $i++)
 		{
@@ -237,7 +237,6 @@ class backup_key extends abstract_module
 	 * Do the actual registration of a new security key.
 	 *
 	 * @return boolean Result of the registration.
-	 * @throws BadRequestHttpException
 	 */
 	public function register()
 	{
@@ -265,8 +264,8 @@ class backup_key extends abstract_module
 	public function delete($key)
 	{
 		$sql = 'DELETE FROM ' . $this->backup_registration_table . '
-					WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-					AND registration_id =' . (int) $key;
+			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+			AND registration_id =' . (int) $key;
 
 		$this->db->sql_query($sql);
 	}

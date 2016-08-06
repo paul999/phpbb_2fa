@@ -105,7 +105,6 @@ interface module_interface
 	 * Do the actual registration of a new security key.
 	 *
 	 * @return boolean Result of the registration.
-	 * @throws BadRequestHttpException
 	 */
 	public function register();
 

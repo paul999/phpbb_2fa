@@ -36,6 +36,4 @@ class registration_helper extends Registration
 		$this->id = $id;
 		return $this;
 	}
-
-
 }

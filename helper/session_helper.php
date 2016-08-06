@@ -17,16 +17,15 @@ use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\di\service_collection;
+use phpbb\exception\http_exception;
 use phpbb\template\template;
 use phpbb\user;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * helper method which is used to detect if a user needs to use 2FA
  */
 class session_helper implements session_helper_interface
 {
-
 	/**
 	 * @var driver_interface
 	 */
@@ -117,7 +116,7 @@ class session_helper implements session_helper_interface
 				$priority = $module->get_priority();
 				if (isset($this->modules[$module->get_priority()]))
 				{
-					throw new module_exception($this->user->lang('TFA_DOUBLE_PRIORITY', $priority, get_class($module), get_class($this->modules[$priority])));
+					throw new module_exception(400, 'TFA_DOUBLE_PRIORITY', array($priority, get_class($module), get_class($this->modules[$priority])));
 				}
 				if ($module->is_enabled())
 				{
@@ -217,11 +216,10 @@ class session_helper implements session_helper_interface
 	 * @param bool $admin
 	 * @param bool $auto_login
 	 * @param bool $viewonline
-	 * @param string     $redirect
+	 * @param string $redirect
 	 */
 	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect)
 	{
-
 		$this->user->add_lang_ext('paul999/tfa', 'common');
 		$modules = $this->getModules();
 
@@ -252,17 +250,17 @@ class session_helper implements session_helper_interface
 
 		if (!empty($this->user->data['tfa_random']))
 		{
-			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
 
 		$sql_ary = array(
 			'tfa_random' 	=> $random,
 			'tfa_uid'		=> $user_id,
 		);
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-							WHERE
-								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-								session_user_id = ' . (int) $this->user->data['user_id'];
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . "
+			WHERE
+				session_id = '" . $this->db->sql_escape($this->user->data['session_id']) . "' AND
+				session_user_id = " . (int) $this->user->data['user_id'];
 		$this->db->sql_query($sql);
 
 		$this->template->assign_vars(array(
@@ -273,8 +271,8 @@ class session_helper implements session_helper_interface
 		page_header('TFA_KEY_REQUIRED');
 
 		$this->template->set_filenames(array(
-				'body' => '@paul999_tfa/authenticate_main.html')
-		);
+			'body' => '@paul999_tfa/authenticate_main.html'
+		));
 		page_footer(false); // Do not include cron on this page!
 	}
 
@@ -312,8 +310,8 @@ class session_helper implements session_helper_interface
 			return true;
 		}
 		$userdata = $this->user_data($user_id, $userdata);
-		$at = new auth();
-		$at->acl($userdata);
+		$auth = new auth();
+		$auth->acl($userdata);
 
 		if (!is_array($permission))
 		{
@@ -321,7 +319,7 @@ class session_helper implements session_helper_interface
 		}
 		foreach ($permission as $perm)
 		{
-			if ($at->acl_get($perm) && ($admin || $try))
+			if ($auth->acl_get($perm) && ($admin || $try))
 			{
 				return true;
 			}
