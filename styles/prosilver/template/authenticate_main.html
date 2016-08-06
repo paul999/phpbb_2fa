@@ -5,17 +5,19 @@
     <p class="error">{S_ERROR}</p>
 <!-- ENDIF -->
 
-<div class="forabg tfa_center">
-    <div class="inner tfa_login">
-        <ul class="topiclist forums">
-        <!-- BEGIN tfa_options -->
-            <li>
-                <dl>
-                    <dt onclick="openAuth('#auth_{tfa_options.ID}');">{tfa_options.NAME}</dt>
-                </dl>
-            </li>
-        <!-- END tfa_options -->
-        </ul>
+<div class="tfa_center">
+    <div class="forabg tfa_login">
+        <div class="inner">
+            <ul class="topiclist forums">
+            <!-- BEGIN tfa_options -->
+                <li class="row">
+                    <dl>
+                        <dt><a href="javascript:openAuth('#auth_{tfa_options.ID}');">tfa_options.NAME}</a></dt>
+                    </dl>
+                </li>
+            <!-- END tfa_options -->
+            </ul>
+        </div>
     </div>
 </div>
 
