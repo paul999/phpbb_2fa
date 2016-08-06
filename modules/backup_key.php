@@ -10,26 +10,15 @@
 
 namespace paul999\tfa\modules;
 
-use OTPAuthenticate\OTPAuthenticate;
-use OTPAuthenticate\OTPHelper;
+
 use phpbb\db\driver\driver_interface;
+use phpbb\passwords\manager;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class otp extends abstract_module
+class backup_key extends abstract_module
 {
-	/**
-	 * @var \OTPAuthenticate\OTPHelper
-	 */
-	private $otp_helper;
-
-	/**
-	 * @var \OTPAuthenticate\OTPAuthenticate
-	 */
-	private $otp;
-
 	/**
 	 * @var \phpbb\request\request_interface
 	 */
@@ -38,26 +27,36 @@ class otp extends abstract_module
 	/**
 	 * @var string
 	 */
-	private $otp_registration_table;
+	private $backup_registration_table;
 
 	/**
-	 * OTP constructor.
+	 * Number of keys that is generated
+	 */
+	private const NUMBER_OF_KEYS = 6;
+
+	/**
+	 * @var \phpbb\passwords\manager
+	 */
+	private $password_manager;
+
+	/**
+	 * backup_key constructor.
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
 	 * @param \phpbb\user                       $user
 	 * @param \phpbb\request\request_interface  $request
 	 * @param \phpbb\template\template          $template
-	 * @param string                            $otp_registration_table
+	 * @param \phpbb\passwords\manager          $password_manager
+	 * @param string                            $backup_registration_table
 	 */
-	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, $otp_registration_table)
+	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, manager $password_manager, $backup_registration_table)
 	{
-		$this->otp_helper = new OTPHelper();
-		$this->otp = new OTPAuthenticate();
 		$this->db = $db;
 		$this->user = $user;
 		$this->request = $request;
 		$this->template = $template;
-		$this->otp_registration_table = $otp_registration_table;
+		$this->backup_registration_table = $backup_registration_table;
+		$this->password_manager = $password_manager;
 	}
 
 	/**
@@ -66,7 +65,7 @@ class otp extends abstract_module
 	 */
 	public function get_translatable_name()
 	{
-		return 'OTP';
+		return 'TFA_BACKUP_KEY';
 	}
 
 	/**
@@ -76,7 +75,7 @@ class otp extends abstract_module
 	 */
 	public function get_name()
 	{
-		return 'otp';
+		return 'backup_key';
 	}
 
 	/**
@@ -106,7 +105,7 @@ class otp extends abstract_module
 	 */
 	public function is_usable($user_id)
 	{
-		return $this->check_table_for_user($this->otp_registration_table, $user_id);
+		return $this->check_table_for_user($this->backup_registration_table, $user_id, ' AND valid = 1');
 	}
 
 	/**
@@ -136,7 +135,7 @@ class otp extends abstract_module
 	 */
 	public function get_priority()
 	{
-		return 15;
+		return 1337; // We want the backup keys as priority as low as possible, because they are a backup.
 	}
 
 	/**
@@ -144,13 +143,11 @@ class otp extends abstract_module
 	 *
 	 * @param int $user_id
 	 *
-	 * @return array
+	 * @return array with data to be assign to the template.
 	 */
 	public function login_start($user_id)
 	{
-		return array(
-			'S_TFA_INCLUDE_HTML'	=> '@paul999_tfa/tfa_otp_authenticate.html',
-		);
+		// TODO: Implement login_start() method.
 	}
 
 	/**
@@ -158,34 +155,11 @@ class otp extends abstract_module
 	 *
 	 * @param int $user_id
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	public function login($user_id)
 	{
-		$key = $this->request->variable('authenticate', '');
-
-		if (empty($key))
-		{
-			throw new BadRequestHttpException($this->user->lang('TFA_NO_KEY_PROVIDED'));
-		}
-
-		foreach ($this->getRegistrations($user_id) as $registration)
-		{
-			if ($this->otp->checkTOTP($registration['secret'], $key, 'sha1'))
-			{
-				// We found a valid key.
-				$sql_ary = array(
-					'last_used' => time(),
-				);
-				$sql = 'UPDATE ' . $this->otp_registration_table . ' 
-							SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' 
-							WHERE 
-								registration_id = ' . (int) $registration['registration_id'];
-				$this->db->sql_query($sql);
-				return true;
-			}
-		}
-		return false;
+		// TODO: Implement login() method.
 	}
 
 	/**
@@ -195,7 +169,7 @@ class otp extends abstract_module
 	 */
 	public function can_register()
 	{
-		return true;
+		return !$this->check_table_for_user($this->backup_registration_table, $this->user->data['user_id'], ' AND valid = 1');
 	}
 
 	/**
@@ -207,18 +181,24 @@ class otp extends abstract_module
 	 */
 	public function register_start()
 	{
-		$secret = $this->otp->generateSecret();
-		$QR = $this->otp_helper->generateKeyURI('totp', $secret, generate_board_url(), '',0, 'sha1');
-		$this->template->assign_vars(array(
-			'TFA_QR_CODE'				=> 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . $QR,
-			'TFA_SECRET'				=> $secret,
-			'L_TFA_ADD_OTP_KEY_EXPLAIN'	=> $this->user->lang('TFA_ADD_OTP_KEY_EXPLAIN', $secret),
-			'S_HIDDEN_FIELDS_MODULE'	=> build_hidden_fields(array(
-				'secret'	=> $secret,
-			)),
-		));
+		$sql = [];
 
-		return 'tfa_otp_ucp_new';
+		for ($i = 0; $i <= self::NUMBER_OF_KEYS; $i++)
+		{
+			$key = bin2hex(random_bytes(8));
+			$sql[] = array(
+				'user_id' 		=> $this->user->data['user_id'],
+				'valid'			=> true,
+				'secret'		=> $this->password_manager->hash($key),
+				'registered' 	=> time(),
+			);
+			$this->template->assign_block_vars('backup', [
+				'KEY'	=> $key,
+			]);
+		}
+		$this->db->sql_multi_insert($this->backup_registration_table, $sql);
+
+		return 'tfa_backup_ucp_new';
 	}
 
 	/**
@@ -229,23 +209,8 @@ class otp extends abstract_module
 	 */
 	public function register()
 	{
-		$secret = $this->request->variable('secret', '');
-		$otp	= $this->request->variable('register', '');
-
-		if (!$this->otp->checkTOTP($secret, $otp, 'sha1'))
-		{
-			throw new BadRequestHttpException($this->user->lang('TFA_OTP_INVALID_KEY'));
-		}
-
-		$sql_ary = array(
-			'user_id' 		=> $this->user->data['user_id'],
-			'secret'		=> $secret,
-			'registered' 	=> time(),
-			'last_used' 	=> time(),
-		);
-
-		$sql = 'INSERT INTO ' . $this->otp_registration_table . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
-		$this->db->sql_query($sql);
+		// We don't need to do anything here.
+		return true;
 	}
 
 	/**
@@ -254,7 +219,7 @@ class otp extends abstract_module
 	 */
 	public function show_ucp()
 	{
-		$this->show_ucp_complete($this->otp_registration_table);
+		$this->show_ucp_complete($this->backup_registration_table);
 	}
 
 	/**
@@ -267,25 +232,10 @@ class otp extends abstract_module
 	 */
 	public function delete($key)
 	{
-		$sql = 'DELETE FROM ' . $this->otp_registration_table . '
+		$sql = 'DELETE FROM ' . $this->backup_registration_table . '
 					WHERE user_id = ' . (int) $this->user->data['user_id'] . '
 					AND registration_id =' . (int) $key;
 
 		$this->db->sql_query($sql);
-	}
-
-	/**
-	 * Select all registration objects from the database
-	 * @param integer $user_id
-	 * @return array
-	 */
-	private function getRegistrations($user_id)
-	{
-		$sql = 'SELECT * FROM ' . $this->otp_registration_table . ' WHERE user_id = ' . (int) $user_id;
-		$result = $this->db->sql_query($sql);
-		$rows = $this->db->sql_fetchrowset($result);
-
-		$this->db->sql_freeresult($result);
-		return $rows;
 	}
 }

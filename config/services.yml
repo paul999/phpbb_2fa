@@ -69,3 +69,15 @@ services:
             - '%paul999.2fa.tables.tfa_otp_registration%'
         tags:
             - { name: paul999.tfa.module }
+
+    paul999.tfa.modules.backup_key:
+        class: paul999\tfa\modules\backup_key
+        arguments:
+            - '@dbal.conn'
+            - '@user'
+            - '@request'
+            - '@template'
+            - '@passwords.manager'
+            - '%paul999.2fa.tables.tfa_backup_registration%'
+        tags:
+            - { name: paul999.tfa.module }

@@ -10,19 +10,20 @@
 
 namespace paul999\tfa\migrations;
 
-class initial_otp_schema extends \phpbb\db\migration\migration
+class initial_back_schema extends \phpbb\db\migration\migration
 {
 	public function update_schema()
 	{
 		return array(
 			'add_tables'	=> array(
-				$this->table_prefix . 'tfa_otp_reg'	=> array(
+				$this->table_prefix . 'tfa_back_reg'	=> array(
 					'COLUMNS'	=> array(
 						'registration_id'		=> array('UINT', null, 'auto_increment'),
 						'user_id'				=> array('UINT', 0),
 						'secret'				=> array('VCHAR:255', ''),
 						'last_used'				=> array('TIMESTAMP', 0),
 						'registered'			=> array('TIMESTAMP', 0),
+						'valid'					=> array('BOOL', 0),
 					),
 					'PRIMARY_KEY'	=> 'registration_id',
 					'KEYS'			=> array(
@@ -37,7 +38,7 @@ class initial_otp_schema extends \phpbb\db\migration\migration
 	{
 		return array(
 			'drop_tables'	=> array(
-				$this->table_prefix . 'tfa_otp_reg',
+				$this->table_prefix . 'tfa_back_reg',
 			),
 		);
 	}

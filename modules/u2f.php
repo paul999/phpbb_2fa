@@ -97,15 +97,7 @@ class u2f extends abstract_module
 		{
 			return false;
 		}
-		$sql = 'SELECT COUNT(registration_id) as reg_id 
-					FROM ' . $this->registration_table . ' 
-					WHERE 
-						user_id = ' . (int) $user_id;
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
-
-		return $row && $row['reg_id'] > 0;
+		return $this->check_table_for_user($this->registration_table, $user_id);
 	}
 
 	/**

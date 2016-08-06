@@ -33,12 +33,15 @@ abstract class abstract_module implements module_interface
 	 * You can assign template variables to the template, or do anything else here.
 	 *
 	 * @param string $table
+	 * @param string $where Extra where clause. Please make sure to use AND as first.
 	 */
-	protected function show_ucp_complete($table)
+	protected function show_ucp_complete($table, $where = '')
 	{
 		$sql = 'SELECT *
 			FROM ' . $table . '
-			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+			WHERE 
+				user_id = ' . (int) $this->user->data['user_id'] . '
+				' . $where . '
 			ORDER BY registration_id ASC';
 
 		$result = $this->db->sql_query($sql);
@@ -49,7 +52,7 @@ abstract class abstract_module implements module_interface
 				'CLASS'         => $this->get_name(),
 				'ID'            => $row['registration_id'],
 				'REGISTERED'    => $this->user->format_date($row['registered']),
-				'LAST_USED'     => $this->user->format_date($row['last_used']),
+				'LAST_USED'     => $row['last_used'] ? $this->user->format_date($row['last_used']) : false,
 				'TYPE'			=> $this->user->lang($this->get_translatable_name()),
 			));
 		}
@@ -59,17 +62,19 @@ abstract class abstract_module implements module_interface
 	/**
 	 * Check if the provided user as a specific key in the table provided
 	 *
-	 * @param string $table Table to check in
+	 * @param string $table   Table to check in
 	 * @param int    $user_id The specific user
+	 * @param string $where	  Extra where clause. Be sure to include AND
 	 *
 	 * @return bool
 	 */
-	protected function check_table_for_user($table, $user_id)
+	protected function check_table_for_user($table, $user_id, $where = '')
 	{
 		$sql = 'SELECT COUNT(registration_id) as reg_id 
 					FROM ' . $table . ' 
 					WHERE 
-						user_id = ' . (int) $user_id;
+						user_id = ' . (int) $user_id .
+						' ' . $where;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);

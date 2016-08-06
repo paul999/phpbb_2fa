@@ -73,5 +73,6 @@ $lang = array_merge(
 		'TFA_OTP_KEY'				=> 'OTP key',
 		'TFA_OTP_INVALID_KEY'		=> 'Invalid key provided.',
 		'TFA_KEYTYPE'				=> 'Key type',
+		'TFA_KEY_NOT_USED'			=> 'Not used yet',
 	)
 );
