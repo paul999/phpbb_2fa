@@ -234,6 +234,7 @@ class session_helper implements session_helper_interface
 			{
 				$this->template->assign_block_vars('tfa_options', array_merge(array(
 					'ID'	=> $row->get_name(),
+					'NAME'	=> $this->user->lang($row->get_translatable_name()),
 					'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
 						'user_id'		=> (int) $user_id,
 						'admin'			=> (int) $admin,
