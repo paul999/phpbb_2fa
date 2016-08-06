@@ -132,7 +132,7 @@ class main_controller
 		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE
 								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-								session_user_id = ' . (int)$this->user->data['user_id'];
+								session_user_id = ' . (int) $this->user->data['user_id'];
 		$this->db->sql_query($sql);
 
 		if (empty($class))

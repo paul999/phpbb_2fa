@@ -10,7 +10,6 @@
 
 namespace paul999\tfa\modules;
 
-
 use phpbb\db\driver\driver_interface;
 use phpbb\passwords\manager;
 use phpbb\request\request_interface;
