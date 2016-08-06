@@ -65,6 +65,9 @@ $lang = array_merge(
 		'TFA_NO_KEY_PROVIDED'				=> 'No key provided',
 		'TFA_KEY_REQUIRED'					=> 'Please provide your security key',
 
+		'FTA_BACKUP_KEY'					=> 'Backup key',
+		'FTA_BACKUP_KEY_EXPLAIN'			=> 'Please provide a backup key, which hasn’t been used before.',
+
 		'TFA_DOUBLE_PRIORITY'				=> 'The choosen priority (%d) for module %s is already in use for module %s',
 
 		// Module names
