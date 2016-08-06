@@ -74,7 +74,6 @@ $lang = array_merge(
 		'TFA_OTP_INVALID_KEY'		=> 'Invalid key provided.',
 		'TFA_KEYTYPE'				=> 'Key type',
 		'TFA_KEY_NOT_USED'			=> 'Not used yet',
-		'TFA_BACKUP_KEY'			=> 'Backup keys',
 		'TFA_BACKUP_KEY_EXPLAIN'	=> 'Below are backup keys, generated for in case you loose you keys or you key doesn’t
 										work. Please make sure to store these keys in a secure location. <br />
 										In general, you only should use a backup key as last resort. <br /><br />

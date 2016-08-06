@@ -387,7 +387,7 @@ class u2f extends abstract_module
 	 */
 	public function get_translatable_name()
 	{
-		return 'MODULE_U2F';
+		return 'TFA_U2F';
 	}
 
 	/**

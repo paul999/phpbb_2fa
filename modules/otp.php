@@ -66,7 +66,7 @@ class otp extends abstract_module
 	 */
 	public function get_translatable_name()
 	{
-		return 'OTP';
+		return 'TFA_OTP';
 	}
 
 	/**

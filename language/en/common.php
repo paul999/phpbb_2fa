@@ -65,6 +65,10 @@ $lang = array_merge(
 		'TFA_NO_KEY_PROVIDED'				=> 'No key provided',
 		'TFA_KEY_REQUIRED'					=> 'Please provide your security key',
 
+		'TFA_BACKUP_KEY'			=> 'Backup keys',
+		'TFA_OTP'					=> 'OTP',
+		'TFA_U2F'					=> 'U2F',
+
 		'TFA_BACKUP_KEY_LOG'				=> 'Backup key',
 		'TFA_BACKUP_KEY_LOG_EXPLAIN'		=> 'Please provide a backup key, which hasn’t been used before.',
 
