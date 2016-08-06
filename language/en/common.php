@@ -59,14 +59,14 @@ $lang = array_merge(
 		'TFA_UNABLE_TO_UPDATE_SESSION'		=> 'Unable to update session. Please contact the board administrator',
 		'TFA_DISABLED'						=> 'Two factor authentication has been disabled',
 
-		'FTA_OTP_KEY'						=> 'OTP key',
-		'TFA_OTP_KEY_EXPLAIN'				=> 'Please open the authenticator app and take over the current displayed key in the textfield below',
+		'TFA_OTP_KEY_LOG'					=> 'OTP key',
+		'TFA_OTP_KEY_LOG_EXPLAIN'			=> 'Please open the authenticator app and take over the current displayed key in the textfield below',
 		'TFA_INCORRECT_KEY'					=> 'Provided key was incorrect.',
 		'TFA_NO_KEY_PROVIDED'				=> 'No key provided',
 		'TFA_KEY_REQUIRED'					=> 'Please provide your security key',
 
-		'FTA_BACKUP_KEY'					=> 'Backup key',
-		'FTA_BACKUP_KEY_EXPLAIN'			=> 'Please provide a backup key, which hasn’t been used before.',
+		'TFA_BACKUP_KEY_LOG'				=> 'Backup key',
+		'TFA_BACKUP_KEY_LOG_EXPLAIN'		=> 'Please provide a backup key, which hasn’t been used before.',
 
 		'TFA_DOUBLE_PRIORITY'				=> 'The choosen priority (%d) for module %s is already in use for module %s',
 
