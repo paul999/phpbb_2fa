@@ -32,7 +32,7 @@ class backup_key extends abstract_module
 	/**
 	 * Number of keys that is generated
 	 */
-	private const NUMBER_OF_KEYS = 6;
+	const NUMBER_OF_KEYS = 6;
 
 	/**
 	 * @var \phpbb\passwords\manager
