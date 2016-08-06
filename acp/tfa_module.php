@@ -31,7 +31,7 @@ class tfa_module
 		global $user, $template, $request;
 		global $config, $phpbb_dispatcher, $phpbb_log;
 
-		$user->add_lang_ext("paul999/tfa", "acp_tfa");
+		$user->add_lang_ext('paul999/tfa', 'acp_tfa');
 		$user->add_lang('acp/board');
 
 		$submit = $request->is_set('submit');
@@ -71,7 +71,7 @@ class tfa_module
 
 		if ($submit && !check_form_key($form_key))
 		{
-			$error[] = $user->lang['FORM_INVALID'];
+			$error[] = $user->lang('FORM_INVALID');
 		}
 		// Do not write values if there is an error
 		if (sizeof($error))
@@ -107,15 +107,15 @@ class tfa_module
 
 		if (!$request->is_secure())
 		{
-			$error[] = $user->lang['TFA_REQUIRES_SSL'];
+			$error[] = $user->lang('TFA_REQUIRES_SSL');
 		}
 
 		$this->tpl_name = 'acp_board';
 		$this->page_title = $display_vars['title'];
 
 		$template->assign_vars(array(
-			'L_TITLE'			=> $user->lang[$display_vars['title']],
-			'L_TITLE_EXPLAIN'	=> $user->lang[$display_vars['title'] . '_EXPLAIN'],
+			'L_TITLE'			=> $user->lang($display_vars['title']),
+			'L_TITLE_EXPLAIN'	=> $user->lang($display_vars['title'] . '_EXPLAIN'),
 
 			'S_ERROR'			=> (sizeof($error)) ? true : false,
 			'ERROR_MSG'			=> implode('<br />', $error),
@@ -134,9 +134,9 @@ class tfa_module
 			if (strpos($config_key, 'legend') !== false)
 			{
 				$template->assign_block_vars('options', array(
-						'S_LEGEND'		=> true,
-						'LEGEND'		=> (isset($user->lang[$vars])) ? $user->lang[$vars] : $vars)
-				);
+					'S_LEGEND' => true,
+					'LEGEND'   => array_key_exists($vars, $user->lang) ? $user->lang($vars) : $vars,
+				));
 
 				continue;
 			}
@@ -144,9 +144,9 @@ class tfa_module
 			$type = explode(':', $vars['type']);
 
 			$l_explain = '';
-			if ($vars['explain'] && isset($user->lang[$vars['lang'] . '_EXPLAIN']))
+			if ($vars['explain'] && array_key_exists($vars['lang'] . '_EXPLAIN', $user->lang))
 			{
-				$l_explain =  $user->lang[$vars['lang'] . '_EXPLAIN'];
+				$l_explain =  $user->lang($vars['lang'] . '_EXPLAIN');
 			}
 
 			$content = build_cfg_template($type, $config_key, $this->new_config, $config_key, $vars);
@@ -158,7 +158,7 @@ class tfa_module
 
 			$template->assign_block_vars('options', array(
 				'KEY'			=> $config_key,
-				'TITLE'			=> (isset($user->lang[$vars['lang']])) ? $user->lang[$vars['lang']] : $vars['lang'],
+				'TITLE'			=> (array_key_exists($vars['lang'], $user->lang)) ? $user->lang($vars['lang']) : $vars['lang'],
 				'S_EXPLAIN'		=> $vars['explain'],
 				'TITLE_EXPLAIN'	=> $l_explain,
 				'CONTENT'		=> $content,

@@ -76,8 +76,7 @@ class tfa_module
 		global $request, $phpbb_container;
 
 		$user->add_lang('posting');
-		$user->add_lang_ext('paul999/tfa', 'ucp_tfa');
-		$user->add_lang_ext('paul999/tfa', 'common');
+		$user->add_lang_ext('paul999/tfa', array('common', 'ucp_tfa'));
 
 		$this->setup($user, $template, $request, $phpbb_container->get('paul999.tfa.sessionHelper'));
 
@@ -102,7 +101,7 @@ class tfa_module
 				{
 					$module->register();
 					meta_refresh(3, $this->u_action);
-					$message = $this->user->lang['TFA_KEY_ADDED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+					$message = $this->user->lang('TFA_KEY_ADDED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
 					trigger_error($message);
 				}
 				if ($module->can_register())
@@ -200,7 +199,7 @@ class tfa_module
 
 		$this->template->assign_vars(array(
 			'ERROR'           => (sizeof($error)) ? implode('<br />', $error) : '',
-			'L_TITLE'         => $this->user->lang['UCP_TFA'],
+			'L_TITLE'         => $this->user->lang('UCP_TFA'),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
 			'S_UCP_ACTION'    => $this->u_action,
 		));
@@ -228,7 +227,7 @@ class tfa_module
 			}
 		}
 		meta_refresh(3, $this->u_action);
-		$message = $this->user->lang['TFA_KEYS_DELETED'] . '<br /><br />' . sprintf($this->user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+		$message = $this->user->lang('TFA_KEYS_DELETED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
 		trigger_error($message);
 	}
 }
