@@ -183,17 +183,19 @@ class backup_key extends abstract_module
 	{
 		$sql = [];
 
-		for ($i = 0; $i <= self::NUMBER_OF_KEYS; $i++)
+		for ($i = 0; $i < self::NUMBER_OF_KEYS; $i++)
 		{
+			$time = time();
 			$key = bin2hex(random_bytes(8));
 			$sql[] = array(
 				'user_id' 		=> $this->user->data['user_id'],
 				'valid'			=> true,
 				'secret'		=> $this->password_manager->hash($key),
-				'registered' 	=> time(),
+				'registered' 	=> $time,
 			);
 			$this->template->assign_block_vars('backup', [
 				'KEY'	=> $key,
+				'DATE'	=> $this->user->format_date($time),
 			]);
 		}
 		$this->db->sql_multi_insert($this->backup_registration_table, $sql);
