@@ -8,9 +8,9 @@ services:
             - '@dbal.conn'
             - '@config'
             - '@user'
+            - '@paul999.tfa.module_collection'
             - '@controller.helper'
             - '@template'
-            - '@paul999.tfa.module_collection'
             - '%paul999.2fa.tables.tfa_registration%'
             - '%tables.users%'
 
