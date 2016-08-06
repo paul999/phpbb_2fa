@@ -158,8 +158,11 @@ class main_controller
 		}
 		catch (http_exception $ex) // @TODO: Replace exception with own exception
 		{
-			$this->template->assign_var('S_ERROR', $ex->getMessage());
-			$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
+			if ($ex->getStatusCode() == 400)
+			{
+				$this->template->assign_var('S_ERROR', $ex->getMessage());
+				$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
+			}
 		}
 
 		$old_session_id = $this->user->session_id;
