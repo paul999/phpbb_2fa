@@ -178,9 +178,9 @@ class otp extends abstract_module
 					'last_used' => time(),
 				);
 				$sql = 'UPDATE ' . $this->otp_registration_table . ' 
-							SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' 
-							WHERE 
-								registration_id = ' . (int) $registration['registration_id'];
+					SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' 
+					WHERE 
+						registration_id = ' . (int) $registration['registration_id'];
 				$this->db->sql_query($sql);
 				return true;
 			}
@@ -268,8 +268,8 @@ class otp extends abstract_module
 	public function delete($key)
 	{
 		$sql = 'DELETE FROM ' . $this->otp_registration_table . '
-					WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-					AND registration_id =' . (int) $key;
+			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+			AND registration_id =' . (int) $key;
 
 		$this->db->sql_query($sql);
 	}

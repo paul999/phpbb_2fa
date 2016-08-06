@@ -125,7 +125,7 @@ class u2f extends abstract_module
 		$secure = $this->request->server('HTTPS');
 		if (!empty($secure))
 		{
-			return 'on' == strtolower($secure) || '1' == $secure;
+			return 'on' === strtolower($secure) || '1' == $secure;
 		}
 		else if ('443' == $this->request->server('SERVER_PORT'))
 		{
@@ -192,10 +192,10 @@ class u2f extends abstract_module
 		try
 		{
 			$sql = 'SELECT u2f_request 
-						FROM ' . SESSIONS_TABLE . ' 
-						WHERE
-							session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-							session_user_id = ' . (int) $this->user->data['user_id'];
+				FROM ' . SESSIONS_TABLE . " 
+				WHERE
+					session_id = '" . $this->db->sql_escape($this->user->data['session_id']) . "' AND
+					session_user_id = " . (int) $this->user->data['user_id'];
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
@@ -353,8 +353,8 @@ class u2f extends abstract_module
 	public function delete($key)
 	{
 		$sql = 'DELETE FROM ' . $this->registration_table . '
-					WHERE user_id = ' . (int) $this->user->data['user_id'] . '
-					AND registration_id =' . (int) $key;
+			WHERE user_id = ' . (int) $this->user->data['user_id'] . '
+			AND registration_id =' . (int) $key;
 
 		$this->db->sql_query($sql);
 	}
@@ -483,13 +483,12 @@ class u2f extends abstract_module
 	 */
 	private function update_session($sql_ary)
 	{
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-							WHERE
-								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-								session_user_id = ' . (int) $this->user->data['user_id'];
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . "
+			WHERE
+				session_id = '" . $this->db->sql_escape($this->user->data['session_id']) . "' AND
+				session_user_id = " . (int) $this->user->data['user_id'];
 		$this->db->sql_query($sql);
 
 		return $this->db->sql_affectedrows();
 	}
-
 }

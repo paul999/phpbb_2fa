@@ -98,10 +98,11 @@ class main_controller
 	}
 
 	/**
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $admin
 	 * @param bool $auto_login
 	 * @param bool $viewonline
+	 * @param string $class
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * @throws http_exception
 	 */
@@ -120,7 +121,7 @@ class main_controller
 		}
 		$random = $this->request->variable('random', '');
 
-		if ($this->user->data['tfa_random'] !== $random || strlen($random) != 40)
+		if ($this->user->data['tfa_random'] !== $random || strlen($random) !== 40)
 		{
 			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
@@ -128,10 +129,10 @@ class main_controller
 			'tfa_random' => '',
 			'tfa_uid'    => 0,
 		);
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-							WHERE
-								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-								session_user_id = ' . (int) $this->user->data['user_id'];
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . "
+			WHERE
+				session_id = '" . $this->db->sql_escape($this->user->data['session_id']) . "' AND
+				session_user_id = '" . (int) $this->user->data['user_id'];
 		$this->db->sql_query($sql);
 
 		if (empty($class))
@@ -180,8 +181,8 @@ class main_controller
 			{
 				// the login array is used because the user ids do not differ for re-authentication
 				$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
-						WHERE session_id = '" . $this->db->sql_escape($old_session_id) . "'
-						AND session_user_id = " . (int) $user_id;
+					WHERE session_id = '" . $this->db->sql_escape($old_session_id) . "'
+					AND session_user_id = " . (int) $user_id;
 				$this->db->sql_query($sql);
 
 				redirect(append_sid("{$this->root_path}adm/index.{$this->php_ext}", false, true, $this->user->data['session_id']));

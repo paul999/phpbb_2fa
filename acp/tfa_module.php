@@ -168,11 +168,10 @@ class tfa_module
 		}
 	}
 
-
 	/**
 	 * Select tfa method
 	 */
-	function select_tfa_method($selected_value, $value)
+	public function select_tfa_method($selected_value, $value)
 	{
 		global $user;
 		$act_ary = array(
