@@ -36,12 +36,10 @@ services:
         class: paul999\tfa\event\listener
         arguments:
             - '@paul999.tfa.sessionHelper'
-            - '@controller.helper'
             - '@user'
             - '@request'
             - '@dbal.conn'
             - '@config'
-            - '@template'
             - '%core.php_ext%'
             - '%core.root_path%'
         tags:

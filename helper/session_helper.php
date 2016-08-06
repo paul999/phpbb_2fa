@@ -14,9 +14,12 @@ use paul999\tfa\exceptions\module_exception;
 use paul999\tfa\modules\module_interface;
 use phpbb\auth\auth;
 use phpbb\config\config;
+use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\di\service_collection;
+use phpbb\template\template;
 use phpbb\user;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * helper method which is used to detect if a user needs to use 2FA
@@ -60,25 +63,41 @@ class session_helper implements session_helper_interface
 	private $user_array = array();
 
 	/**
+	 * @var \phpbb\template\template
+	 */
+	private $template;
+
+	/**
+	 * @var \phpbb\controller\helper
+	 */
+	private $controller_helper;
+
+	/**
 	 * Constructor
 	 *
 	 * @access public
-	 * @param driver_interface $db
-	 * @param config $config
-	 * @param user $user
-	 * @param service_collection $modules
-	 * @param string $registration_table
-	 * @param string $user_table
+	 *
+	 * @param driver_interface         $db
+	 * @param config                   $config
+	 * @param user                     $user
+	 * @param service_collection       $modules
+	 * @param \phpbb\template\template $template
+	 * @param \phpbb\controller\helper $controller_helper
+	 * @param string                   $registration_table
+	 * @param string                   $user_table
 	 */
-	public function __construct(driver_interface $db, config $config, user $user, service_collection $modules, $registration_table, $user_table)
+	public function __construct(driver_interface $db, config $config, user $user, service_collection $modules, template $template, helper $controller_helper, $registration_table, $user_table)
 	{
 		$this->db					= $db;
 		$this->user					= $user;
 		$this->config				= $config;
+		$this->template 			= $template;
+		$this->controller_helper 	= $controller_helper;
 		$this->registration_table	= $registration_table;
 		$this->user_table			= $user_table;
 
 		$this->validateModules($modules);
+
 	}
 
 	/**
@@ -191,6 +210,71 @@ class session_helper implements session_helper_interface
 			$this->user_array[$user_id] = $this->user_array[$user_id] || $module->is_usable($user_id);
 		}
 		return $this->user_array[$user_id];
+	}
+
+	/**
+	 * @param int  $user_id
+	 * @param bool $admin
+	 * @param bool $auto_login
+	 * @param bool $viewonline
+	 * @param string     $redirect
+	 */
+	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect)
+	{
+
+		$this->user->add_lang_ext('paul999/tfa', 'common');
+		$modules = $this->getModules();
+
+		/**
+		 * @var module_interface $row
+		 */
+		foreach ($modules as $row)
+		{
+			if ($row->is_usable($user_id))
+			{
+				$this->template->assign_block_vars('tfa_options', array_merge(array(
+					'ID'	=> $row->get_name(),
+					'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
+						'user_id'		=> (int) $user_id,
+						'admin'			=> (int) $admin,
+						'auto_login'	=> (int) $auto_login,
+						'viewonline'	=> (int) $viewonline,
+						'class'			=> $row->get_name(),
+					)),
+				), $row->login_start($user_id)));
+			}
+		}
+
+		add_form_key('tfa_login_page');
+
+		$random = sha1(random_bytes(32));
+
+		if (!empty($this->user->data['tfa_random']))
+		{
+			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
+		}
+
+		$sql_ary = array(
+			'tfa_random' 	=> $random,
+			'tfa_uid'		=> $user_id,
+		);
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
+							WHERE
+								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
+								session_user_id = ' . (int) $this->user->data['user_id'];
+		$this->db->sql_query($sql);
+
+		$this->template->assign_vars(array(
+			'REDIRECT'		=> $redirect,
+			'RANDOM'		=> $random,
+		));
+
+		page_header('TFA_KEY_REQUIRED');
+
+		$this->template->set_filenames(array(
+				'body' => '@paul999_tfa/authenticate_main.html')
+		);
+		page_footer(false); // Do not include cron on this page!
 	}
 
 	/**

@@ -16,6 +16,7 @@ use phpbb\passwords\manager;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class backup_key extends abstract_module
 {
@@ -147,7 +148,9 @@ class backup_key extends abstract_module
 	 */
 	public function login_start($user_id)
 	{
-		// TODO: Implement login_start() method.
+		return array(
+			'S_TFA_INCLUDE_HTML'	=> '@paul999_tfa/tfa_backup_authenticate.html',
+		);
 	}
 
 	/**
@@ -159,7 +162,35 @@ class backup_key extends abstract_module
 	 */
 	public function login($user_id)
 	{
-		// TODO: Implement login() method.
+		$key = $this->request->variable('authenticate', '');
+
+		if (empty($key))
+		{
+			throw new BadRequestHttpException($this->user->lang('TFA_NO_KEY_PROVIDED'));
+		}
+
+		foreach ($this->getRegistrations($user_id) as $registration)
+		{
+			if (!$registration['valid'] || $registration['last_used'])
+			{
+				continue;
+			}
+			if ($this->password_manager->check($key, $registration['secret']))
+			{
+				// We found a valid key.
+				$sql_ary = array(
+					'last_used' => time(),
+					'valid'		=> false,
+				);
+				$sql = 'UPDATE ' . $this->backup_registration_table . ' 
+							SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' 
+							WHERE 
+								registration_id = ' . (int) $registration['registration_id'];
+				$this->db->sql_query($sql);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -239,5 +270,20 @@ class backup_key extends abstract_module
 					AND registration_id =' . (int) $key;
 
 		$this->db->sql_query($sql);
+	}
+
+	/**
+	 * Select all registration objects from the database
+	 * @param integer $user_id
+	 * @return array
+	 */
+	private function getRegistrations($user_id)
+	{
+		$sql = 'SELECT * FROM ' . $this->backup_registration_table . ' WHERE user_id = ' . (int) $user_id;
+		$result = $this->db->sql_query($sql);
+		$rows = $this->db->sql_fetchrowset($result);
+
+		$this->db->sql_freeresult($result);
+		return $rows;
 	}
 }

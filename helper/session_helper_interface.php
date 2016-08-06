@@ -53,4 +53,17 @@ interface session_helper_interface
 	 * @return bool
 	 */
 	public function isTfaRegistered($user_id);
+
+	/**
+	 * Generate the key page after login
+	 *
+	 * @param int  $user_id
+	 * @param bool $admin
+	 * @param bool $auto_login
+	 * @param bool $viewonline
+	 * @param string     $redirect
+	 *
+	 * @return
+	 */
+	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
 }

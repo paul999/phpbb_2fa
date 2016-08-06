@@ -126,13 +126,13 @@ class main_controller
 			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
 		}
 		$sql_ary = array(
-			'tfa_random' 	=> '',
-			'tfa_uid'		=> 0,
+			'tfa_random' => '',
+			'tfa_uid'    => 0,
 		);
 		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 							WHERE
 								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-								session_user_id = ' . (int) $this->user->data['user_id'];
+								session_user_id = ' . (int)$this->user->data['user_id'];
 		$this->db->sql_query($sql);
 
 		if (empty($class))
@@ -146,9 +146,20 @@ class main_controller
 		{
 			throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
 		}
-		if (!$module->login($user_id))
+
+		$redirect = $this->request->variable('redirect', "{$this->root_path}/index.{$this->php_ext}");
+		try
 		{
-			throw new AccessDeniedHttpException($this->user->lang('TFA_INCORRECT_KEY'));
+			if (!$module->login($user_id))
+			{
+				$this->template->assign_var('S_ERROR', $this->user->lang('TFA_INCORRECT_KEY'));
+				$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
+			}
+		}
+		catch (BadRequestHttpException $ex) // @TODO: Replace exception with own exception
+		{
+			$this->template->assign_var('S_ERROR', $ex->getMessage());
+			$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
 		}
 
 		$old_session_id = $this->user->session_id;
@@ -176,7 +187,7 @@ class main_controller
 
 				redirect(append_sid("{$this->root_path}adm/index.{$this->php_ext}", false, true, $this->user->data['session_id']));
 			}
-			$redirect = $this->request->variable('redirect', "{$this->root_path}/index.{$this->php_ext}");
+
 			redirect(append_sid($redirect, false, true, $this->user->data['session_id']));
 		}
 		throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));

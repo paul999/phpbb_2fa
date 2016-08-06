@@ -31,11 +31,6 @@ class listener implements EventSubscriberInterface
 	 */
 	private $session_helper;
 
-	/**]
-	 * @var helper
-	 */
-	private $controller_helper;
-
 	/**
 	 * @var user
 	 */
@@ -67,36 +62,28 @@ class listener implements EventSubscriberInterface
 	private $root_path;
 
 	/**
-	 * @var \phpbb\template\template
-	 */
-	private $template;
-
-	/**
 	 * Constructor
 	 *
-	 * @access public
+	 * @access   public
 	 *
 	 * @param session_helper_interface          $session_helper
-	 * @param helper                            $controller_helper
 	 * @param user                              $user
 	 * @param request_interface                 $request
 	 * @param \phpbb\db\driver\driver_interface $db
 	 * @param \phpbb\config\config              $config
-	 * @param \phpbb\template\template          $template
 	 * @param string                            $php_ext
 	 * @param string                            $root_path
+	 *
 	 */
-	public function __construct(session_helper_interface $session_helper, helper $controller_helper, user $user, request_interface $request, driver_interface $db, config $config, template $template, $php_ext, $root_path)
+	public function __construct(session_helper_interface $session_helper, user $user, request_interface $request, driver_interface $db, config $config, $php_ext, $root_path)
 	{
 		$this->session_helper		= $session_helper;
-		$this->controller_helper 	= $controller_helper;
 		$this->user					= $user;
 		$this->request				= $request;
 		$this->config				= $config;
 		$this->db					= $db;
 		$this->php_ext				= $php_ext;
 		$this->root_path			= $root_path;
-		$this->template				= $template;
 	}
 
 	/**
@@ -136,7 +123,7 @@ class listener implements EventSubscriberInterface
 		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->session_helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data) && !$this->session_helper->isTfaRegistered($this->user->data['user_id']))
 		{
 			$sql = 'SELECT module_id FROM ' . MODULES_TABLE . ' WHERE module_langname = \'UCP_TFA\' OR module_langname = \'UCP_TFA_MANAGE\'';
-			$result = $this->db->sql_query($sql);
+			$result = $this->db->sql_query($sql, 3600);
 			$allowed_i = array();
 
 			while ($row = $this->db->sql_fetchrow($result))
@@ -184,60 +171,7 @@ class listener implements EventSubscriberInterface
 				}
 				else
 				{
-					$this->user->add_lang_ext('paul999/tfa', 'common');
-					$user_id = $event['login']['user_row']['user_id'];
-					$modules = $this->session_helper->getModules();
-
-					/**
-					 * @var module_interface $row
-					 */
-					foreach ($modules as $row)
-					{
-						if ($row->is_usable($user_id))
-						{
-							$this->template->assign_block_vars('tfa_options', array_merge(array(
-								'ID'	=> $row->get_name(),
-								'U_SUBMIT_AUTH'	=> $this->controller_helper->route('paul999_tfa_read_controller_submit', array(
-									'user_id'		=> (int) $user_id,
-									'admin'			=> (int) $event['admin'],
-									'auto_login'	=> (int) $event['auto_login'],
-									'viewonline'	=> (int) !$this->request->is_set_post('viewonline'),
-									'class'			=> $row->get_name(),
-								)),
-							), $row->login_start($user_id)));
-						}
-					}
-
-					add_form_key('tfa_login_page');
-
-					$random = sha1(random_bytes(32));
-
-					if (!empty($this->user->data['tfa_random']))
-					{
-						throw new BadRequestHttpException($this->user->lang('TFA_SOMETHING_WENT_WRONG'));
-					}
-
-					$sql_ary = array(
-						'tfa_random' 	=> $random,
-						'tfa_uid'		=> $user_id,
-					);
-					$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
-							WHERE
-								session_id = \'' . $this->db->sql_escape($this->user->data['session_id']) . '\' AND
-								session_user_id = ' . (int) $this->user->data['user_id'];
-					$this->db->sql_query($sql);
-
-					$this->template->assign_vars(array(
-						'REDIRECT'		=> $this->request->variable('redirect', ''),
-						'RANDOM'		=> $random,
-					));
-
-					page_header('TFA_KEY_REQUIRED');
-
-					$this->template->set_filenames(array(
-							'body' => '@paul999_tfa/authenticate_main.html')
-					);
-					page_footer(false); // Do not include cron on this page!
+					$this->session_helper->generate_page($event['login']['user_row']['user_id'], $event['admin'], $event['view_online'], !$this->request->is_set_post('viewonline'), $this->request->variable('redirect', ''));
 				}
 			}
 		}
