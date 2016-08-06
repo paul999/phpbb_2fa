@@ -10,7 +10,7 @@
 
 namespace paul999\tfa\migrations;
 
-class initial_back_schema extends \phpbb\db\migration\migration
+class initial_backup_schema extends \phpbb\db\migration\migration
 {
 	public function update_schema()
 	{
