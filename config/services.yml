@@ -9,8 +9,8 @@ services:
             - '@config'
             - '@user'
             - '@paul999.tfa.module_collection'
-            - '@controller.helper'
             - '@template'
+            - '@controller.helper'
             - '%paul999.2fa.tables.tfa_registration%'
             - '%tables.users%'
 
