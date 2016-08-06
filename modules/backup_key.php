@@ -186,7 +186,7 @@ class backup_key extends abstract_module
 		for ($i = 0; $i < self::NUMBER_OF_KEYS; $i++)
 		{
 			$time = time();
-			$key = bin2hex(random_bytes(8));
+			$key = bin2hex(random_bytes(6));
 			$sql[] = array(
 				'user_id' 		=> $this->user->data['user_id'],
 				'valid'			=> true,
