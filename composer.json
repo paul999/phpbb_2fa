@@ -23,13 +23,17 @@
 	},
 	"require-dev": {
 		"phing/phing": "2.4.*",
-		"phpbb/epv": "dev-master",
-		"phpbb/phpbb": "3.2.x@dev"
+		"phpbb/epv": "dev-master"
 	},
 	"extra": {
 		"display-name": "phpBB Two Factor Authentication",
 		"soft-require": {
 			"phpbb/phpbb": ">=3.2"
+		}
+	},
+	"config": {
+		"platform": {
+			"php": "5.6"
 		}
 	}
 }
