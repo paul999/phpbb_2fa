@@ -10,6 +10,7 @@
 
 namespace paul999\tfa\modules;
 
+use BrowscapPHP\Browscap;
 use paul999\tfa\helper\registration_helper;
 use paul999\u2f\AuthenticationResponse;
 use paul999\u2f\Exceptions\U2fError;
@@ -21,7 +22,6 @@ use phpbb\exception\http_exception;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use phpbrowscap\Browscap;
 
 class u2f extends abstract_module
 {
@@ -110,8 +110,10 @@ class u2f extends abstract_module
 	 */
 	public function is_potentially_usable($user_id = false)
 	{
-		$browsercap = new Browscap($this->root_path . 'cache/');
-		$info = $browsercap->getBrowser($this->request->server('HTTP_USER_AGENT'));
+		$bc = new Browscap();
+		$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => $this->root_path . 'cache/']);
+		$bc->setCache($adapter);
+		$info = $bc->getBrowser();
 		return strtolower($info->Browser) === 'chrome' && $this->is_ssl();
 	}
 
