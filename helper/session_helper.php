@@ -240,6 +240,7 @@ class session_helper implements session_helper_interface
 						'viewonline'	=> (int) $viewonline,
 						'class'			=> $row->get_name(),
 					)),
+					'S_HIDDEN_FIELDS' => build_hidden_fields(['sid' => $this->user->session_id]),
 				), $row->login_start($user_id)));
 			}
 		}
@@ -266,6 +267,7 @@ class session_helper implements session_helper_interface
 		$this->template->assign_vars(array(
 			'REDIRECT'		=> $redirect,
 			'RANDOM'		=> $random,
+			''
 		));
 
 		page_header('TFA_KEY_REQUIRED');
