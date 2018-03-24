@@ -249,11 +249,6 @@ class session_helper implements session_helper_interface
 
 		$random = sha1(random_bytes(32));
 
-		if (!empty($this->user->data['tfa_random']))
-		{
-			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
-		}
-
 		$sql_ary = array(
 			'tfa_random' 	=> $random,
 			'tfa_uid'		=> $user_id,
