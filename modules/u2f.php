@@ -111,6 +111,10 @@ class u2f extends abstract_module
 	public function is_potentially_usable($user_id = false)
 	{
 		$bc = new Browscap();
+		$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => $this->root_path . 'cache/']);
+		$bc->setCache($adapter);
+		$bc = new \BrowscapPHP\BrowscapUpdater();
+		$bc->update(\BrowscapPHP\Helper\IniLoader::PHP_INI_FULL);
 		$info = $bc->getBrowser();
 		return strtolower($info->Browser) === 'chrome' && $this->is_ssl();
 	}
