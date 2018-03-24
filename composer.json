@@ -20,7 +20,6 @@
 		"marc1706/otp-authenticate": "~1.0",
 		"paul999/u2flib-server": "dev-master",
 		"paragonie/random_compat": "~1.4|~2.0",
-		"browscap/browscap-php": "^3.1"
 	},
 	"require-dev": {
 		"phing/phing": "2.4.*",
