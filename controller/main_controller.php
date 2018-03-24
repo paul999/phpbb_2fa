@@ -160,8 +160,12 @@ class main_controller
 		{
 			if ($ex->getStatusCode() == 400)
 			{
-				$this->template->assign_var('S_ERROR', $ex->getMessage());
+				$this->template->assign_var('S_ERROR', $this->user->lang($ex->getMessage()));
 				$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
+			}
+			else
+			{
+				throw $ex;
 			}
 		}
 
