@@ -17,7 +17,6 @@ use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\di\service_collection;
-use phpbb\exception\http_exception;
 use phpbb\template\template;
 use phpbb\user;
 
