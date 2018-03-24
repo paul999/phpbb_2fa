@@ -113,8 +113,8 @@ class u2f extends abstract_module
 		$bc = new Browscap();
 		$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => $this->root_path . 'cache/']);
 		$bc->setCache($adapter);
-		$bc = new \BrowscapPHP\BrowscapUpdater();
-		$bc->update(\BrowscapPHP\Helper\IniLoader::PHP_INI_FULL);
+		$bc2 = new \BrowscapPHP\BrowscapUpdater();
+		$bc2->update(\BrowscapPHP\Helper\IniLoader::PHP_INI_FULL);
 		$info = $bc->getBrowser();
 		return strtolower($info->Browser) === 'chrome' && $this->is_ssl();
 	}
