@@ -26,7 +26,7 @@
         <div id="auth_{tfa_options.ID}" <!-- IF not tfa_options.S_FIRST_ROW -->style="display:none "<!-- ENDIF -->>
             <form action="{tfa_options.U_SUBMIT_AUTH}" id="submit_auth" method="post">
                 {S_FORM_TOKEN}
-                {S_HIDDEN_FIELDS}
+                {tfa_options.S_HIDDEN_FIELDS}
                 <input type="hidden" name="random" value="{RANDOM}" />
                 <input type="hidden" name="redirect" value="{REDIRECT}">
                 <!-- INCLUDE {tfa_options.S_TFA_INCLUDE_HTML} -->
