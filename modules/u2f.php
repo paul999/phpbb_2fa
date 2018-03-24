@@ -10,7 +10,6 @@
 
 namespace paul999\tfa\modules;
 
-use BrowscapPHP\Browscap;
 use paul999\tfa\helper\registration_helper;
 use paul999\u2f\AuthenticationResponse;
 use paul999\u2f\Exceptions\U2fError;
@@ -110,7 +109,7 @@ class u2f extends abstract_module
 	 */
 	public function is_potentially_usable($user_id = false)
 	{
-		return strpos(strtolower($this->request->server('USER_AGENT')), 'chrome') !== false && $this->is_ssl();
+		return strpos(strtolower($this->request->server('HTTP_USER_AGENT')), 'chrome') !== false && $this->is_ssl();
 	}
 
 	/**
