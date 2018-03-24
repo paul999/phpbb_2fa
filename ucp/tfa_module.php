@@ -169,7 +169,7 @@ class tfa_module
 						return; // register_security_key has its own template stuff, so we return here.
 					}
 					break;
-				
+
 			}
 		}
 

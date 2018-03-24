@@ -232,7 +232,7 @@ class u2f extends abstract_module
 		}
 		catch (\InvalidArgumentException $invalid)
 		{
-			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG' . '<br />' . $invalid->getMessage(), array(), $invalid);
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG', array(), $invalid);
 		}
 		return false;
 	}
