@@ -210,7 +210,7 @@ class u2f extends abstract_module
 				{
 					throw new http_exception(403, 'TFA_NOT_REGISTERED');
 				}
-				throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG6');
+				throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 			}
 			$result = new AuthenticationResponse($response->signatureData, $response->clientData, $response->keyHandle); // Do not need to include errorCode, as we already handled it.
 
@@ -232,7 +232,7 @@ class u2f extends abstract_module
 		}
 		catch (\InvalidArgumentException $invalid)
 		{
-			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG7');
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
 		return false;
 	}

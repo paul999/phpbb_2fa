@@ -1,5 +1,15 @@
 <?php
-/**Compatible* DO NOT CHANGE
+/**
+ *
+ * 2FA extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2015 Paul Sohier
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+
+/**
+ * DO NOT CHANGE
  */
 if (!defined('IN_PHPBB'))
 {
