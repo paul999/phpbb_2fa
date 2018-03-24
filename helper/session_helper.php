@@ -173,11 +173,10 @@ class session_helper implements session_helper_interface
 			case session_helper_interface::MODE_NOT_REQUIRED:
 				return $this->isTfaRegistered($user_id);
 			case session_helper_interface::MODE_REQUIRED_FOR_ACP_LOGIN:
-				return $this->do_permission_check($user_id, $userdata, 'a_', $admin, $try);
 			case session_helper_interface::MODE_REQUIRED_FOR_ADMIN:
-				return $this->do_permission_check($user_id, $userdata, 'a_', true, $try);
+				return $this->do_permission_check($user_id, $userdata, 'a_', $try);
 			case session_helper_interface::MODE_REQUIRED_FOR_MODERATOR:
-				return $this->do_permission_check($user_id, $userdata, array('m_', 'a_'), $admin, true);
+				return $this->do_permission_check($user_id, $userdata, array('m_', 'a_'), true);
 			case session_helper_interface::MODE_REQUIRED:
 				return true;
 			default:
@@ -296,11 +295,10 @@ class session_helper implements session_helper_interface
 	 * @param int $user_id
 	 * @param array $userdata
 	 * @param string|array $permission
-	 * @param bool $admin
 	 * @param bool $try
 	 * @return bool
 	 */
-	private function do_permission_check($user_id, $userdata, $permission, $admin, $try)
+	private function do_permission_check($user_id, $userdata, $permission, $try)
 	{
 		if ($this->isTfaRegistered($user_id))
 		{
@@ -316,7 +314,7 @@ class session_helper implements session_helper_interface
 		}
 		foreach ($permission as $perm)
 		{
-			if ($auth->acl_get($perm) && ($admin || $try))
+			if ($auth->acl_get($perm) && $try)
 			{
 				return true;
 			}
