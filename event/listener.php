@@ -14,6 +14,7 @@ use paul999\tfa\helper\session_helper_interface;
 use phpbb\config\config;
 use phpbb\db\driver\driver_interface;
 use phpbb\request\request_interface;
+use phpbb\template\template;
 use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -43,6 +44,11 @@ class listener implements EventSubscriberInterface
 	private $db;
 
 	/**
+	 * @var template
+	 */
+	private $template;
+
+	/**
 	 * @var config
 	 */
 	private $config;
@@ -66,18 +72,19 @@ class listener implements EventSubscriberInterface
 	 * @param user                              $user
 	 * @param request_interface                 $request
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\template\template          $template
 	 * @param \phpbb\config\config              $config
 	 * @param string                            $php_ext
 	 * @param string                            $root_path
-	 *
 	 */
-	public function __construct(session_helper_interface $session_helper, user $user, request_interface $request, driver_interface $db, config $config, $php_ext, $root_path)
+	public function __construct(session_helper_interface $session_helper, user $user, request_interface $request, driver_interface $db, template $template, config $config, $php_ext, $root_path)
 	{
 		$this->session_helper		= $session_helper;
 		$this->user					= $user;
 		$this->request				= $request;
 		$this->config				= $config;
 		$this->db					= $db;
+		$this->template				= $template;
 		$this->php_ext				= $php_ext;
 		$this->root_path			= $root_path;
 	}
@@ -138,8 +145,28 @@ class listener implements EventSubscriberInterface
 			}
 			$this->user->add_lang_ext('paul999/tfa', 'common');
 			$url = append_sid("{$this->root_path}ucp.{$this->php_ext}", "i={$ucp_mode}");
-			trigger_error($this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>'));
+			$msg_text = $this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>');
+			$msg_title =  $this->user->lang['INFORMATION'];
 
+			page_header($msg_title);
+
+			$this->template->set_filenames(array(
+					'body' => 'message_body.html')
+			);
+
+			$this->template->assign_vars(array(
+					'MESSAGE_TITLE'		=> $msg_title,
+					'MESSAGE_TEXT'		=> $msg_text,
+					'S_USER_WARNING'	=> true,
+					'S_USER_NOTICE'		=> false,
+			));
+
+			// We do not want the cron script to be called on error messages
+			define('IN_CRON', true);
+
+			page_footer();
+
+			exit_handler();
 		}
 	}
 
