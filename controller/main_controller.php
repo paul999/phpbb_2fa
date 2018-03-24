@@ -117,13 +117,13 @@ class main_controller
 
 		if (empty($this->user->data['tfa_random']) || $user_id != $this->user->data['tfa_uid'])
 		{
-			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG1');
 		}
 		$random = $this->request->variable('random', '');
 
 		if ($this->user->data['tfa_random'] !== $random || strlen($random) !== 40)
 		{
-			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG2');
 		}
 		$sql_ary = array(
 			'tfa_random' => '',
@@ -137,14 +137,14 @@ class main_controller
 
 		if (empty($class))
 		{
-			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG3');
 		}
 
 		$module = $this->session_helper->findModule($class);
 
 		if ($module == null)
 		{
-			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG4');
 		}
 
 		$redirect = $this->request->variable('redirect', "{$this->root_path}/index.{$this->php_ext}");
@@ -193,6 +193,6 @@ class main_controller
 
 			redirect(append_sid($redirect, false, true, $this->user->data['session_id']));
 		}
-		throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
+		throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG5');
 	}
 }
