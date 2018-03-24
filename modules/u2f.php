@@ -186,6 +186,7 @@ class u2f extends abstract_module
 	 */
 	public function login($user_id)
 	{
+		$this->user->add_lang_ext('paul999/tfa', 'common');
 		try
 		{
 			$sql = 'SELECT u2f_request 
