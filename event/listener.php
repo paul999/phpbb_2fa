@@ -138,7 +138,7 @@ class listener implements EventSubscriberInterface
 			}
 			$this->user->add_lang_ext('paul999/tfa', 'common');
 			$url = append_sid("{$this->root_path}ucp.{$this->php_ext}", "i={$ucp_mode}");
-			trigger_error($this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>'), E_USER_ERROR);
+			trigger_error($this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>'));
 
 		}
 	}
