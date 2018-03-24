@@ -3,9 +3,9 @@
 	"type": "phpbb-extension",
 	"description": "This extension adds support for the U2F two factor authentication standard into your phpBB board. ",
 	"homepage": "http://www.phpbb-2fa.com",
-	"version": "0.0.2",
+	"version": "0.0.3-dev",
 	"keywords": [],
-	"license": "GPL-2.0",
+	"license": "GPL-2.0-only",
 	"authors": [
 		{
 			"name": "Paul Sohier",
@@ -19,18 +19,18 @@
 		"composer/installers": "~1.0",
 		"marc1706/otp-authenticate": "~1.0",
 		"paul999/u2flib-server": "dev-master",
-		"paragonie/random_compat": "~2.0",
+		"paragonie/random_compat": "~1.4|~2.0",
 		"browscap/browscap-php": "^2.1"
 	},
 	"require-dev": {
 		"phing/phing": "2.4.*",
 		"phpbb/epv": "dev-master",
-		"phpbb/phpbb": "~3.1"
+		"phpbb/phpbb": "3.2.x@dev"
 	},
 	"extra": {
 		"display-name": "phpBB Two Factor Authentication",
 		"soft-require": {
-			"phpbb/phpbb": ">=3.1.0,<3.2.0@dev"
+			"phpbb/phpbb": ">=3.2"
 		}
 	}
 }
