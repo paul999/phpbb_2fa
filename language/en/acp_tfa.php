@@ -42,7 +42,7 @@ $lang = array_merge(
 		'ACP_TFA_SETTINGS'			=> 'Two factor authentication settings',
 
 		// As we are re-using the acp_board template, we can't add custom stuff to that page.
-        // As such, we do need to have some HTML here :(.
+		// As such, we do need to have some HTML here :(.
 		'ACP_TFA_SETTINGS_EXPLAIN'	=> 'Here you can set the configuration for two factor settings.
 										The suggested configuration option for the requirement is or do not require Two factor authentication,
 										or only require it for the ACP login. <br /><br />

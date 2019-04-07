@@ -15,7 +15,7 @@ class version_003 extends \phpbb\db\migration\migration
 	static public function depends_on()
 	{
 		return array(
-            '\phpbb\db\migration\data\v320\v320',
+			'\phpbb\db\migration\data\v320\v320',
 			'\paul999\tfa\migrations\version_003',
 		);
 	}

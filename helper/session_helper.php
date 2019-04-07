@@ -213,14 +213,14 @@ class session_helper implements session_helper_interface
 		return $this->user_array[$user_id];
 	}
 
-    /**
-     * @param int $user_id
-     * @param bool $admin
-     * @param bool $auto_login
-     * @param bool $viewonline
-     * @param string $redirect
-     * @throws \Exception
-     */
+	/**
+	 * @param int $user_id
+	 * @param bool $admin
+	 * @param bool $auto_login
+	 * @param bool $viewonline
+	 * @param string $redirect
+	 * @throws \Exception
+	 */
 	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect)
 	{
 		$this->user->add_lang_ext('paul999/tfa', 'common');
