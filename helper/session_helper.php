@@ -156,10 +156,9 @@ class session_helper implements session_helper_interface
 	 * @param int $user_id
 	 * @param bool $admin
 	 * @param array $userdata
-	 * @param bool $try
 	 * @return bool
 	 */
-	public function isTfaRequired($user_id, $admin = false, $userdata = array(), $try = false)
+	public function isTfaRequired($user_id, $admin = false, $userdata = array())
 	{
 		if (sizeof($this->modules) == 0)
 		{
@@ -169,15 +168,20 @@ class session_helper implements session_helper_interface
 		{
 			case session_helper_interface::MODE_DISABLED:
 				return false;
+
 			case session_helper_interface::MODE_NOT_REQUIRED:
 				return $this->isTfaRegistered($user_id);
+
 			case session_helper_interface::MODE_REQUIRED_FOR_ACP_LOGIN:
 			case session_helper_interface::MODE_REQUIRED_FOR_ADMIN:
-				return $this->do_permission_check($user_id, $userdata, 'a_', $try);
+				return $this->do_permission_check($user_id, $userdata, 'a_');
+
 			case session_helper_interface::MODE_REQUIRED_FOR_MODERATOR:
-				return $this->do_permission_check($user_id, $userdata, array('m_', 'a_'), true);
+				return $this->do_permission_check($user_id, $userdata, array('m_', 'a_'));
+
 			case session_helper_interface::MODE_REQUIRED:
 				return true;
+
 			default:
 				return false;
 		}
@@ -209,13 +213,14 @@ class session_helper implements session_helper_interface
 		return $this->user_array[$user_id];
 	}
 
-	/**
-	 * @param int  $user_id
-	 * @param bool $admin
-	 * @param bool $auto_login
-	 * @param bool $viewonline
-	 * @param string $redirect
-	 */
+    /**
+     * @param int $user_id
+     * @param bool $admin
+     * @param bool $auto_login
+     * @param bool $viewonline
+     * @param string $redirect
+     * @throws \Exception
+     */
 	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect)
 	{
 		$this->user->add_lang_ext('paul999/tfa', 'common');
@@ -294,10 +299,9 @@ class session_helper implements session_helper_interface
 	 * @param int $user_id
 	 * @param array $userdata
 	 * @param string|array $permission
-	 * @param bool $try
 	 * @return bool
 	 */
-	private function do_permission_check($user_id, $userdata, $permission, $try)
+	private function do_permission_check($user_id, $userdata, $permission)
 	{
 		if ($this->isTfaRegistered($user_id))
 		{
@@ -313,7 +317,7 @@ class session_helper implements session_helper_interface
 		}
 		foreach ($permission as $perm)
 		{
-			if ($auth->acl_get($perm) && $try)
+			if ($auth->acl_get($perm))
 			{
 				return true;
 			}

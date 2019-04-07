@@ -39,7 +39,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge(
 	$lang, array(
-		'TFA_REQUIRED_KEY_MISSING'      => 'The administrator of this forum requires that you have added a Two Factor Authentication key for access to (limited) parts of this forum, however you currently have no (Compitable) keys registerted to your account. You can add a new security key %s here%s.
+		'TFA_REQUIRED_KEY_MISSING'      => 'The administrator of this forum requires that you have added a Two Factor Authentication key for access to (limited) parts of this forum, however you currently have no (compatible) keys registerted to your account. You can add a new security key %s here%s.
 												<br />For security reasons, the board has been disabled until you add a security key to your account. Your might be required to fill in your password while adding a security key!',
 		// Controller
 		'ERR_NO_MATCHING_REQUEST'       => 'No matching request found',
@@ -59,6 +59,7 @@ $lang = array_merge(
 		'TFA_TFA_NOT_REGISTERED'				=> 'The used security key was not registered to your account',
 
 		'FTA_NO_RESPONSE'                   => 'No response received',
+		'TFA_SELECT_KEY'                    => 'Select key type',
 		'FTA_NO_RESPONSE_RECEIVED'          => 'We did not receive a response from your U2F security key. Did you press the button?',
 		'FTA_NOT_SUPPORTED'                 => 'Browser not supported',
 		'FTA_BROWSER_SEEMS_NOT_SUPPORTED'   => 'Sorry, currently only Google Chrome is supported.',

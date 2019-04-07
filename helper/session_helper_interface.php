@@ -41,10 +41,9 @@ interface session_helper_interface
 	 * @param bool $admin Is this user trying to login into the ACP?
 	 * @param array $userdata Optional user array, used to select permissions. If in need of permissions, and this paramter isn't provided,
 	 *              it will result in a extra query!
-	 * @param bool $try Try all options for the user. For example, while admin is false, this will still behave as like admin.
 	 * @return bool
 	 */
-	public function isTfaRequired($user_id, $admin = false, $userdata = array(), $try = false);
+	public function isTfaRequired($user_id, $admin = false, $userdata = array());
 
 	/**
 	 * Check if the user has two factor authentication added to his account.
