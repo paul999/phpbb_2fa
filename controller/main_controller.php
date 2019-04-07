@@ -132,7 +132,7 @@ class main_controller
 		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . "
 			WHERE
 				session_id = '" . $this->db->sql_escape($this->user->data['session_id']) . "' AND
-				session_user_id = '" . (int) $this->user->data['user_id'];
+				session_user_id = " . (int) $this->user->data['user_id'];
 		$this->db->sql_query($sql);
 
 		if (empty($class))
@@ -160,8 +160,12 @@ class main_controller
 		{
 			if ($ex->getStatusCode() == 400)
 			{
-				$this->template->assign_var('S_ERROR', $ex->getMessage());
+				$this->template->assign_var('S_ERROR', $this->user->lang($ex->getMessage()));
 				$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
+			}
+			else
+			{
+				throw $ex;
 			}
 		}
 

@@ -21,7 +21,6 @@ use phpbb\exception\http_exception;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use phpbrowscap\Browscap;
 
 class u2f extends abstract_module
 {
@@ -110,9 +109,7 @@ class u2f extends abstract_module
 	 */
 	public function is_potentially_usable($user_id = false)
 	{
-		$browsercap = new Browscap($this->root_path . 'cache/');
-		$info = $browsercap->getBrowser($this->request->server('HTTP_USER_AGENT'));
-		return strtolower($info->Browser) === 'chrome' && $this->is_ssl();
+		return strpos(strtolower($this->request->server('HTTP_USER_AGENT')), 'chrome') !== false && $this->is_ssl();
 	}
 
 	/**
@@ -189,6 +186,7 @@ class u2f extends abstract_module
 	 */
 	public function login($user_id)
 	{
+		$this->user->add_lang_ext('paul999/tfa', 'common');
 		try
 		{
 			$sql = 'SELECT u2f_request 
@@ -235,7 +233,7 @@ class u2f extends abstract_module
 		}
 		catch (\InvalidArgumentException $invalid)
 		{
-			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG' . '<br />' . $invalid->getMessage(), array(), $invalid);
+			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
 		return false;
 	}

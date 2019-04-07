@@ -17,7 +17,6 @@ use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\di\service_collection;
-use phpbb\exception\http_exception;
 use phpbb\template\template;
 use phpbb\user;
 
@@ -157,10 +156,9 @@ class session_helper implements session_helper_interface
 	 * @param int $user_id
 	 * @param bool $admin
 	 * @param array $userdata
-	 * @param bool $try
 	 * @return bool
 	 */
-	public function isTfaRequired($user_id, $admin = false, $userdata = array(), $try = false)
+	public function isTfaRequired($user_id, $admin = false, $userdata = array())
 	{
 		if (sizeof($this->modules) == 0)
 		{
@@ -170,16 +168,20 @@ class session_helper implements session_helper_interface
 		{
 			case session_helper_interface::MODE_DISABLED:
 				return false;
+
 			case session_helper_interface::MODE_NOT_REQUIRED:
 				return $this->isTfaRegistered($user_id);
+
 			case session_helper_interface::MODE_REQUIRED_FOR_ACP_LOGIN:
-				return $this->do_permission_check($user_id, $userdata, 'a_', $admin, $try);
 			case session_helper_interface::MODE_REQUIRED_FOR_ADMIN:
-				return $this->do_permission_check($user_id, $userdata, 'a_', true, $try);
+				return $this->do_permission_check($user_id, $userdata, 'a_');
+
 			case session_helper_interface::MODE_REQUIRED_FOR_MODERATOR:
-				return $this->do_permission_check($user_id, $userdata, array('m_', 'a_'), $admin, true);
+				return $this->do_permission_check($user_id, $userdata, array('m_', 'a_'));
+
 			case session_helper_interface::MODE_REQUIRED:
 				return true;
+
 			default:
 				return false;
 		}
@@ -212,11 +214,12 @@ class session_helper implements session_helper_interface
 	}
 
 	/**
-	 * @param int  $user_id
+	 * @param int $user_id
 	 * @param bool $admin
 	 * @param bool $auto_login
 	 * @param bool $viewonline
 	 * @param string $redirect
+	 * @throws \Exception
 	 */
 	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect)
 	{
@@ -240,6 +243,7 @@ class session_helper implements session_helper_interface
 						'viewonline'	=> (int) $viewonline,
 						'class'			=> $row->get_name(),
 					)),
+					'S_HIDDEN_FIELDS' => build_hidden_fields(['sid' => $this->user->session_id]),
 				), $row->login_start($user_id)));
 			}
 		}
@@ -247,11 +251,6 @@ class session_helper implements session_helper_interface
 		add_form_key('tfa_login_page');
 
 		$random = sha1(random_bytes(32));
-
-		if (!empty($this->user->data['tfa_random']))
-		{
-			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
-		}
 
 		$sql_ary = array(
 			'tfa_random' 	=> $random,
@@ -266,6 +265,7 @@ class session_helper implements session_helper_interface
 		$this->template->assign_vars(array(
 			'REDIRECT'		=> $redirect,
 			'RANDOM'		=> $random,
+			''
 		));
 
 		page_header('TFA_KEY_REQUIRED');
@@ -299,11 +299,9 @@ class session_helper implements session_helper_interface
 	 * @param int $user_id
 	 * @param array $userdata
 	 * @param string|array $permission
-	 * @param bool $admin
-	 * @param bool $try
 	 * @return bool
 	 */
-	private function do_permission_check($user_id, $userdata, $permission, $admin, $try)
+	private function do_permission_check($user_id, $userdata, $permission)
 	{
 		if ($this->isTfaRegistered($user_id))
 		{
@@ -319,7 +317,7 @@ class session_helper implements session_helper_interface
 		}
 		foreach ($permission as $perm)
 		{
-			if ($auth->acl_get($perm) && ($admin || $try))
+			if ($auth->acl_get($perm))
 			{
 				return true;
 			}

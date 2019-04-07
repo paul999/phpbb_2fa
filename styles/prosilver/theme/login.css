@@ -6,3 +6,8 @@
 .tfa_center {
     text-align: center;
 }
+
+.tfa_login_type {
+    margin-top: 0;
+    margin-right:  auto;
+}

@@ -170,8 +170,6 @@ class tfa_module
 					}
 					break;
 
-				default:
-					$error[] = 'TFA_NO_MODE';
 			}
 		}
 

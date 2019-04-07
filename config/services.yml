@@ -41,6 +41,7 @@ services:
             - '@user'
             - '@request'
             - '@dbal.conn'
+            - '@template'
             - '@config'
             - '%core.php_ext%'
             - '%core.root_path%'

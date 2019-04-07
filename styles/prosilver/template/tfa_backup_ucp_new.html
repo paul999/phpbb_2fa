@@ -7,16 +7,23 @@
             <p>{L_TFA_BACKUP_KEY_EXPLAIN}</p>
             {S_FORM_TOKEN}
             {S_HIDDEN_FIELDS}
-            <ul class="topiclist forums">
+            <table class="table1">
+                <thead>
+                <tr>
+                    <th class="name">{L_TFA_REGISTERED}</th>
+                    <th class="center">{L_TFA_KEY}</th>
+                </tr>
+                </thead>
+                <tbody>
                 <!-- BEGIN backup -->
-                <li class="row">
-                    <dl>
-                        <dt>{backup.DATE}</dt>
-                        <dd style="font-size: 1.2em">{backup.KEY}</dd>
-                    </dl>
-                </li>
+                <!-- IF backup.S_ROW_COUNT is even --><tr class="bg1"><!-- ELSE --><tr class="bg2"><!-- ENDIF -->
+                    <td>{backup.DATE}</td>
+                    <td class="center" style="font-size: 1.2em">{backup.KEY}</td>
+                </tr>
                 <!-- END backup -->
-            </ul>
+                </tbody>
+            </table>
+
             <input type="hidden" name="md" value="{L_TFA_NEW}" />
             <input type="submit" name="md" id="add_key" value="{L_SUBMIT}" class="button1"  />
             <input type="hidden" name="register" id="register" value="" />
