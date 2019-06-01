@@ -15,7 +15,7 @@ class version_001 extends \phpbb\db\migration\migration
 	static public function depends_on()
 	{
 		return array(
-			'\phpbb\db\migration\data\v310\gold',
+            '\phpbb\db\migration\data\v320\v320',
 			'\paul999\tfa\migrations\initial_schema',
 			'\paul999\tfa\migrations\update_sessions',
 			'\paul999\tfa\migrations\initial_module',
