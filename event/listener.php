@@ -125,8 +125,13 @@ class listener implements EventSubscriberInterface
 		{
 			return;
 		}
+		if (strpos($this->user->page['page_name'], 'app' . $this->php_ext) !== false && strrpos($this->user->page['page_name'], 'paul999/tfa') !== false) {
+            @define('SKIP_CHECK_DISABLED', true);
+        }
+
 		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->session_helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data) && !$this->session_helper->isTfaRegistered($this->user->data['user_id']))
 		{
+		    @define('SKIP_CHECK_DISABLED', true);
 			$sql = 'SELECT module_id FROM ' . MODULES_TABLE . " WHERE module_langname = 'UCP_TFA' OR module_langname = 'UCP_TFA_MANAGE'";
 			$result = $this->db->sql_query($sql, 3600);
 			$allowed_i = array();
