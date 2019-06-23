@@ -208,7 +208,7 @@ class otp extends abstract_module
 	public function register_start()
 	{
 		$secret = $this->otp->generateSecret();
-		$QR = $this->otp_helper->generateKeyURI('totp', $secret, generate_board_url(), '',0, 'sha1');
+		$QR = $this->otp_helper->generateKeyURI('totp', $secret, $this->user->data['username'], generate_board_url(), 0, 'sha1');
 		$this->template->assign_vars(array(
 			'TFA_QR_CODE'				=> 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . $QR,
 			'TFA_SECRET'				=> $secret,
