@@ -158,6 +158,7 @@ class main_controller
 		{
 			if (!$module->login($user_id))
 			{
+				$this->log->add('critical', $this->user->data['user_id'], $this->user->ip, false, ['TFA_INCORRECT_KEY']);
 				$this->template->assign_var('S_ERROR', $this->user->lang('TFA_INCORRECT_KEY'));
 				$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
 			}
@@ -165,12 +166,12 @@ class main_controller
 		catch (http_exception $ex) // @TODO: Replace exception with own exception
 		{
 
-			$this->log->add('error', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', $ex->getMessage());
+			$this->log->add('critical', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', false, [$ex->getMessage()]);
 
 			if ($admin)
 			{
 				// Also log it to admin  log just to be sure.
-				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', $ex->getMessage());
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', false, [$ex->getMessage()]);
 			}
 			if ($ex->getStatusCode() == 400)
 			{
