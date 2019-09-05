@@ -120,19 +120,40 @@ class listener implements EventSubscriberInterface
 	 */
 	public function user_setup_after($event)
 	{
+		if (strpos($this->user->page['page'], 'paul999/tfa/save') !== false) {
+			// We are at our controller. Don't do anything.  In all cases.
+			@define('SKIP_CHECK_DISABLED', true);
+			return;
+		}
+
 		// We skip this when tfa is disabled or we are at a page related to login (This includes logout :))
 		if ($this->config['tfa_mode'] == session_helper_interface::MODE_DISABLED || defined('IN_LOGIN'))
 		{
 			return;
 		}
-		if (strpos($this->user->page['page_name'], 'app' . $this->php_ext) !== false && strrpos($this->user->page['page_name'], 'paul999/tfa') !== false)
-		{
-			@define('SKIP_CHECK_DISABLED', true);
-		}
-
+		
 		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->session_helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data) && !$this->session_helper->isTfaRegistered($this->user->data['user_id']))
 		{
 			@define('SKIP_CHECK_DISABLED', true);
+			if ($this->user->page['page_name'] === 'memberlist.' . $this->php_ext && $this->request->variable('mode', '') == 'contactadmin')
+			{
+				// We are at the contact admin page. We will allow this in all cases.
+				return;
+			}
+
+			$this->user->set_cookie('rn', $this->user->data['session_id'], time() + 3600 * 24, true);
+
+			$msg_title =  $this->user->lang['INFORMATION'];
+			if ($this->session_helper->isTfaKeyRegistred($this->user->data['user_id'])) {
+				// the user has keys registered, but they are not usable (Might be due to browser requirements, or others)
+				// We will not allow them to register a new key. They will need to contact the admin instead unfortunately.
+				$this->user->add_lang_ext('paul999/tfa', 'common');
+				$url = append_sid("{$this->root_path}memberlist.{$this->php_ext}", "mode=contactadmin");
+				$msg_text = $this->user->lang('TFA_REQUIRED_KEY_AVAILABLE_BUT_UNUSABLE', '<a href="' . $url . '">', '</a>');
+				$this->user->session_kill();
+				$this->generate_fatal_error($msg_title, $msg_text);
+			}
+
 			$sql = 'SELECT module_id FROM ' . MODULES_TABLE . " WHERE module_langname = 'UCP_TFA' OR module_langname = 'UCP_TFA_MANAGE'";
 			$result = $this->db->sql_query($sql, 3600);
 			$allowed_i = array();
@@ -152,27 +173,13 @@ class listener implements EventSubscriberInterface
 			$this->user->add_lang_ext('paul999/tfa', 'common');
 			$url = append_sid("{$this->root_path}ucp.{$this->php_ext}", "i={$ucp_mode}");
 			$msg_text = $this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>');
-			$msg_title =  $this->user->lang['INFORMATION'];
 
-			page_header($msg_title);
+			$this->generate_fatal_error($msg_title, $msg_text);
+		}
 
-			$this->template->set_filenames(array(
-					'body' => 'message_body.html')
-			);
-
-			$this->template->assign_vars(array(
-					'MESSAGE_TITLE'		=> $msg_title,
-					'MESSAGE_TEXT'		=> $msg_text,
-					'S_USER_WARNING'	=> true,
-					'S_USER_NOTICE'		=> false,
-			));
-
-			// We do not want the cron script to be called on error messages
-			define('IN_CRON', true);
-
-			page_footer();
-
-			exit_handler();
+		// If the user had no key when logged in, but now has a key, we will force him to use the key.
+		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->request->variable($this->config['cookie_name'] . '_rn', '', false, request_interface::COOKIE) !== '' && $this->session_helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data)) {
+			$this->session_helper->generate_page($this->user->data['user_id'], false, $this->user->data['session_autologin'], $this->user->data['session_viewonline'], $this->user->page['page'], true);
 		}
 	}
 
@@ -212,5 +219,34 @@ class listener implements EventSubscriberInterface
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Generate a fatal error. This method will always exit.
+	 *
+	 * @param $msg_title string Error title
+	 * @param $msg_text string Error message
+	 */
+	private function generate_fatal_error($msg_title, $msg_text)
+	{
+		page_header($msg_title);
+
+		$this->template->set_filenames(array(
+				'body' => 'message_body.html')
+		);
+
+		$this->template->assign_vars(array(
+			'MESSAGE_TITLE' => $msg_title,
+			'MESSAGE_TEXT' => $msg_text,
+			'S_USER_WARNING' => true,
+			'S_USER_NOTICE' => false,
+		));
+
+		// We do not want the cron script to be called on error messages
+		define('IN_CRON', true);
+
+		page_footer();
+
+		exit_handler();
 	}
 }

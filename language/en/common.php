@@ -40,7 +40,11 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge(
 	$lang, array(
 		'TFA_REQUIRED_KEY_MISSING'      => 'The administrator of this forum requires that you have added a Two Factor Authentication key for access to (limited) parts of this forum, however you currently have no (compatible) keys registerted to your account. You can add a new security key %s here%s.
-												<br />For security reasons, the board has been disabled until you add a security key to your account. Your might be required to fill in your password while adding a security key!',
+												<br />For security reasons, the board has been disabled until you add a security key to your account. Your might be required to fill in your password while adding a security key!
+												<br />Please note that you will be logged out now as well.',
+
+		'TFA_REQUIRED_KEY_AVAILABLE_BUT_UNUSABLE' => 'The administrator of this forum requires that you have added Two Factor Authentication keys for your account to (limited) parts of this forum. You have registered Two Factor authentication keys, however they are currently not (compatible) with your current browser, or setup, or are otherwise not available. 
+														<br />For security reasons, we do not allow users with already registered keys to add a new one without fully being logged in. You can try to login for with a browser that worked before, or otherwise contact the %s board admin%s to request resets of your two factor authentication keys.',
 		// Controller
 		'ERR_NO_MATCHING_REQUEST'       => 'No matching request found',
 		'ERR_NO_MATCHING_REGISTRATION'  => 'No matching registration found',

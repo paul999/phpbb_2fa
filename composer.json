@@ -16,6 +16,7 @@
 	],
 	"require": {
 		"php": ">=5.4.0",
+		"ext-json": "*",
 		"composer/installers": "~1.0",
 		"marc1706/otp-authenticate": "~1.0",
 		"paul999/u2flib-server": "dev-master",
@@ -23,7 +24,8 @@
 	},
 	"require-dev": {
 		"phing/phing": "2.4.*",
-		"phpbb/epv": "dev-master"
+		"phpbb/epv": "dev-master",
+      "phpbb/phpbb": "3.2.*"
 	},
 	"extra": {
 		"display-name": "phpBB Two Factor Authentication",

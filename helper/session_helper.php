@@ -214,14 +214,37 @@ class session_helper implements session_helper_interface
 	}
 
 	/**
+	 * Check if the user has any key registred, even if the module is not available.
+	 *
+	 * @param int $user_id
+	 * @return bool
+	 */
+	public function isTfaKeyRegistred($user_id)
+	{
+		/**
+		 * @var int $priority
+		 * @var module_interface $module
+		 */
+		foreach ($this->modules as $priority => $module)
+		{
+			if ($module->key_registered($user_id)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
 	 * @param int $user_id
 	 * @param bool $admin
 	 * @param bool $auto_login
 	 * @param bool $viewonline
 	 * @param string $redirect
+	 * @param bool $secure
 	 * @throws \Exception
 	 */
-	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect)
+	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect, $secure = false)
 	{
 		$this->user->add_lang_ext('paul999/tfa', 'common');
 		$modules = $this->getModules();
@@ -265,6 +288,7 @@ class session_helper implements session_helper_interface
 		$this->template->assign_vars(array(
 			'REDIRECT'		=> $redirect,
 			'RANDOM'		=> $random,
+			'RELOGIN_NOTE'	=> $secure,
 		));
 
 		page_header('TFA_KEY_REQUIRED');

@@ -123,6 +123,20 @@ class backup_key extends abstract_module
 		return true;
 	}
 
+
+	/**
+	 * Check if the user has any key registered with this module.
+	 * There should be no check done if the key is usable, it should
+	 * only return if a key is registered.
+	 *
+	 * @param $user_id
+	 * @return bool
+	 */
+	public function key_registered($user_id)
+	{
+		return $this->check_table_for_user($this->backup_registration_table, $user_id);
+	}
+
 	/**
 	 * Get the priority for this module.
 	 * A lower priority means more chance it gets selected as default option

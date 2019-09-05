@@ -158,7 +158,7 @@ class main_controller
 		{
 			if (!$module->login($user_id))
 			{
-				$this->log->add('critical', $this->user->data['user_id'], $this->user->ip, false, ['TFA_INCORRECT_KEY']);
+				$this->log->add('critical', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION',false, ['TFA_INCORRECT_KEY']);
 				$this->template->assign_var('S_ERROR', $this->user->lang('TFA_INCORRECT_KEY'));
 				$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
 			}
@@ -185,19 +185,19 @@ class main_controller
 		}
 
 		$old_session_id = $this->user->session_id;
-
 		if ($admin)
 		{
 			$cookie_expire = time() - 31536000;
 			$this->user->set_cookie('u', '', $cookie_expire);
 			$this->user->set_cookie('sid', '', $cookie_expire);
 		}
-
 		$result = $this->user->session_create($user_id, $admin, $auto_login, $viewonline);
 
 		// Successful session creation
 		if ($result === true)
 		{
+			// Remove our cookie that causes filling in a key.
+			$this->user->set_cookie('rn', '', time() + 3600 * 24, true);
 			// If admin re-authentication we remove the old session entry because a new one has been created...
 			if ($admin)
 			{

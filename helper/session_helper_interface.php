@@ -57,6 +57,14 @@ interface session_helper_interface
 	public function isTfaRegistered($user_id);
 
 	/**
+	 * Check if the user has any key registred, even if the module is not available.
+	 *
+	 * @param int $user_id
+	 * @return bool
+	 */
+	public function isTfaKeyRegistred($user_id);
+
+	/**
 	 * Generate the key page after login
 	 *
 	 * @param int  $user_id
@@ -64,8 +72,9 @@ interface session_helper_interface
 	 * @param bool $auto_login
 	 * @param bool $viewonline
 	 * @param string     $redirect
+	 * @param bool $secure Set this to add a message to the user that it is requrired to fill in a key for security reasons
 	 *
 	 * @return
 	 */
-	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
+	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect, $secure = false);
 }
