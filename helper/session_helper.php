@@ -265,7 +265,6 @@ class session_helper implements session_helper_interface
 		$this->template->assign_vars(array(
 			'REDIRECT'		=> $redirect,
 			'RANDOM'		=> $random,
-			''
 		));
 
 		page_header('TFA_KEY_REQUIRED');

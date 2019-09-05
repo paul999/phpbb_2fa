@@ -202,7 +202,7 @@ class listener implements EventSubscriberInterface
 				}
 				else
 				{
-					$this->session_helper->generate_page($event['login']['user_row']['user_id'], $event['admin'], $event['view_online'], !$this->request->is_set_post('viewonline'), $this->request->variable('redirect', ''));
+					$this->session_helper->generate_page($event['login']['user_row']['user_id'], $event['admin'], $event['autologin'], !$this->request->is_set_post('viewonline'), $this->request->variable('redirect', ''));
 				}
 			}
 		}

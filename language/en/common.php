@@ -56,7 +56,7 @@ $lang = array_merge(
 		'UNKNOWN_ERROR'                 => 'A unknown error happened during the validation of your security key. Please try again later.',
 
 		'ERR_TFA_NO_REQUEST_FOUND_IN_SESSION'	=> 'No request found in the current session. Did you submit via a different page?',
-		'TFA_TFA_NOT_REGISTERED'				=> 'The used security key was not registered to your account',
+		'TFA_NOT_REGISTERED'				=> 'The used security key was not registered to your account',
 
 		'FTA_NO_RESPONSE'                   => 'No response received',
 		'TFA_SELECT_KEY'                    => 'Select key type',
