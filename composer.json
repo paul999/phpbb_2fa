@@ -24,8 +24,7 @@
 	},
 	"require-dev": {
 		"phing/phing": "2.4.*",
-		"phpbb/epv": "dev-master",
-      "phpbb/phpbb": "3.2.*"
+		"phpbb/epv": "dev-master"
 	},
 	"extra": {
 		"display-name": "phpBB Two Factor Authentication",
