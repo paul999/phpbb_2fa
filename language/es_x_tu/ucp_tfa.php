@@ -54,8 +54,8 @@ $lang = array_merge(
 										<br /><br />
 										<b>Recomendamos también que registre al menos una clave de respaldo
 										y la almacenes en algún sitio seguro.</b>',
-		'TFA_NO_MODE'				=> 'No Mode',
-		'TFA_KEYS_DELETED'			=> 'Selected keys removed.',
+		'TFA_NO_MODE'				=> 'Modo  no seleccionado',
+		'TFA_KEYS_DELETED'			=> 'Eliminadas las llaves seleccionadas.',
 		'TFA_NEW'                   => 'Añadir',
 		'TFA_ERROR'					=> 'Parece que algo falló...',
 		'TFA_REG_FAILED'			=> 'El registro falló con el siguiente error: ',

@@ -41,8 +41,8 @@ $lang = array_merge(
 	$lang, array(
 		'TFA_REQUIRED_KEY_MISSING'      => 'El administrador de este foro requiere que añadas la identificación en dos pasos para acceder a algunas partes de este foro. Parece que no tienes configurada ninguna. Puedes configurar una nueva clave de seguridad %s aquí%s.<br />Por razones de seguridad este foro ha sido desactivado hasta que añadas la clave de seguridad a tu cuenta. Es probable que en el proceso de añadir esta nueva clave se te requiera tu contraseña de usuario.',
 		// Controller
-		'ERR_NO_MATCHING_REQUEST'       => 'No matching request found',
-		'ERR_NO_MATCHING_REGISTRATION'  => 'No matching registration found',
+		'ERR_NO_MATCHING_REQUEST'       => 'No se encontró la solicitud',
+		'ERR_NO_MATCHING_REGISTRATION'  => 'No se encontró el registro',
 		'ERR_AUTHENTICATION_FAILURE'    => 'Error de autentificación',
 		'ERR_UNMATCHED_CHALLENGE'       => 'El reto de registro no coincide',
 		'ERR_ATTESTATION_SIGNATURE'     => 'La firma de certificación no coincide',
