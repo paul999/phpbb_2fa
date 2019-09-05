@@ -10,12 +10,12 @@
 
 namespace paul999\tfa\migrations;
 
-class version_003 extends \phpbb\db\migration\migration
+class version_004 extends \phpbb\db\migration\migration
 {
 	static public function depends_on()
 	{
 		return array(
-			'\paul999\tfa\migrations\version_002',
+			'\paul999\tfa\migrations\version_003',
 		);
 	}
 }

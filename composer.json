@@ -3,7 +3,7 @@
 	"type": "phpbb-extension",
 	"description": "This extension adds support for the U2F two factor authentication standard into your phpBB board. ",
 	"homepage": "http://www.phpbb-2fa.com",
-	"version": "0.0.3-dev",
+	"version": "0.0.4",
 	"keywords": [],
 	"license": "GPL-2.0-only",
 	"authors": [
