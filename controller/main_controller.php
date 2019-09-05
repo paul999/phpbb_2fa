@@ -69,26 +69,26 @@ class main_controller
 	 * @var string
 	 */
 	private $php_ext;
-    /**
-     * @var phpbb\log\log
-     */
-    private $log;
+	/**
+	 * @var log
+	 */
+	private $log;
 
-    /**
-     * Constructor
-     *
-     * @access public
-     * @param helper $controller_helper
-     * @param driver_interface $db
-     * @param template $template
-     * @param user $user
-     * @param request_interface $request
-     * @param config $config
-     * @param log $log
-     * @param session_helper_interface $session_helper
-     * @param string $root_path
-     * @param string $php_ext
-     */
+	/**
+	 * Constructor
+	 *
+	 * @access public
+	 * @param helper $controller_helper
+	 * @param driver_interface $db
+	 * @param template $template
+	 * @param user $user
+	 * @param request_interface $request
+	 * @param config $config
+	 * @param log $log
+	 * @param session_helper_interface $session_helper
+	 * @param string $root_path
+	 * @param string $php_ext
+	 */
 	public function __construct(helper $controller_helper, driver_interface $db, template $template, user $user, request_interface $request, config $config, log $log, session_helper_interface $session_helper, $root_path, $php_ext)
 	{
 		$this->controller_helper 	= $controller_helper;
@@ -100,8 +100,8 @@ class main_controller
 		$this->session_helper		= $session_helper;
 		$this->root_path			= $root_path;
 		$this->php_ext				= $php_ext;
-        $this->log                  = $log;
-    }
+		$this->log                  = $log;
+	}
 
 	/**
 	 * @param int  $user_id
@@ -165,12 +165,13 @@ class main_controller
 		catch (http_exception $ex) // @TODO: Replace exception with own exception
 		{
 
-            $this->log->add('error', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', $ex->getMessage());
+			$this->log->add('error', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', $ex->getMessage());
 
-            if ($admin) {
-                // Also log it to admin  log just to be sure.
-                $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', $ex->getMessage());
-            }
+			if ($admin)
+			{
+				// Also log it to admin  log just to be sure.
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', $ex->getMessage());
+			}
 			if ($ex->getStatusCode() == 400)
 			{
 				$this->template->assign_var('S_ERROR', $this->user->lang($ex->getMessage()));
@@ -205,7 +206,7 @@ class main_controller
 					AND session_user_id = " . (int) $user_id;
 				$this->db->sql_query($sql);
 
-                $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_ADMIN_AUTH_SUCCESS');
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_ADMIN_AUTH_SUCCESS');
 
 				redirect(append_sid("{$this->root_path}adm/index.{$this->php_ext}", false, true, $this->user->data['session_id']));
 			}
