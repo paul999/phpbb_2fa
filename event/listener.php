@@ -120,7 +120,8 @@ class listener implements EventSubscriberInterface
 	 */
 	public function user_setup_after($event)
 	{
-		if (strpos($this->user->page['page'], 'paul999/tfa/save') !== false) {
+		if (strpos($this->user->page['page'], 'paul999/tfa/save') !== false)
+		{
 			// We are at our controller. Don't do anything.  In all cases.
 			@define('SKIP_CHECK_DISABLED', true);
 			return;
@@ -131,7 +132,7 @@ class listener implements EventSubscriberInterface
 		{
 			return;
 		}
-		
+
 		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->session_helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data) && !$this->session_helper->isTfaRegistered($this->user->data['user_id']))
 		{
 			@define('SKIP_CHECK_DISABLED', true);
@@ -144,7 +145,8 @@ class listener implements EventSubscriberInterface
 			$this->user->set_cookie('rn', $this->user->data['session_id'], time() + 3600 * 24, true);
 
 			$msg_title =  $this->user->lang['INFORMATION'];
-			if ($this->session_helper->isTfaKeyRegistred($this->user->data['user_id'])) {
+			if ($this->session_helper->isTfaKeyRegistred($this->user->data['user_id']))
+			{
 				// the user has keys registered, but they are not usable (Might be due to browser requirements, or others)
 				// We will not allow them to register a new key. They will need to contact the admin instead unfortunately.
 				$this->user->add_lang_ext('paul999/tfa', 'common');
@@ -178,7 +180,8 @@ class listener implements EventSubscriberInterface
 		}
 
 		// If the user had no key when logged in, but now has a key, we will force him to use the key.
-		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->request->variable($this->config['cookie_name'] . '_rn', '', false, request_interface::COOKIE) !== '' && $this->session_helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data)) {
+		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->request->variable($this->config['cookie_name'] . '_rn', '', false, request_interface::COOKIE) !== '' && $this->session_helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data))
+		{
 			$this->session_helper->generate_page($this->user->data['user_id'], false, $this->user->data['session_autologin'], $this->user->data['session_viewonline'], $this->user->page['page'], true);
 		}
 	}

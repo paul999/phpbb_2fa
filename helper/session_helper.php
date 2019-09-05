@@ -227,7 +227,8 @@ class session_helper implements session_helper_interface
 		 */
 		foreach ($this->modules as $priority => $module)
 		{
-			if ($module->key_registered($user_id)) {
+			if ($module->key_registered($user_id))
+			{
 				return true;
 			}
 		}
