@@ -16,7 +16,7 @@ class version_005 extends \phpbb\db\migration\migration
 	{
 		return array(
 			'\paul999\tfa\migrations\version_004',
-            '\paul999\tfa\migrations\add_config',
+			'\paul999\tfa\migrations\add_config',
 		);
 	}
 }

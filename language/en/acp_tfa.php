@@ -77,7 +77,7 @@ $lang = array_merge(
 		'TFA_REQUIRED_FOR_MODERATOR'	=> 'Require two factor authentication for all moderators and administrators',
 		'TFA_REQUIRED'					=> 'Require two factor authentication for all users',
 
-        'TFA_ACP'           => 'Require two factor authentication for administration panel',
-        'TFA_ACP_EXPLAIN'   => 'When set to no, administrators don’t need to use a two factor authentication key when loggin in for the ACP. Disabling this might not be suggested.'
+		'TFA_ACP'           => 'Require two factor authentication for administration panel',
+		'TFA_ACP_EXPLAIN'   => 'When set to no, administrators don’t need to use a two factor authentication key when loggin in for the ACP. Disabling this might not be suggested.'
 	)
 );
