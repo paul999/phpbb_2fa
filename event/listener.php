@@ -188,6 +188,11 @@ class listener implements EventSubscriberInterface
 		{
 			return $event;
 		}
+		if ($event['admin'] && $this->config['tfa_acp'] == session_helper_interface::ACP_DISABLED)
+		{
+		    // two factor authentication is disabled for the ACP.
+            return $event;
+        }
 		if (isset($event['login'], $event['login']['status']) && $event['login']['status'] == LOGIN_SUCCESS)
 		{
 			// We have a LOGIN_SUCCESS result.

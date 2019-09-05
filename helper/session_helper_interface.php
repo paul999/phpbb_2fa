@@ -21,6 +21,9 @@ interface session_helper_interface
 	const MODE_REQUIRED_FOR_MODERATOR = 4;
 	const MODE_REQUIRED = 5;
 
+	const ACP_ENABLED = 1;
+	const ACP_DISABLED = 0;
+
 	/**
 	 * @param $requested_module
 	 * @return null|module_interface
