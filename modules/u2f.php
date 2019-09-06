@@ -110,7 +110,8 @@ class u2f extends abstract_module
 	 */
 	public function is_potentially_usable($user_id = false)
 	{
-		return strpos(strtolower($this->request->server('HTTP_USER_AGENT')), 'chrome') !== false && $this->is_ssl();
+		$user_agent = strtolower($this->request->server('HTTP_USER_AGENT'));
+		return strpos($user_agent, 'edge') === false && strpos($user_agent, 'chrome') !== false && $this->is_ssl();
 	}
 
 	/**

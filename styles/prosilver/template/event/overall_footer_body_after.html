@@ -7,9 +7,9 @@
 
         if(!(bowser.chrome && bowser.version >= 41)) {
             $("#browser_supported").show();
-            $("#start_auth").hide();
         }
         else {
+            $("#start_auth").show();
             $("#start_auth").click(function() {
                 u2f.sign(req, function (data) {
                     console.log("Received sign response");
