@@ -21,8 +21,8 @@ class inital_version_interface extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-		    // Other extension can use this version to deterime if the extension is installed,
-            // And if the interface for the module is compatible with the version they use.
+			// Other extension can use this version to deterime if the extension is installed,
+			// And if the interface for the module is compatible with the version they use.
 			array('config.add', array('tfa_module_interface_version', '1.0.0')),
 		);
 	}
