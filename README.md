@@ -9,10 +9,10 @@ This extension adds support for two factor authentication using several differen
 Currently, the following security keys are available by default:
 
  * U2F (See below)
- * Google authenticator (Or compitable)
+ * Google authenticator (Or compatible)
  * Backup keys
  
-New type of keys can be added by following the instructions in the WIKI.
+New type of keys can be added by following the instructions in the [documentation](https://www.phpbbextensions.io/tfa/).
 
 You can set several options within this extension:
 
@@ -37,7 +37,7 @@ Supported:
 Not supported:
 
  * Safari
- * Firefox (See [this](https://bugzilla.mozilla.org/show_bug.cgi?id=1065729) feature request)
+ * Firefox (Not supported yet. Support will be added in a upcoming release)
  * Internet Explorer
  * Edge
  
@@ -47,6 +47,10 @@ You will need a U2F capable security key for this to work. [Yubico](https://www.
 
 Besides the browser requirements, U2F requires that your board runs under SSL. Without SSL the U2F key won't work, 
 and you will not be able to select this type of key to add. This is a limitation from U2F.
+
+Please note that this extension currently is build on the U2F protocol, and doesn't support the new WebAuthn yet. 
+Support for WebAuthn might be added later (Including extra browser support).
+ 
 
 Installation
 ============
@@ -59,7 +63,7 @@ Disable the extension in your ACP, extra the zip to ext/paul999/tfa and enable i
 Translations
 ============
 Please create a PR on the master branch. Only translations submitted by PR are accepted. 
-If a translation is incomplete at the moment of release it will be removed from the repository and the release.
+I will start merging translation PRs when stable versions are going to be released. Incomplete translations at that point won't be merged.
 
 Bugs/Feature requests
 =====================

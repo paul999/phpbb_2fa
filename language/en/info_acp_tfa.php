@@ -42,7 +42,8 @@ $lang = array_merge(
 		'ACP_TFA'			=> 'Two factor authentication',
 		'ACP_TFA_MANAGE'	=> 'Two factor authentication',
 
-		'LOG_TFA_CONFIG_MANAGE'	=> '<strong>Two factor authentication settings updated</strong>',
+		'LOG_TFA_CONFIG_MANAGE' => '<strong>Two factor authentication settings updated</strong>',
+		'LOG_TFA_EXCEPTION'     => '<strong>An error happened when a user tried using his two factor authentication key</strong><br />» %s',
 
 	)
 );

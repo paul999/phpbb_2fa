@@ -40,7 +40,11 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge(
 	$lang, array(
 		'TFA_REQUIRED_KEY_MISSING'      => 'The administrator of this forum requires that you have added a Two Factor Authentication key for access to (limited) parts of this forum, however you currently have no (compatible) keys registerted to your account. You can add a new security key %s here%s.
-												<br />For security reasons, the board has been disabled until you add a security key to your account. Your might be required to fill in your password while adding a security key!',
+												<br />For security reasons, the board has been disabled until you add a security key to your account. Your might be required to fill in your password while adding a security key!
+												<br />Please note that you will be logged out now as well.',
+
+		'TFA_REQUIRED_KEY_AVAILABLE_BUT_UNUSABLE' => 'The administrator of this forum requires that you have added Two Factor Authentication keys for your account to (limited) parts of this forum. You have registered Two Factor authentication keys, however they are currently not (compatible) with your current browser, or setup, or are otherwise not available. 
+														<br />For security reasons, we do not allow users with already registered keys to add a new one without fully being logged in. You can try to login for with a browser that worked before, or otherwise contact the %s board admin%s to request resets of your two factor authentication keys.',
 		// Controller
 		'ERR_NO_MATCHING_REQUEST'       => 'No matching request found',
 		'ERR_NO_MATCHING_REGISTRATION'  => 'No matching registration found',
@@ -56,15 +60,16 @@ $lang = array_merge(
 		'UNKNOWN_ERROR'                 => 'A unknown error happened during the validation of your security key. Please try again later.',
 
 		'ERR_TFA_NO_REQUEST_FOUND_IN_SESSION'	=> 'No request found in the current session. Did you submit via a different page?',
-		'TFA_TFA_NOT_REGISTERED'				=> 'The used security key was not registered to your account',
+		'TFA_NOT_REGISTERED'				=> 'The used security key was not registered to your account',
 
 		'FTA_NO_RESPONSE'                   => 'No response received',
 		'TFA_SELECT_KEY'                    => 'Select key type',
-		'FTA_NO_RESPONSE_RECEIVED'          => 'We did not receive a response from your U2F security key. Did you press the button?',
-		'FTA_NOT_SUPPORTED'                 => 'Browser not supported',
-		'FTA_BROWSER_SEEMS_NOT_SUPPORTED'   => 'Sorry, currently only Google Chrome is supported.',
-		'FTA_INSERT_KEY'                    => 'Insert your security key',
-		'FTA_INSERT_KEY_EXPLAIN'            => 'Insert your security key into your computer and press the button on the key.',
+		'TFA_NO_RESPONSE_RECEIVED'          => 'We did not receive a response from your U2F security key. Did you press the button?',
+		'TFA_NOT_SUPPORTED'                 => 'Browser not supported',
+		'TFA_BROWSER_SEEMS_NOT_SUPPORTED'   => 'Sorry, currently only Google Chrome is supported.',
+		'TFA_INSERT_KEY'                    => 'Insert your security key',
+		'TFA_INSERT_KEY_EXPLAIN'            => 'Insert your security key into your computer and click “key inserted”.',
+		'TFA_START_AUTH'                    => 'Key inserted',
 		'TFA_NO_ACCESS'						=> 'It seems you have no access to this page?',
 		'TFA_UNABLE_TO_UPDATE_SESSION'		=> 'Unable to update session. Please contact the board administrator',
 		'TFA_DISABLED'						=> 'Two factor authentication has been disabled',

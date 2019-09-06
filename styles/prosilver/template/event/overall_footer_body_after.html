@@ -9,15 +9,18 @@
             $("#browser_supported").show();
         }
         else {
-            u2f.sign(req, function (data) {
-                console.log("Received sign response");
-                $("#authenticate").val(JSON.stringify(data));
-                $("#submit_auth").submit();
-            });
+            $("#start_auth").show();
+            $("#start_auth").click(function() {
+                u2f.sign(req, function (data) {
+                    console.log("Received sign response");
+                    $("#authenticate").val(JSON.stringify(data));
+                    $("#submit_auth").submit();
+                });
 
-            setTimeout(function () {
-                $("#no_response").show();
-            }, 10000);
+                setTimeout(function () {
+                    $("#no_response").show();
+                }, 10000);
+            });
         }
     });
 </script>

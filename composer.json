@@ -16,6 +16,8 @@
 	],
 	"require": {
 		"php": ">=5.4.0",
+		"ext-json": "*",
+		"ext-openssl": "*",
 		"composer/installers": "~1.0",
 		"marc1706/otp-authenticate": "~1.0",
 		"paul999/u2flib-server": "dev-master",
