@@ -10,6 +10,24 @@
 
 namespace paul999\tfa\modules;
 
+/**
+ * Interface module_interface
+ *
+ * This interface is required for all modules implementing a Two Factor Authentication module.
+ * All methods within this interface are required to be implemented by the actual module. The abstract_module class
+ * provides some basic helpers, but no other methods are implemented.
+ *
+ * Please make sure to read the docblocks carefully. Some methods are nearly the same, but the details do matter.
+ *
+ * The version below matches the version in tfa_module_interface_version. If the interface changes, this version number
+ * will be increased. Extension authors creating extra modules should check the tfa_module_interface_version before enabling
+ * their extension to make sure it is compatible.
+ *
+ * @version 1.0.0
+ * @package paul999\tfa\modules
+ * @api
+ *
+ */
 interface module_interface
 {
 	/**
