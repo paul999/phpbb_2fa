@@ -44,7 +44,7 @@ $lang = array_merge(
 		// As we are re-using the acp_board template, we can't add custom stuff to that page.
 		// As such, we do need to have some HTML here :(.
 		'ACP_TFA_SETTINGS_EXPLAIN'	=> 'Here you can set the configuration for two factor settings.
-										The suggested configuration option for the requirement is or do not require Two factor authentication,
+										The suggested configuration option for the requirement is either do not require Two factor authentication,
 										or only require it for the ACP login. <br /><br />
 										There are for the U2F security key some browser requirements:
 										<ul>
@@ -64,7 +64,7 @@ $lang = array_merge(
 										<p>Support is only provided on www.phpbb.com, in the extension <a href="https://www.phpbb.com/community/viewtopic.php?f=456&t=2341856" target="_blank">topic</a>. Please make sure to read the first posts before asking your questions.</p>
 										
 										<h2>WARNING: You are running an extension in development</h2>
-										<p>You are running an extension in development, that adds security related functions to your board. Please note that you should make sure what you are doing if you are running this extension in a live board.</p>
+										<p>You are running an extension in development, that adds security related functions to your board. Please note that you should make sure what you are doing if you are running this extension on a live board.</p>
 										',
 		'TFA_REQUIRES_SSL'			=> 'You seem to be using a non secure connection. This extension requires a secure SSL connection for some security keys to work. Users won’t be able to choose these options unless you enable a secure connection to your board.',
 
