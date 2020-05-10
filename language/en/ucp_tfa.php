@@ -42,13 +42,13 @@ $lang = array_merge(
 		'TFA_NO_KEYS'				=> 'No two factor authentication keys found. You can add one below.',
 		'TFA_KEYS'					=> 'On this page you can manage your two factor authentication keys.
 										You can add multiple keys to your account.
-											If you loose your keys, make sure to remove them from your account!
+											If you lose your keys, make sure to remove them from your account!
 										<br /><br />
-										Depending on the configuration choosen by the forum administrator,
+										Depending on the configuration chosen by the forum administrator,
 										you might be required to add a security key before accessing the forum.
 										<br /><br />
 										Some security keys (Like the U2F standard) currently only work in specific 
-										browser. Due to that, it is possible that there are keys registered to your 
+										browsers. Due to that, it is possible that there are keys registered to your 
 										account, but the access to the board is blocked because no valid keys are found
 										that work with your browser. It is suggested to at least register some backup keys
 										and store them in a secure location.',
@@ -75,7 +75,7 @@ $lang = array_merge(
 		'TFA_KEYTYPE'				=> 'Key type',
 		'TFA_KEY_NOT_USED'			=> 'Not used yet',
 		'TFA_KEY'                   => 'Backup key',
-		'TFA_BACKUP_KEY_EXPLAIN'	=> 'Below are backup keys, generated for in case you loose you keys or you key doesn’t
+		'TFA_BACKUP_KEY_EXPLAIN'	=> 'Below are backup keys, generated for in case you lose you keys or you key doesn’t
 										work. Please make sure to store these keys in a secure location. <br />
 										In general, you only should use a backup key as last resort. <br /><br />
 										When all keys are used, you can generate new keys. ',

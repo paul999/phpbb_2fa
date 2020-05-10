@@ -52,6 +52,7 @@ class u2f extends abstract_module
 	 * @param template $template
 	 * @param string $registration_table
 	 * @param string $root_path
+	 * @throws U2fError
 	 */
 	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, $registration_table, $root_path)
 	{
@@ -109,7 +110,8 @@ class u2f extends abstract_module
 	 */
 	public function is_potentially_usable($user_id = false)
 	{
-		return strpos(strtolower($this->request->server('HTTP_USER_AGENT')), 'chrome') !== false && $this->is_ssl();
+		$user_agent = strtolower($this->request->server('HTTP_USER_AGENT'));
+		return strpos($user_agent, 'edge') === false && strpos($user_agent, 'chrome') !== false && $this->is_ssl();
 	}
 
 	/**
@@ -132,6 +134,19 @@ class u2f extends abstract_module
 	}
 
 	/**
+	 * Check if the user has any key registered with this module.
+	 * There should be no check done if the key is usable, it should
+	 * only return if a key is registered.
+	 *
+	 * @param $user_id
+	 * @return bool
+	 */
+	public function key_registered($user_id)
+	{
+		return $this->check_table_for_user($this->registration_table, $user_id);
+	}
+
+	/**
 	 * Get the priority for this module.
 	 * A lower priority means more chance it gets selected as default option
 	 *
@@ -151,6 +166,7 @@ class u2f extends abstract_module
 	 * @param int $user_id
 	 * @return array
 	 * @throws http_exception
+	 * @throws U2fError
 	 */
 	public function login_start($user_id)
 	{
@@ -255,6 +271,7 @@ class u2f extends abstract_module
 	/**
 	 * Start of registration
 	 * @return string
+	 * @throws U2fError
 	 */
 	public function register_start()
 	{
@@ -489,4 +506,5 @@ class u2f extends abstract_module
 
 		return $this->db->sql_affectedrows();
 	}
+
 }

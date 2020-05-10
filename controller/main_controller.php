@@ -18,6 +18,7 @@ use phpbb\exception\http_exception;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
+use phpbb\log\log;
 
 /**
  * Controller
@@ -68,6 +69,10 @@ class main_controller
 	 * @var string
 	 */
 	private $php_ext;
+	/**
+	 * @var log
+	 */
+	private $log;
 
 	/**
 	 * Constructor
@@ -79,11 +84,12 @@ class main_controller
 	 * @param user $user
 	 * @param request_interface $request
 	 * @param config $config
+	 * @param log $log
 	 * @param session_helper_interface $session_helper
 	 * @param string $root_path
 	 * @param string $php_ext
 	 */
-	public function __construct(helper $controller_helper, driver_interface $db, template $template, user $user, request_interface $request, config $config, session_helper_interface $session_helper, $root_path, $php_ext)
+	public function __construct(helper $controller_helper, driver_interface $db, template $template, user $user, request_interface $request, config $config, log $log, session_helper_interface $session_helper, $root_path, $php_ext)
 	{
 		$this->controller_helper 	= $controller_helper;
 		$this->template 			= $template;
@@ -94,7 +100,7 @@ class main_controller
 		$this->session_helper		= $session_helper;
 		$this->root_path			= $root_path;
 		$this->php_ext				= $php_ext;
-
+		$this->log                  = $log;
 	}
 
 	/**
@@ -152,12 +158,21 @@ class main_controller
 		{
 			if (!$module->login($user_id))
 			{
+				$this->log->add('critical', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION',false, ['TFA_INCORRECT_KEY']);
 				$this->template->assign_var('S_ERROR', $this->user->lang('TFA_INCORRECT_KEY'));
 				$this->session_helper->generate_page($user_id, $admin, $auto_login, $viewonline, $redirect);
 			}
 		}
 		catch (http_exception $ex) // @TODO: Replace exception with own exception
 		{
+
+			$this->log->add('critical', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', false, [$ex->getMessage()]);
+
+			if ($admin)
+			{
+				// Also log it to admin  log just to be sure.
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_TFA_EXCEPTION', false, [$ex->getMessage()]);
+			}
 			if ($ex->getStatusCode() == 400)
 			{
 				$this->template->assign_var('S_ERROR', $this->user->lang($ex->getMessage()));
@@ -170,19 +185,19 @@ class main_controller
 		}
 
 		$old_session_id = $this->user->session_id;
-
 		if ($admin)
 		{
 			$cookie_expire = time() - 31536000;
 			$this->user->set_cookie('u', '', $cookie_expire);
 			$this->user->set_cookie('sid', '', $cookie_expire);
 		}
-
 		$result = $this->user->session_create($user_id, $admin, $auto_login, $viewonline);
 
 		// Successful session creation
 		if ($result === true)
 		{
+			// Remove our cookie that causes filling in a key.
+			$this->user->set_cookie('rn', '', time() + 3600 * 24, true);
 			// If admin re-authentication we remove the old session entry because a new one has been created...
 			if ($admin)
 			{
@@ -191,6 +206,8 @@ class main_controller
 					WHERE session_id = '" . $this->db->sql_escape($old_session_id) . "'
 					AND session_user_id = " . (int) $user_id;
 				$this->db->sql_query($sql);
+
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_ADMIN_AUTH_SUCCESS');
 
 				redirect(append_sid("{$this->root_path}adm/index.{$this->php_ext}", false, true, $this->user->data['session_id']));
 			}

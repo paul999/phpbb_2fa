@@ -30,6 +30,7 @@ services:
             - '@user'
             - '@request'
             - '@config'
+            - '@log'
             - '@paul999.tfa.sessionHelper'
             - '%core.root_path%'
             - '%core.php_ext%'
