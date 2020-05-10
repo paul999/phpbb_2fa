@@ -44,7 +44,7 @@ class tfa_module
 			'vars'	=> array(
 				'legend1'				=> 'ACP_TFA_SETTINGS',
 				'tfa_mode'				=> array('lang' => 'TFA_MODE', 'validate' => 'int',	'type' => 'select', 'method' => 'select_tfa_method', 'explain' => true),
-				'tfa_acp'               => array('lang' => 'TFA_ACP',  'validate' => 'int', 'type' => 'radio', 'explain' => true),
+				'tfa_acp'               => array('lang' => 'TFA_ACP',  'validate' => 'int', 'type' => 'radio:no_yes', 'explain' => true),
 
 				'legend4'				=> 'ACP_SUBMIT_CHANGES',
 			)
