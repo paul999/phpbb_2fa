@@ -40,7 +40,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge(
 	$lang, array(
 		'TFA_REQUIRED_KEY_MISSING'      => 'The administrator of this forum requires that you have added a Two Factor Authentication key for access to (limited) parts of this forum, however you currently have no (compatible) keys registerted to your account. You can add a new security key %s here%s.
-												<br />For security reasons, the board has been disabled until you add a security key to your account. Your might be required to fill in your password while adding a security key!
+												<br />For security reasons, the board has been disabled until you add a security key to your account. You might be required to fill in your password while adding a security key!
 												<br />Please note that you will be logged out now as well.',
 
 		'TFA_REQUIRED_KEY_AVAILABLE_BUT_UNUSABLE' => 'The administrator of this forum requires that you have added Two Factor Authentication keys for your account to (limited) parts of this forum. You have registered Two Factor authentication keys, however they are currently not (compatible) with your current browser, or setup, or are otherwise not available. 
@@ -57,7 +57,7 @@ $lang = array_merge(
 		'ERR_PUBKEY_DECODE'             => 'Decoding of public key failed',
 		'ERR_BAD_UA_RETURNING'          => 'User-agent returned error',
 		'ERR_OLD_OPENSSL'               => 'OpenSSL has to be at least version 1.0.0, this is %s',
-		'UNKNOWN_ERROR'                 => 'A unknown error happened during the validation of your security key. Please try again later.',
+		'UNKNOWN_ERROR'                 => 'An unknown error happened during the validation of your security key. Please try again later.',
 
 		'ERR_TFA_NO_REQUEST_FOUND_IN_SESSION'	=> 'No request found in the current session. Did you submit via a different page?',
 		'TFA_NOT_REGISTERED'				=> 'The used security key was not registered to your account',
@@ -87,7 +87,7 @@ $lang = array_merge(
 		'TFA_BACKUP_KEY_LOG'				=> 'Backup key',
 		'TFA_BACKUP_KEY_LOG_EXPLAIN'		=> 'Please provide a backup key, which hasn’t been used before.',
 
-		'TFA_DOUBLE_PRIORITY'				=> 'The choosen priority (%d) for module %s is already in use for module %s',
+		'TFA_DOUBLE_PRIORITY'				=> 'The chosen priority (%d) for module %s is already in use for module %s',
 
 		'TFA_SOMETHING_WENT_WRONG'			=> 'Something went wrong during the request. Please try again later',
 
