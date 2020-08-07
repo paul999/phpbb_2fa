@@ -1,39 +1,39 @@
-<!-- INCLUDE overall_header.html -->
+{% include 'overall_header.html' %}
 
-<!-- INCLUDEJS @paul999_tfa/js/login.js -->
-<!-- IF S_ERROR -->
-    <p class="error">{S_ERROR}</p>
-<!-- ENDIF -->
+{% INCLUDEJS '@paul999_tfa/js/login.js' %}
+
+{% if S_ERROR %}
+    <p class="error">{{ S_ERROR }}</p>
+{% endif %}
 
 <div class="tfa_center">
     <div class="forabg tfa_login">
 
         <div class="inner">
-            <h1 class="tfa_login_type">{L_TFA_SELECT_KEY}</h1>
+            <h1 class="tfa_login_type">{{ lang('TFA_SELECT_KEY') }}</h1>
             <ul class="topiclist forums">
-            <!-- BEGIN tfa_options -->
+            {% for tfa_option in tfa_options %}
                 <li class="row">
                     <dl>
-                        <dt><a href="javascript:openAuth('#auth_{tfa_options.ID}');">{tfa_options.NAME}</a></dt>
+                        <dt><a href="javascript:openAuth('#auth_{{ tfa_option.ID }}');">{{ tfa_option.NAME }}</a></dt>
                     </dl>
                 </li>
-            <!-- END tfa_options -->
+            {% endfor %}
             </ul>
         </div>
     </div>
 </div>
 
-<!-- BEGIN tfa_options -->
-    <!-- IF tfa_options.S_TFA_INCLUDE_HTML -->
-        <div id="auth_{tfa_options.ID}" <!-- IF not tfa_options.S_FIRST_ROW -->style="display:none "<!-- ENDIF -->>
-            <form action="{tfa_options.U_SUBMIT_AUTH}" id="submit_auth" method="post">
-                {S_FORM_TOKEN}
-                {tfa_options.S_HIDDEN_FIELDS}
-                <input type="hidden" name="random" value="{RANDOM}" />
-                <input type="hidden" name="redirect" value="{REDIRECT}">
-                <!-- INCLUDE {tfa_options.S_TFA_INCLUDE_HTML} -->
-            </form>
-        </div>
-    <!-- ENDIF -->
-<!-- END tfa_options -->
-<!-- INCLUDE overall_footer.html -->
+{% for tfa_option in tfa_options if tfa_option.S_TFA_INCLUDE_HTML %}
+    <div id="auth_{{ tfa_option.ID }}"{% if not tfa_option.S_FIRST_ROW %} style="display: none;"{% endif %}>
+        <form id="submit_auth" method="post" action="{{ tfa_option.U_SUBMIT_AUTH }}">
+            {{ S_FORM_TOKEN }}
+            {{ tfa_option.S_HIDDEN_FIELDS }}
+            <input type="hidden" name="random" value="{{ RANDOM }}">
+            <input type="hidden" name="redirect" value="{{ REDIRECT }}">
+            {% include tfa_option.S_TFA_INCLUDE_HTML %}
+        </form>
+    </div>
+{% endfor %}
+
+{% include 'overall_footer.html' %}

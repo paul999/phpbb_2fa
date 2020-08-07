@@ -1,6 +1,6 @@
-<!-- IF U2F_REQ -->
+{% if U2F_REQ %}
 <script>
-    var req = {U2F_REQ};
+    var req = {{ U2F_REQ }};
     console.log("Loading with ", req);
     $(document).ready(function() {
         console.log("Loading U2F signing");
@@ -24,11 +24,11 @@
         }
     });
 </script>
-<!-- ENDIF -->
-<!-- IF U2F_REG -->
+{% endif %}
+{% if U2F_REG %}
 <script>
-    var req = {U2F_SIGN_REQUEST};
-    var sigs = {U2F_SIGN};
+    var req = {{ U2F_SIGN_REQUEST }};
+    var sigs = {{ U2F_SIGN }};
 
     if(!(bowser.chrome && bowser.version >= 41)) {
         $("#browser_supported").show();
@@ -48,13 +48,13 @@
 
             console.log("Register callback", data);
             if(data.errorCode) {
-                var message = "{LA_TFA_REG_FAILED}" + data.errorCode + "," + data.errorMessage;
-                if (data.errorCode == 4) {
+                var message = "{{ lang('TFA_REG_FAILED')|addslashes }}" + data.errorCode + "," + data.errorMessage;
+                if (data.errorCode === 4) {
                     // ErrorCode for is when the device is already added.
-                    message = "{LA_TFA_REG_EXISTS}";
+                    message = "{{ lang('TFA_REG_EXISTS')|addslashes }}}";
                 }
 
-                phpbb.alert("{LA_TFA_ERROR}", message);
+                phpbb.alert("{{ lang('TFA_ERROR')|addslashes }}", message);
                 $("#tfa_insert_key").hide();
                 $("#add_key").show();
                 clearTimeout(tm);
@@ -67,4 +67,4 @@
         });
     });
 </script>
-<!-- ENDIF -->
+{% endif %}
