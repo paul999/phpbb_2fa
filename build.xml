@@ -37,7 +37,7 @@
 	TODO: DO NOT EDIT BELOW THIS LINE!!!!
 	-->
 
-	<property name="version" value="HEAD" override="true" />
+	<property name="version" value="v1.0.0" override="true" />
 	<property name="build-directory" value="build" override="true" />
 	<property name="package-directory" value="${build-directory}/package/${vendor-name}/${extension-name}" />
 
