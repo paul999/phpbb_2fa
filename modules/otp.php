@@ -184,7 +184,7 @@ class otp extends abstract_module
 
 		foreach ($this->getRegistrations($user_id) as $registration)
 		{
-			if ($this->otp->checkTOTP($registration['secret'], $key, 'sha512'))
+			if ($this->otp->checkTOTP($registration['secret'], $key, 'sha1'))
 			{
 				// We found a valid key.
 				$sql_ary = array(
@@ -221,7 +221,7 @@ class otp extends abstract_module
 	public function register_start()
 	{
 		$secret = $this->otp->generateSecret();
-		$QR = $this->otp_helper->generateKeyURI('totp', $secret, $this->user->data['username'], generate_board_url(), 0, 'sha512');
+		$QR = $this->otp_helper->generateKeyURI('totp', $secret, $this->user->data['username'], generate_board_url(), 0, 'sha1');
 		$this->template->assign_vars(array(
 			'TFA_QR_CODE'				=> 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . $QR,
 			'TFA_SECRET'				=> $secret,
@@ -244,7 +244,7 @@ class otp extends abstract_module
 		$secret = $this->request->variable('secret', '');
 		$otp	= $this->request->variable('register', '');
 
-		if (!$this->otp->checkTOTP($secret, $otp, 'sha512'))
+		if (!$this->otp->checkTOTP($secret, $otp, 'sha1'))
 		{
 			throw new http_exception(400, 'TFA_OTP_INVALID_KEY');
 		}
