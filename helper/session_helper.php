@@ -96,8 +96,6 @@ class session_helper implements session_helper_interface
 		$this->registration_table	= $registration_table;
 		$this->user_table			= $user_table;
 		$this->module_data			= $modules;
-
-
 	}
 
 	/**
@@ -150,7 +148,8 @@ class session_helper implements session_helper_interface
 	 */
 	public function get_modules()
 	{
-		if (empty($this->modules)) {
+		if (empty($this->modules))
+		{
 			$this->validate_modules();
 		}
 		return $this->modules;

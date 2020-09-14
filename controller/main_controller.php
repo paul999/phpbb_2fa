@@ -11,8 +11,6 @@
 namespace paul999\tfa\controller;
 
 use paul999\tfa\helper\session_helper_interface;
-use phpbb\config\config;
-use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\exception\http_exception;
 use phpbb\log\log;
