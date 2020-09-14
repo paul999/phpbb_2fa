@@ -121,6 +121,7 @@ class listener implements EventSubscriberInterface
 	 */
 	public function user_setup_after($event)
 	{
+		$this->user->add_lang_ext('paul999/tfa', 'common');
 		if (strpos($this->user->page['page'], 'paul999/tfa/save') !== false)
 		{
 			// We are at our controller. Don't do anything.  In all cases.
@@ -150,7 +151,6 @@ class listener implements EventSubscriberInterface
 			{
 				// the user has keys registered, but they are not usable (Might be due to browser requirements, or others)
 				// We will not allow them to register a new key. They will need to contact the admin instead unfortunately.
-				$this->user->add_lang_ext('paul999/tfa', 'common');
 				$url = phpbb_get_board_contact_link($this->config, $this->root_path, $this->php_ext);
 				$msg_text = $this->user->lang('TFA_REQUIRED_KEY_AVAILABLE_BUT_UNUSABLE', '<a href="' . $url . '">', '</a>');
 				$this->user->session_kill();
@@ -173,7 +173,6 @@ class listener implements EventSubscriberInterface
 			{
 				return; // We are at our UCP page, so skip any other checks. This page is always available
 			}
-			$this->user->add_lang_ext('paul999/tfa', 'common');
 			$url = append_sid("{$this->root_path}ucp.{$this->php_ext}", "i={$ucp_mode}");
 			$msg_text = $this->user->lang('TFA_REQUIRED_KEY_MISSING', '<a href="' . $url . '">', '</a>');
 
