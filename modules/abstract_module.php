@@ -11,20 +11,24 @@
 
 namespace paul999\tfa\modules;
 
+use phpbb\db\driver\driver_interface;
+use phpbb\template\template;
+use phpbb\user;
+
 abstract class abstract_module implements module_interface
 {
 	/**
-	 * @var \phpbb\db\driver\driver_interface
+	 * @var driver_interface
 	 */
 	protected $db;
 
 	/**
-	 * @var \phpbb\user
+	 * @var user
 	 */
 	protected $user;
 
 	/**
-	 * @var \phpbb\template\template
+	 * @var template
 	 */
 	protected $template;
 

@@ -2,7 +2,7 @@ imports:
     - { resource: tables.yml }
 
 services:
-    paul999.tfa.sessionHelper:
+    paul999.tfa.session_helper:
         class: paul999\tfa\helper\session_helper
         arguments:
             - '@dbal.conn'
@@ -24,21 +24,19 @@ services:
     paul999.tfa.controller:
         class: paul999\tfa\controller\main_controller
         arguments:
-            - '@controller.helper'
             - '@dbal.conn'
             - '@template'
             - '@user'
             - '@request'
-            - '@config'
             - '@log'
-            - '@paul999.tfa.sessionHelper'
+            - '@paul999.tfa.session_helper'
             - '%core.root_path%'
             - '%core.php_ext%'
 
     paul999.tfa.listener:
         class: paul999\tfa\event\listener
         arguments:
-            - '@paul999.tfa.sessionHelper'
+            - '@paul999.tfa.session_helper'
             - '@user'
             - '@request'
             - '@dbal.conn'

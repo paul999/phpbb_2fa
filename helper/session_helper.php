@@ -43,7 +43,9 @@ class session_helper implements session_helper_interface
 	/**
 	 * @var array
 	 */
-	private $modules = array();
+	private $modules;
+
+	private $module_data = [];
 
 	/**
 	 * @var string
@@ -58,7 +60,7 @@ class session_helper implements session_helper_interface
 	/**
 	 * @var array
 	 */
-	private $user_array = array();
+	private $user_array = [];
 
 	/**
 	 * @var \phpbb\template\template
@@ -93,21 +95,18 @@ class session_helper implements session_helper_interface
 		$this->controller_helper 	= $controller_helper;
 		$this->registration_table	= $registration_table;
 		$this->user_table			= $user_table;
-
-		$this->validateModules($modules);
-
+		$this->module_data			= $modules;
 	}
 
 	/**
 	 * Register the tagged modules if they are enabled.
-	 * @param service_collection $modules
 	 */
-	private function validateModules(service_collection $modules)
+	private function validate_modules()
 	{
 		/**
 		 * @var module_interface $module
 		 */
-		foreach ($modules as $module)
+		foreach ($this->module_data as $module)
 		{
 			if ($module instanceof module_interface)
 			{
@@ -129,12 +128,12 @@ class session_helper implements session_helper_interface
 	 * @param $requested_module
 	 * @return null|module_interface
 	 */
-	public function findModule($requested_module)
+	public function find_module($requested_module)
 	{
 		/**
 		 * @var module_interface $module
 		 */
-		foreach ($this->getModules() as $module)
+		foreach ($this->get_modules() as $module)
 		{
 			if ($module->get_name() == $requested_module)
 			{
@@ -147,8 +146,12 @@ class session_helper implements session_helper_interface
 	/**
 	 * @return array
 	 */
-	public function getModules()
+	public function get_modules()
 	{
+		if (empty($this->modules))
+		{
+			$this->validate_modules();
+		}
 		return $this->modules;
 	}
 
@@ -158,9 +161,9 @@ class session_helper implements session_helper_interface
 	 * @param array $userdata
 	 * @return bool
 	 */
-	public function isTfaRequired($user_id, $admin = false, $userdata = array())
+	public function is_tfa_required($user_id, $admin = false, $userdata = array())
 	{
-		if (sizeof($this->modules) == 0)
+		if (sizeof($this->get_modules()) == 0)
 		{
 			return false;
 		}
@@ -170,7 +173,7 @@ class session_helper implements session_helper_interface
 				return false;
 
 			case session_helper_interface::MODE_NOT_REQUIRED:
-				return $this->isTfaRegistered($user_id);
+				return $this->is_tfa_registered($user_id);
 
 			case session_helper_interface::MODE_REQUIRED_FOR_ACP_LOGIN:
 			case session_helper_interface::MODE_REQUIRED_FOR_ADMIN:
@@ -193,7 +196,7 @@ class session_helper implements session_helper_interface
 	 * @param int $user_id
 	 * @return bool
 	 */
-	public function isTfaRegistered($user_id)
+	public function is_tfa_registered($user_id)
 	{
 		if (isset($this->user_array[$user_id]))
 		{
@@ -206,7 +209,7 @@ class session_helper implements session_helper_interface
 		 * @var int $priority
 		 * @var module_interface $module
 		 */
-		foreach ($this->modules as $priority => $module)
+		foreach ($this->get_modules() as $priority => $module)
 		{
 			$this->user_array[$user_id] = $this->user_array[$user_id] || $module->is_usable($user_id);
 		}
@@ -219,13 +222,13 @@ class session_helper implements session_helper_interface
 	 * @param int $user_id
 	 * @return bool
 	 */
-	public function isTfaKeyRegistred($user_id)
+	public function is_tfa_key_registred($user_id)
 	{
 		/**
 		 * @var int $priority
 		 * @var module_interface $module
 		 */
-		foreach ($this->modules as $priority => $module)
+		foreach ($this->get_modules() as $priority => $module)
 		{
 			if ($module->key_registered($user_id))
 			{
@@ -248,7 +251,7 @@ class session_helper implements session_helper_interface
 	public function generate_page($user_id, $admin, $auto_login, $viewonline, $redirect, $secure = false)
 	{
 		$this->user->add_lang_ext('paul999/tfa', 'common');
-		$modules = $this->getModules();
+		$modules = $this->get_modules();
 
 		/**
 		 * @var module_interface $row
@@ -327,7 +330,7 @@ class session_helper implements session_helper_interface
 	 */
 	private function do_permission_check($user_id, $userdata, $permission)
 	{
-		if ($this->isTfaRegistered($user_id))
+		if ($this->is_tfa_registered($user_id))
 		{
 			return true;
 		}

@@ -11,24 +11,19 @@
 namespace paul999\tfa\controller;
 
 use paul999\tfa\helper\session_helper_interface;
-use phpbb\config\config;
-use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
 use phpbb\exception\http_exception;
+use phpbb\log\log;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
-use phpbb\log\log;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Controller
  */
 class main_controller
 {
-	/**
-	 * @var helper
-	 */
-	private $controller_helper;
 
 	/**
 	 * @var template
@@ -49,11 +44,6 @@ class main_controller
 	 * @var request_interface
 	 */
 	private $request;
-
-	/**
-	 * @var config
-	 */
-	private $config;
 
 	/**
 	 * @var session_helper_interface
@@ -78,25 +68,21 @@ class main_controller
 	 * Constructor
 	 *
 	 * @access public
-	 * @param helper $controller_helper
 	 * @param driver_interface $db
 	 * @param template $template
 	 * @param user $user
 	 * @param request_interface $request
-	 * @param config $config
 	 * @param log $log
 	 * @param session_helper_interface $session_helper
 	 * @param string $root_path
 	 * @param string $php_ext
 	 */
-	public function __construct(helper $controller_helper, driver_interface $db, template $template, user $user, request_interface $request, config $config, log $log, session_helper_interface $session_helper, $root_path, $php_ext)
+	public function __construct(driver_interface $db, template $template, user $user, request_interface $request, log $log, session_helper_interface $session_helper, $root_path, $php_ext)
 	{
-		$this->controller_helper 	= $controller_helper;
 		$this->template 			= $template;
 		$this->db					= $db;
 		$this->user					= $user;
 		$this->request				= $request;
-		$this->config				= $config;
 		$this->session_helper		= $session_helper;
 		$this->root_path			= $root_path;
 		$this->php_ext				= $php_ext;
@@ -109,7 +95,7 @@ class main_controller
 	 * @param bool $auto_login
 	 * @param bool $viewonline
 	 * @param string $class
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @return Response
 	 * @throws http_exception
 	 */
 	public function submit($user_id, $admin, $auto_login, $viewonline, $class)
@@ -146,7 +132,7 @@ class main_controller
 			throw new http_exception(400, 'TFA_SOMETHING_WENT_WRONG');
 		}
 
-		$module = $this->session_helper->findModule($class);
+		$module = $this->session_helper->find_module($class);
 
 		if ($module == null)
 		{

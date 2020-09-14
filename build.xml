@@ -37,7 +37,7 @@
 	TODO: DO NOT EDIT BELOW THIS LINE!!!!
 	-->
 
-	<property name="version" value="HEAD" override="true" />
+	<property name="version" value="v1.0.0" override="true" />
 	<property name="build-directory" value="build" override="true" />
 	<property name="package-directory" value="${build-directory}/package/${vendor-name}/${extension-name}" />
 
@@ -76,7 +76,7 @@
 		<if>
 			<equals arg1="${has-dependencies}" arg2="1" />
 			<then>
-				<exec dir="${package-directory}" command="php composer.phar install --no-dev"
+				<exec dir="${package-directory}" command="composer install --no-dev"
 					  checkreturn="true" />
 			</then>
 		</if>

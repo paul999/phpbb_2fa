@@ -52,7 +52,6 @@ class u2f extends abstract_module
 	 * @param template $template
 	 * @param string $registration_table
 	 * @param string $root_path
-	 * @throws U2fError
 	 */
 	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, $registration_table, $root_path)
 	{
@@ -63,8 +62,15 @@ class u2f extends abstract_module
 		$this->root_path= $root_path;
 
 		$this->registration_table	= $registration_table;
+	}
 
-		$this->u2f = new \paul999\u2f\U2F('https://' . $this->request->server('HTTP_HOST'));
+	private function getU2f()
+	{
+		if (empty($this->u2f))
+		{
+			$this->u2f = new \paul999\u2f\U2F('https://' . $this->request->server('HTTP_HOST'));
+		}
+		return $this->u2f;
 	}
 
 	/**
@@ -170,7 +176,7 @@ class u2f extends abstract_module
 	 */
 	public function login_start($user_id)
 	{
-		$registrations = json_encode($this->u2f->getAuthenticateData($this->getRegistrations($user_id)), JSON_UNESCAPED_SLASHES);
+		$registrations = json_encode($this->getU2f()->getAuthenticateData($this->getRegistrations($user_id)), JSON_UNESCAPED_SLASHES);
 
 		$sql_ary = array(
 			'u2f_request'	=> $registrations
@@ -232,7 +238,7 @@ class u2f extends abstract_module
 			$result = new AuthenticationResponse($response->signatureData, $response->clientData, $response->keyHandle); // Do not need to include errorCode, as we already handled it.
 
 			/** @var \paul999\tfa\helper\registration_helper $reg */
-			$reg = $this->u2f->doAuthenticate($this->convertRequests(json_decode($row['u2f_request'])), $this->getRegistrations($user_id), $result);
+			$reg = $this->getU2f()->doAuthenticate($this->convertRequests(json_decode($row['u2f_request'])), $this->getRegistrations($user_id), $result);
 			$sql_ary = array(
 				'counter' => $reg->getCounter(),
 				'last_used' => time(),
@@ -277,7 +283,7 @@ class u2f extends abstract_module
 	{
 		$reg_data = $this->getRegistrations($this->user->data['user_id']);
 
-		$data = $this->u2f->getRegisterData($reg_data);
+		$data = $this->getU2f()->getRegisterData($reg_data);
 
 		$sql_ary = array(
 			'u2f_request' => json_encode($data[0], JSON_UNESCAPED_SLASHES),
@@ -323,7 +329,7 @@ class u2f extends abstract_module
 			$registerrequest = new RegisterRequest($register->challenge, $register->appId);
 			$responserequest = new RegisterResponse($response->registrationData, $response->clientData, $error);
 
-			$reg = $this->u2f->doRegister($registerrequest, $responserequest);
+			$reg = $this->getU2f()->doRegister($registerrequest, $responserequest);
 
 			$sql_ary = array(
 				'user_id' => $this->user->data['user_id'],

@@ -21,17 +21,17 @@ use phpbb\user;
 class otp extends abstract_module
 {
 	/**
-	 * @var \OTPAuthenticate\OTPHelper
+	 * @var OTPHelper
 	 */
 	private $otp_helper;
 
 	/**
-	 * @var \OTPAuthenticate\OTPAuthenticate
+	 * @var OTPAuthenticate
 	 */
 	private $otp;
 
 	/**
-	 * @var \phpbb\request\request_interface
+	 * @var request_interface
 	 */
 	private $request;
 
@@ -43,10 +43,10 @@ class otp extends abstract_module
 	/**
 	 * OTP constructor.
 	 *
-	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param \phpbb\user                       $user
-	 * @param \phpbb\request\request_interface  $request
-	 * @param \phpbb\template\template          $template
+	 * @param driver_interface $db
+	 * @param user $user
+	 * @param request_interface $request
+	 * @param template $template
 	 * @param string                            $otp_registration_table
 	 */
 	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, $otp_registration_table)
@@ -237,7 +237,6 @@ class otp extends abstract_module
 	/**
 	 * Do the actual registration of a new security key.
 	 *
-	 * @return boolean Result of the registration.
 	 * @throws http_exception
 	 */
 	public function register()

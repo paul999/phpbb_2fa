@@ -20,7 +20,7 @@ use phpbb\user;
 class backup_key extends abstract_module
 {
 	/**
-	 * @var \phpbb\request\request_interface
+	 * @var request_interface
 	 */
 	private $request;
 
@@ -35,19 +35,19 @@ class backup_key extends abstract_module
 	const NUMBER_OF_KEYS = 6;
 
 	/**
-	 * @var \phpbb\passwords\manager
+	 * @var manager
 	 */
 	private $password_manager;
 
 	/**
 	 * backup_key constructor.
 	 *
-	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param \phpbb\user                       $user
-	 * @param \phpbb\request\request_interface  $request
-	 * @param \phpbb\template\template          $template
-	 * @param \phpbb\passwords\manager          $password_manager
-	 * @param string                            $backup_registration_table
+	 * @param driver_interface $db
+	 * @param user $user
+	 * @param request_interface $request
+	 * @param template $template
+	 * @param manager $password_manager
+	 * @param string $backup_registration_table
 	 */
 	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, manager $password_manager, $backup_registration_table)
 	{
@@ -222,6 +222,7 @@ class backup_key extends abstract_module
 	 * it should assign the required variables for this template.
 	 *
 	 * @return string
+	 * @throws \Exception
 	 */
 	public function register_start()
 	{
@@ -230,7 +231,7 @@ class backup_key extends abstract_module
 		for ($i = 0; $i < self::NUMBER_OF_KEYS; $i++)
 		{
 			$time = time();
-			$key = bin2hex(random_bytes(6));
+			$key = bin2hex(random_bytes(16));
 			$sql[] = array(
 				'user_id' 		=> $this->user->data['user_id'],
 				'valid'			=> true,
