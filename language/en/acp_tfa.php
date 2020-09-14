@@ -63,6 +63,13 @@ $lang = array_merge(
 										<h2>Receiving support</h2>
 										<p>Support is only provided on www.phpbb.com, in the extension <a href="https://www.phpbb.com/customise/db/extension/phpbb_two_factor_authentication/" target="_blank">customisations database</a>. Please make sure to read the FAQ before asking your questions.</p>
 										
+										<h2>Want to support the development of this extension?</h2>
+										<p>This extension is developed fully in my free time, however you can help me by providing a small donation to get this extension being developed.</p>
+										<ul>
+											<li>Become a sponsor on github: <a href="https://github.com/sponsors/paul999" target="_blank">https://github.com/sponsors/paul999</a></li>
+											<li>Make a paypal donation: <a href="https://paypal.me/sohier" target="_blank">https://paypal.me/sohier</a></li>
+											<li>Make a donation via bunq: <a href="https://bunq.me/Paul999" target="_blank">https://bunq.me/Paul999</a></li>
+										</ul>
 										',
 		'TFA_REQUIRES_SSL'			=> 'You seem to be using a non secure connection. This extension requires a secure SSL connection for some security keys to work. Users won’t be able to choose these options unless you enable a secure connection to your board.',
 

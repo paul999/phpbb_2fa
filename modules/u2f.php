@@ -64,7 +64,8 @@ class u2f extends abstract_module
 		$this->registration_table	= $registration_table;
 	}
 
-	private function getU2f() {
+	private function getU2f()
+	{
 		if (empty($this->u2f))
 		{
 			$this->u2f = new \paul999\u2f\U2F('https://' . $this->request->server('HTTP_HOST'));
