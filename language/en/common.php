@@ -84,6 +84,9 @@ $lang = array_merge(
 		'TFA_OTP'					=> 'OTP',
 		'TFA_U2F'					=> 'U2F',
 
+		'TFA_CP_TXT'				=> 'phpBB Two Factor Authentication',
+		'TFA_CP_NAME'				=> 'paul999',
+
 		'TFA_BACKUP_KEY_LOG'				=> 'Backup key',
 		'TFA_BACKUP_KEY_LOG_EXPLAIN'		=> 'Please provide a backup key, which hasn’t been used before.',
 
