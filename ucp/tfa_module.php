@@ -80,7 +80,7 @@ class tfa_module
 
 		$this->setup($user, $template, $request, $phpbb_container->get('paul999.tfa.sessionHelper'));
 
-		$this->createPage();
+		$this->create_page();
 	}
 
 	/**
@@ -92,8 +92,8 @@ class tfa_module
 		{
 			$error = array();
 			$class = $this->request->variable('class', '');
-			$module = $this->session_helper->findModule($class);
-			$submit = $this->request->variable('register', false, false, \phpbb\request\request_interface::POST);
+			$module = $this->session_helper->find_module($class);
+			$submit = $this->request->variable('register', false, false, request_interface::POST);
 
 			if ($module != null)
 			{
@@ -133,14 +133,14 @@ class tfa_module
 	/**
 	 *
 	 */
-	private function createPage()
+	private function create_page()
 	{
 		$error = array();
 		$s_hidden_fields = '';
 
 		add_form_key('ucp_tfa_keys');
 
-		$module_row = $this->request->variable('md', '', true, \phpbb\request\request_interface::POST);
+		$module_row = $this->request->variable('md', '', true, request_interface::POST);
 
 		// Set desired template
 		$this->tpl_name = 'ucp_tfa';
@@ -182,7 +182,7 @@ class tfa_module
 		/**
 		 * @var $module_row \paul999\tfa\modules\module_interface
 		 */
-		foreach ($this->session_helper->getModules() as $module_row)
+		foreach ($this->session_helper->get_modules() as $module_row)
 		{
 			$module_row->show_ucp();
 
@@ -216,7 +216,7 @@ class tfa_module
 				$row = explode('-', $row); // 0 is class, 1 is ID
 				if (isset($row[0]))
 				{
-					$module = $this->session_helper->findModule($row[0]);
+					$module = $this->session_helper->find_module($row[0]);
 					if ($module != null)
 					{
 						$module->delete(intval($row[1]));

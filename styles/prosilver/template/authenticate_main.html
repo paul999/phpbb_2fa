@@ -15,7 +15,7 @@
             {% for tfa_option in tfa_options %}
                 <li class="row">
                     <dl>
-                        <dt><a href="javascript:openAuth('#auth_{{ tfa_option.ID }}');">{{ tfa_option.NAME }}</a></dt>
+                        <dt><a href="javascript:openAuth('#auth_{{ tfa_option.ID|e('js') }}');">{{ tfa_option.NAME }}</a></dt>
                     </dl>
                 </li>
             {% endfor %}

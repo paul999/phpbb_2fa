@@ -3,7 +3,7 @@
 	"type": "phpbb-extension",
 	"description": "This extension adds support for two factor authentication into your phpBB board. ",
 	"homepage": "https://www.phpbbextensions.io",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [],
 	"license": "GPL-2.0-only",
 	"authors": [
@@ -31,11 +31,6 @@
 		"display-name": "phpBB Two Factor Authentication",
 		"soft-require": {
 			"phpbb/phpbb": ">=3.2"
-		}
-	},
-	"config": {
-		"platform": {
-			"php": "5.6"
 		}
 	}
 }

@@ -13,6 +13,7 @@ namespace paul999\tfa\event;
 use paul999\tfa\helper\session_helper_interface;
 use phpbb\config\config;
 use phpbb\db\driver\driver_interface;
+use phpbb\event\data;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
@@ -71,9 +72,9 @@ class listener implements EventSubscriberInterface
 	 * @param session_helper_interface          $session_helper
 	 * @param user                              $user
 	 * @param request_interface                 $request
-	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param \phpbb\template\template          $template
-	 * @param \phpbb\config\config              $config
+	 * @param driver_interface $db
+	 * @param template $template
+	 * @param config $config
 	 * @param string                            $php_ext
 	 * @param string                            $root_path
 	 */
@@ -106,7 +107,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * @param \phpbb\event\data $event
+	 * @param data $event
 	 */
 	public function add_permission($event)
 	{
@@ -116,7 +117,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * @param \phpbb\event\data $event
+	 * @param data $event
 	 */
 	public function user_setup_after($event)
 	{
@@ -133,7 +134,7 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
-		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->session_helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data) && !$this->session_helper->isTfaRegistered($this->user->data['user_id']))
+		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->session_helper->is_tfa_required($this->user->data['user_id'], false, $this->user->data) && !$this->session_helper->is_tfa_registered($this->user->data['user_id']))
 		{
 			@define('SKIP_CHECK_DISABLED', true);
 			if ($this->user->page['page_name'] === 'memberlist.' . $this->php_ext && $this->request->variable('mode', '') == 'contactadmin')
@@ -145,7 +146,7 @@ class listener implements EventSubscriberInterface
 			$this->user->set_cookie('rn', $this->user->data['session_id'], time() + 3600 * 24, true);
 
 			$msg_title =  $this->user->lang['INFORMATION'];
-			if ($this->session_helper->isTfaKeyRegistred($this->user->data['user_id']))
+			if ($this->session_helper->is_tfa_key_registred($this->user->data['user_id']))
 			{
 				// the user has keys registered, but they are not usable (Might be due to browser requirements, or others)
 				// We will not allow them to register a new key. They will need to contact the admin instead unfortunately.
@@ -180,16 +181,16 @@ class listener implements EventSubscriberInterface
 		}
 
 		// If the user had no key when logged in, but now has a key, we will force him to use the key.
-		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->request->variable($this->config['cookie_name'] . '_rn', '', false, request_interface::COOKIE) !== '' && $this->session_helper->isTfaRequired($this->user->data['user_id'], false, $this->user->data))
+		if ($this->user->data['is_bot'] == false && $this->user->data['user_id'] != ANONYMOUS && $this->request->variable($this->config['cookie_name'] . '_rn', '', false, request_interface::COOKIE) !== '' && $this->session_helper->is_tfa_required($this->user->data['user_id'], false, $this->user->data))
 		{
 			$this->session_helper->generate_page($this->user->data['user_id'], false, $this->user->data['session_autologin'], $this->user->data['session_viewonline'], $this->user->page['page'], true);
 		}
 	}
 
 	/**
-	 * @param \phpbb\event\data $event
+	 * @param data $event
 	 *
-	 * @return \phpbb\event\data $event|null
+	 * @return data $event|null
 	 * @throw http_exception
 	 */
 	public function auth_login_session_create_before($event)
@@ -206,9 +207,9 @@ class listener implements EventSubscriberInterface
 		if (isset($event['login'], $event['login']['status']) && $event['login']['status'] == LOGIN_SUCCESS)
 		{
 			// We have a LOGIN_SUCCESS result.
-			if ($this->session_helper->isTfaRequired($event['login']['user_row']['user_id'], $event['admin'], $event['user_row']))
+			if ($this->session_helper->is_tfa_required($event['login']['user_row']['user_id'], $event['admin'], $event['user_row']))
 			{
-				if (!$this->session_helper->isTfaRegistered($event['login']['user_row']['user_id']))
+				if (!$this->session_helper->is_tfa_registered($event['login']['user_row']['user_id']))
 				{
 					// While 2FA is enabled, the user has no methods added.
 					// We simply return and continue the login procedure (The normal way :)),
@@ -249,7 +250,5 @@ class listener implements EventSubscriberInterface
 		define('IN_CRON', true);
 
 		page_footer();
-
-		exit_handler();
 	}
 }

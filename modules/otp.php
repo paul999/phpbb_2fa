@@ -21,17 +21,17 @@ use phpbb\user;
 class otp extends abstract_module
 {
 	/**
-	 * @var \OTPAuthenticate\OTPHelper
+	 * @var OTPHelper
 	 */
 	private $otp_helper;
 
 	/**
-	 * @var \OTPAuthenticate\OTPAuthenticate
+	 * @var OTPAuthenticate
 	 */
 	private $otp;
 
 	/**
-	 * @var \phpbb\request\request_interface
+	 * @var request_interface
 	 */
 	private $request;
 
@@ -43,10 +43,10 @@ class otp extends abstract_module
 	/**
 	 * OTP constructor.
 	 *
-	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param \phpbb\user                       $user
-	 * @param \phpbb\request\request_interface  $request
-	 * @param \phpbb\template\template          $template
+	 * @param driver_interface $db
+	 * @param user $user
+	 * @param request_interface $request
+	 * @param template $template
 	 * @param string                            $otp_registration_table
 	 */
 	public function __construct(driver_interface $db, user $user, request_interface $request, template $template, $otp_registration_table)
@@ -184,7 +184,7 @@ class otp extends abstract_module
 
 		foreach ($this->getRegistrations($user_id) as $registration)
 		{
-			if ($this->otp->checkTOTP($registration['secret'], $key, 'sha1'))
+			if ($this->otp->checkTOTP($registration['secret'], $key))
 			{
 				// We found a valid key.
 				$sql_ary = array(
@@ -221,7 +221,7 @@ class otp extends abstract_module
 	public function register_start()
 	{
 		$secret = $this->otp->generateSecret();
-		$QR = $this->otp_helper->generateKeyURI('totp', $secret, $this->user->data['username'], generate_board_url(), 0, 'sha1');
+		$QR = $this->otp_helper->generateKeyURI('totp', $secret, $this->user->data['username'], generate_board_url(), 0);
 		$this->template->assign_vars(array(
 			'TFA_QR_CODE'				=> 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . $QR,
 			'TFA_SECRET'				=> $secret,
@@ -237,7 +237,6 @@ class otp extends abstract_module
 	/**
 	 * Do the actual registration of a new security key.
 	 *
-	 * @return boolean Result of the registration.
 	 * @throws http_exception
 	 */
 	public function register()
@@ -245,7 +244,7 @@ class otp extends abstract_module
 		$secret = $this->request->variable('secret', '');
 		$otp	= $this->request->variable('register', '');
 
-		if (!$this->otp->checkTOTP($secret, $otp, 'sha1'))
+		if (!$this->otp->checkTOTP($secret, $otp))
 		{
 			throw new http_exception(400, 'TFA_OTP_INVALID_KEY');
 		}

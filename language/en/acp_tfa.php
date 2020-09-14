@@ -61,10 +61,8 @@ $lang = array_merge(
 										When a browser does not meet these requirements, the user won’t be able to select U2F.</p>
 										
 										<h2>Receiving support</h2>
-										<p>Support is only provided on www.phpbb.com, in the extension <a href="https://www.phpbb.com/community/viewtopic.php?f=456&t=2341856" target="_blank">topic</a>. Please make sure to read the first posts before asking your questions.</p>
+										<p>Support is only provided on www.phpbb.com, in the extension <a href="https://www.phpbb.com/customise/db/extension/phpbb_two_factor_authentication/" target="_blank">customisations database</a>. Please make sure to read the FAQ before asking your questions.</p>
 										
-										<h2>WARNING: You are running an extension in development</h2>
-										<p>You are running an extension in development, that adds security related functions to your board. Please note that you should make sure what you are doing if you are running this extension on a live board.</p>
 										',
 		'TFA_REQUIRES_SSL'			=> 'You seem to be using a non secure connection. This extension requires a secure SSL connection for some security keys to work. Users won’t be able to choose these options unless you enable a secure connection to your board.',
 
@@ -78,6 +76,6 @@ $lang = array_merge(
 		'TFA_REQUIRED'					=> 'Require two factor authentication for all users',
 
 		'TFA_ACP'           => 'Require two factor authentication for administration panel',
-		'TFA_ACP_EXPLAIN'   => 'When set to no, administrators don’t need to use a two factor authentication key when loggin in for the ACP. Disabling this might not be suggested.'
+		'TFA_ACP_EXPLAIN'   => 'When set to no, administrators don’t need to use a two factor authentication key when logging in for the ACP. Disabling this might not be suggested.'
 	)
 );

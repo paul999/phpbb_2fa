@@ -1,5 +1,6 @@
 {% if U2F_REQ %}
 <script>
+    {# U2F_REQ is a JSON string, so can't be escaped. #}
     var req = {{ U2F_REQ }};
     console.log("Loading with ", req);
     $(document).ready(function() {
@@ -27,6 +28,7 @@
 {% endif %}
 {% if U2F_REG %}
 <script>
+    {# U2F_SIGN_REQUEST and U2F_SIGN are a JSON string, so can't be escaped. #}
     var req = {{ U2F_SIGN_REQUEST }};
     var sigs = {{ U2F_SIGN }};
 
@@ -48,13 +50,13 @@
 
             console.log("Register callback", data);
             if(data.errorCode) {
-                var message = "{{ lang('TFA_REG_FAILED')|addslashes }}" + data.errorCode + "," + data.errorMessage;
+                var message = "{{ lang('TFA_REG_FAILED')|e('js') }}" + data.errorCode + "," + data.errorMessage;
                 if (data.errorCode === 4) {
                     // ErrorCode for is when the device is already added.
-                    message = "{{ lang('TFA_REG_EXISTS')|addslashes }}}";
+                    message = "{{ lang('TFA_REG_EXISTS')|e('js') }}";
                 }
 
-                phpbb.alert("{{ lang('TFA_ERROR')|addslashes }}", message);
+                phpbb.alert("{{ lang('TFA_ERROR')|e('js') }}", message);
                 $("#tfa_insert_key").hide();
                 $("#add_key").show();
                 clearTimeout(tm);

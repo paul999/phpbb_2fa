@@ -28,14 +28,14 @@ interface session_helper_interface
 	 * @param $requested_module
 	 * @return null|module_interface
 	 */
-	public function findModule($requested_module);
+	public function find_module($requested_module);
 
 	/**
 	 * Get the current active two factor auth modules.
 	 *
 	 * @return array
 	 */
-	public function getModules();
+	public function get_modules();
 
 	/**
 	 * Check if Two Factor authentication for this user is required
@@ -46,7 +46,7 @@ interface session_helper_interface
 	 *              it will result in a extra query!
 	 * @return bool
 	 */
-	public function isTfaRequired($user_id, $admin = false, $userdata = array());
+	public function is_tfa_required($user_id, $admin = false, $userdata = array());
 
 	/**
 	 * Check if the user has two factor authentication added to his account.
@@ -54,7 +54,7 @@ interface session_helper_interface
 	 * @param array $user_id
 	 * @return bool
 	 */
-	public function isTfaRegistered($user_id);
+	public function is_tfa_registered($user_id);
 
 	/**
 	 * Check if the user has any key registred, even if the module is not available.
@@ -62,7 +62,7 @@ interface session_helper_interface
 	 * @param int $user_id
 	 * @return bool
 	 */
-	public function isTfaKeyRegistred($user_id);
+	public function is_tfa_key_registred($user_id);
 
 	/**
 	 * Generate the key page after login
