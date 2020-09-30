@@ -5,14 +5,15 @@
         <div class="inner">
             <h2>{{ lang('TFA_ADD_NEW_OTP_KEY') }}</h2>
             <p>{{ L_TFA_ADD_OTP_KEY_EXPLAIN }}</p>
-            <img src="{{ TFA_QR_CODE}}" alt="" />
+            <img src="{{ TFA_QR_CODE}}" width="200" height="200" />
             {{ S_FORM_TOKEN }}
             {{ S_HIDDEN_FIELDS }}
             {{ S_HIDDEN_FIELDS_MODULE }}
-            <br />
-            <label for="otp">{{ lang('TFA_OTP_KEY') ~ lang('COLON') }}</label> <input type="text" name="register" id="otp" />
-            <br />
-            <input type="hidden" name="md" value="{{ lang('TFA_NEW') }}" />
+            <br><br>
+            <label for="otp">{{ lang('TFA_OTP_KEY') ~ lang('COLON') }}</label>
+            <input type="text" name="register" id="otp" class="inputbox autowidth" autocomplete="off" />
+            <br><br>
+            <input type="hidden" name="md" value="{{ lang('TFA_NEW') }}" class="button1" />
             <input type="submit" name="submit" id="add_key" value="{{ lang('TFA_ADD_KEY') }}" class="button1"  />
         </div>
     </div>
