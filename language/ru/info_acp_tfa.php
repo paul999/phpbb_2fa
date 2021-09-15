@@ -40,7 +40,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge(
 	$lang, array(
 		'ACP_TFA'			=> 'Двухфакторная аутентификация',
-		'ACP_TFA_MANAGE'	=> 'Двухфакторная аутентификация - Управление',
+		'ACP_TFA_MANAGE'	=> 'Управление 2ФА',
 
 		'LOG_TFA_CONFIG_MANAGE' => '<strong>Настройки двухфакторной аутентификации обновлены.</strong>',
 		'LOG_TFA_EXCEPTION'     => '<strong>Произошла ошибка при попытке пользователя использовать свой ключ двухфакторной аутентификации:</strong><br />» %s',

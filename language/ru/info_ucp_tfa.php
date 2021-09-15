@@ -40,7 +40,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge(
 	$lang, array(
 		'UCP_TFA'			=> 'Двухфакторная аутентификация',
-		'UCP_TFA_MANAGE'	=> 'Двухфакторная аутентификация - Управление',
+		'UCP_TFA_MANAGE'	=> 'Управление 2ФА',
 
 	)
 );
