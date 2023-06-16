@@ -10,7 +10,7 @@
             {{ S_HIDDEN_FIELDS }}
             {{ S_HIDDEN_FIELDS_MODULE }}
             <br />
-            <label for="otp">{{ lang('TFA_OTP_KEY') ~ lang('COLON') }}</label> <input type="text" name="register" id="otp" />
+            <label for="otp">{{ lang('TFA_OTP_KEY') ~ lang('COLON') }}</label> <input type="text" name="register" id="otp" class="inputbox autowidth" />
             <br />
             <input type="hidden" name="md" value="{{ lang('TFA_NEW') }}" />
             <input type="submit" name="submit" id="add_key" value="{{ lang('TFA_ADD_KEY') }}" class="button1"  />
